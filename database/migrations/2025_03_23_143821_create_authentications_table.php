@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('authentications', function (Blueprint $table) {
-            $table->string('token')->nullable(false);
+            $table->string('token', 1000)->nullable(false);
         });
     }
 
