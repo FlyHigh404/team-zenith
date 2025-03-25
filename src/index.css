@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&family=Poppins&display=swap');
 
@@ -7,3 +8,6 @@
 body{
   font-family: 'Montserrat', sans-serif;
 }
+=======
+@import 'tailwindcss';
+>>>>>>> 63a0c0e0ae600d22033ca6d391205ca62c205078
