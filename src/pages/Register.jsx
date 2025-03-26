@@ -1,17 +1,25 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaGoogle, FaApple } from "react-icons/fa";
 import img from '../assets/img/register.png'
 
 const Register = () => {
+    const location = useLocation();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        nama: "",
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
+
+    const [formData, setFormData] = useState(() => {
+        return location.state || JSON.parse(localStorage.getItem("formData")) || {
+            nama: "",
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+        };
     });
+
+    useEffect(() => {
+        localStorage.setItem("formData", JSON.stringify(formData));
+    }, [formData]);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -119,7 +127,7 @@ const Register = () => {
                     </div>
 
                     <button type="submit" className="btn btn-primary w-full text-xs rounded-[10px]">
-                        Next
+                        Create Account
                     </button>
                 </form>
                 <div className='divider my-2 font-semibold text-xs'>Or</div>

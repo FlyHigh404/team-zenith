@@ -11,31 +11,30 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 const Next = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        email: "",
-        username: "",
-        password: "",
-        nama: "",
-        birthdate: "",
-        lokasi: "",
-        notelp: "",
-        levelProfesional: "",
-        keahlian: "",
-        file: null, // Tambahkan file di sini
+
+    // Ambil data dari localStorage atau location.state
+    const [formData, setFormData] = useState(() => {
+        return location.state || JSON.parse(localStorage.getItem("formData")) || {
+            nama: "",
+            username: "",
+            email: "",
+            password: "",
+            birthdate: "",
+            lokasi: "",
+            notelp: "",
+            levelProfesional: "",
+            keahlian: "",
+            file: null,
+        };
     });
 
-
     useEffect(() => {
-        if (location.state?.nama) {
-            setFormData((prevData) => ({
-                ...prevData,
-                nama: location.state.nama,
-                username: location.state.username,
-                email: location.state.email,
-                password: location.state.password,
-            }));
-        }
-    }, [location.state]);
+        localStorage.setItem("formData", JSON.stringify(formData));
+    }, [formData]);
+
+    const handleBack = () => {
+        navigate("/register", { state: formData });
+    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,11 +44,10 @@ const Next = () => {
         setFormData((prev) => ({ ...prev, file: acceptedFiles[0] || null }));
     }, []);
 
-
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
         accept: "image/*, application/pdf",
-        maxSize: 5 * 1024 * 1024, // 5MB
+        maxSize: 5 * 1024 * 1024,
     });
 
     const handleSubmit = async (e) => {
@@ -62,18 +60,19 @@ const Next = () => {
                 }
             });
 
-            const response = await axios.post('https://api.flyhigh.web.id/api/auth/register', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            await axios.post("https://api.flyhigh.web.id/api/auth/register", data, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
 
-            toast.success('Registration successful!');
+            toast.success("Registration successful!");
+            localStorage.removeItem("formData"); // Hapus setelah berhasil daftar
         } catch (error) {
             if (error.response && error.response.data.errors) {
                 Object.values(error.response.data.errors).forEach((err) => {
                     toast.error(err[0]);
                 });
             } else {
-                toast.error('Registration failed!');
+                toast.error("Registration failed!");
             }
         }
     };
@@ -81,9 +80,9 @@ const Next = () => {
 
     return (
         <div>
-            <Toaster position="top-center" reverseOrder={false} /> {/* Tambahkan di sini */}
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="flex h-screen relative">
-                <button onClick={() => navigate("/register")} className="absolute top-4 left-8">
+                <button onClick={handleBack} className="absolute top-4 left-8">
                     <FaArrowLeftLong size={20} className="cursor-pointer text-lg" />
                 </button>
                 <div className="w-[55%] flex flex-col justify-center px-20 my-auto">
@@ -102,7 +101,16 @@ const Next = () => {
 
                         <div className="mb-4">
                             <label className="block text-xs font-medium mb-1">Telephone Number</label>
-                            <input type="number" name="notelp" value={formData.notelp} onChange={handleChange} className="input input-bordered w-full rounded-[10px]" required />
+                            <input
+                                type="number"
+                                name="notelp"
+                                value={formData.notelp}
+                                onChange={handleChange}
+                                className="input input-bordered w-full rounded-[10px]"
+                                pattern="^\+?\d{10,15}$"
+                                placeholder="Enter a valid phone number (10-15 digits, may start with +))"
+                                required
+                            />
                         </div>
 
                         <div className="mb-4 relative">
@@ -146,11 +154,11 @@ const Next = () => {
 
                         <div className="mb-2 flex items-center">
                             <input type="checkbox" className="mr-2" name="terms" required />
-                            <p className="font-medium text-black text-xs">I agree to <span className="underline">terms & policy</span></p>
+                            <p className="font-medium text-black dark:text-white text-xs">I agree to <span className="underline">terms & policy</span></p>
                         </div>
 
                         <button type="submit" className="btn btn-primary w-full text-xs rounded-[10px]">
-                            Create Account
+                            Sign Up
                         </button>
                     </form>
                     {/* <div className='divider my-4 font-semibold text-xs'>Or</div>
