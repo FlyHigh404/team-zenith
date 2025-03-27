@@ -20,67 +20,67 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-{
-    try {
-        // Validasi input
-        $request->validate([
-            'email' => [
-                'required',
-                'email',
-                'unique:users,email',
-                'regex:/^[a-zA-Z0-9._%+-]+@((gmail|yahoo|outlook|hotmail|icloud|aol|zoho|mail|protonmail|yandex|gmx)\.(com|id|edu|org|net))$/'
-            ],
-            'username' => 'required|string|min:3|max:20|unique:users,username',
-            'password' => 'required|string|min:6',
-            'nama' => 'required|string|max:30',
-            'birthdate' => 'required|date',
-            'lokasi' => 'required|string|max:20',
-            'notelp' => 'required|string|max:25',
-            'levelProfesional' => 'required|in:1,2,3',
-            'keahlian' => 'required|in:plate,pipe',
-        ]);
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'email' => [
+                    'required',
+                    'email',
+                    'unique:users,email',
+                    'regex:/^[a-zA-Z0-9._%+-]+@((gmail|yahoo|outlook|hotmail|icloud|aol|zoho|mail|protonmail|yandex|gmx)\.(com|id|edu|org|net))$/'
+                ],
+                'username' => 'required|string|min:3|max:20|unique:users,username',
+                'password' => 'required|string|min:6',
+                'nama' => 'required|string|max:30',
+                'birthdate' => 'required|date',
+                'lokasi' => 'required|string|max:20',
+                'notelp' => 'required|string|max:25',
+                'levelProfesional' => 'required|in:1,2,3',
+                'keahlian' => 'required|in:plate,pipe',
+            ]);
 
-        // Buat user baru
-        $user = User::create([
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'nama' => $request->nama,
-            'birthdate' => $request->birthdate,
-            'lokasi' => $request->lokasi,
-            'notelp' => $request->notelp,
-            'levelProfesional' => $request->levelProfesional,
-            'keahlian' => $request->keahlian,
-            'createdAt' => now(),
-        ]);
+            // Buat user baru
+            $user = User::create([
+                'email' => $request->email,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'nama' => $request->nama,
+                'birthdate' => $request->birthdate,
+                'lokasi' => $request->lokasi,
+                'notelp' => $request->notelp,
+                'levelProfesional' => $request->levelProfesional,
+                'keahlian' => $request->keahlian,
+                'createdAt' => now(),
+            ]);
 
-        // Buat token JWT
-        $token = JWTAuth::fromUser($user);
+            // Buat token JWT
+            $token = JWTAuth::fromUser($user);
 
-        // Simpan token di tabel Authentication (jika diperlukan)
-        Authentication::create(['token' => $token]);
+            // Simpan token di tabel Authentication (jika diperlukan)
+            Authentication::create(['token' => $token]);
 
-        return response()->json([
-            'message' => 'Pendaftaran berhasil',
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl', 60) * 60
-        ], 201);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'message' => 'Validasi gagal',
-            'errors' => $e->errors()
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Pendaftaran gagal',
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
-        ], 500);
+            return response()->json([
+                'message' => 'Pendaftaran berhasil',
+                'user' => $user,
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => config('jwt.ttl', 60) * 60
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Pendaftaran gagal',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
+        }
     }
-}
 
     /**
      * Get a JWT via given credentials.
