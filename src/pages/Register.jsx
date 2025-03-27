@@ -7,6 +7,10 @@ const Register = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const handleLogin = () => {
+        navigate("/login");
+    };
+
     const [formData, setFormData] = useState(() => {
         return location.state || JSON.parse(localStorage.getItem("formData")) || {
             nama: "",
@@ -40,9 +44,9 @@ const Register = () => {
     return (
         <div className='flex h-screen'>
             <div className='w-[55%] flex flex-col justify-center px-20 my-auto'>
-                <h2 className='text-md font-semibold'>Get Started Now</h2>
-                <p className='text-xs mt-2 font-medium'>Enter your Credentials to access your account</p>
-                <form className='mt-3' onSubmit={handleNext}>
+                <h2 className='text-lg font-semibold'>Get Started Now</h2>
+                <p className='text-sm mt-1 font-medium'>Enter your Credentials to access your account</p>
+                <form className='mt-5' onSubmit={handleNext}>
                     <div className='mb-4'>
                         <label className='block text-xs font-medium mb-1'>Name</label>
                         <input
@@ -130,7 +134,7 @@ const Register = () => {
                         Create Account
                     </button>
                 </form>
-                <div className='divider my-2 font-semibold text-xs'>Or</div>
+                <div className='divider my-2 font-semibold text-xs mt-5 mb-5'>Or</div>
 
                 <div className='flex gap-8 justify-center'>
                     <button className='btn btn-outline rounded-[10px] px-10 text-xs'><FaGoogle size={12} className="mr-3" /> Sign in with Google</button>
@@ -138,7 +142,9 @@ const Register = () => {
                 </div>
 
                 <p className='text-center font-semibold mt-4 text-xs'>
-                    Have an account? <a href='#' className='text-blue-600 font-medium'>Sign In</a>
+                    Have an account? 
+                    <span onClick={handleLogin} className='text-blue-700 font-medium cursor-pointer'> Sign In</span>
+                    {/* <a href='#' className='text-blue-600 font-medium'>Sign In</a> */}
                 </p>
             </div>
             <div className='w-[45%] flex justify-end'>

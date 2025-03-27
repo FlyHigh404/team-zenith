@@ -86,9 +86,9 @@ const Next = () => {
                     <FaArrowLeftLong size={20} className="cursor-pointer text-lg" />
                 </button>
                 <div className="w-[55%] flex flex-col justify-center px-20 my-auto">
-                    <h2 className="text-md font-semibold">Complete your Profile</h2>
-                    <p className="text-xs mt-2 font-medium">Enter your personal details below</p>
-                    <form className="mt-3" onSubmit={handleSubmit}>
+                    <h2 className="text-lg font-semibold">Complete your Profile</h2>
+                    <p className="text-sm mt-1 font-medium">Enter your personal details below</p>
+                    <form className="mt-5" onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label className="block text-xs font-medium mb-1">Address</label>
                             <input type="text" name="lokasi" value={formData.lokasi} onChange={handleChange} className="input input-bordered w-full rounded-[10px]" required />
@@ -145,7 +145,7 @@ const Next = () => {
                                         <p className="text-xs text-green-600">{formData.file.name}</p>
                                     ) : (
                                         <p className="font-medium mt-1 text-xs">
-                                            Drag and drop your file here or <span className="text-blue-600 cursor-pointer">Browse file</span>
+                                            Drag and drop your file here or <span className="text-blue-700 cursor-pointer">Browse file</span>
                                         </p>
                                     )}
                                 </div>
@@ -154,7 +154,7 @@ const Next = () => {
 
                         <div className="mb-2 flex items-center">
                             <input type="checkbox" className="mr-2" name="terms" required />
-                            <p className="font-medium text-black dark:text-white text-xs">I agree to <span className="underline">terms & policy</span></p>
+                            <p className="font-medium text-black dark:text-white text-xs">I agree to <span className="underline cursor-pointer">terms & policy</span></p>
                         </div>
 
                         <button type="submit" className="btn btn-primary w-full text-xs rounded-[10px]">
