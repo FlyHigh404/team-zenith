@@ -27,17 +27,19 @@ function Navbar() {
           <li className="hover:text-gray-900 cursor-pointer">
             <a href="#">Home</a>
           </li>
-          <li className="hover:text-gray-900 cursor-pointer">About Us</li>
+          <li className="hover:text-gray-900 cursor-pointer">
+            <a href="#about">About Us</a>
+          </li>
           <li className="hover:text-gray-900 cursor-pointer">Jobs</li>
           <li className="hover:text-gray-900 cursor-pointer">Workshop</li>
           <li className="hover:text-gray-900 cursor-pointer">Testimonials</li>
           <li className="hover:text-gray-900 cursor-pointer">Contact</li>
         </ul>
 
-        {/* Tombol Login & Profile (Desktop) */}
+        {/* Tombol Join Us & Profile (Desktop) */}
         <div className="hidden lg:flex space-x-4">
-          <a href="#">
-            <button className="px-4 py-2 border border-white bg-[#1201C9] text-white rounded-2xl hover:bg-blue-700">Login</button>
+          <a href="/register">
+            <button className="px-4 py-2 border border-white bg-[#1201C9] text-white rounded-3xl hover:bg-blue-700">Join Us</button>
           </a>
           <a href="#" className="px-3 py-2 bg-[#1201C9] text-white rounded-full hover:bg-blue-700">
             <FaRegUser size={24} color="white" />
@@ -61,12 +63,12 @@ function Navbar() {
           <li className="hover:text-gray-900 cursor-pointer">Contact</li>
         </ul>
 
-        {/* Tombol Login & Profile (Mobile) */}
+        {/* Tombol Join Us & Profile (Mobile) */}
         <div className="flex flex-col items-center space-y-4 pb-6">
-          <a href="#">
-            <button className="px-6 py-2 border border-white bg-[#1201C9] text-white rounded-2xl hover:bg-blue-700">Login</button>
+          <a href="/register">
+            <button className="px-6 py-2 border border-white bg-[#1201C9] text-white rounded-2xl hover:bg-blue-700">Join Us</button>
 
-            {/* Nanti kalo udah login, tombolnya jadi profile */}
+            {/* Nanti kalo udah Join Us, tombolnya jadi profile */}
 
             {/* <a href="#" className="p-3 bg-[#1201C9] text-white rounded-full hover:bg-blue-700">
             <FaRegUser size={24} color="white" />
