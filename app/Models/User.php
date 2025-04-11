@@ -26,7 +26,6 @@ class User extends Authenticatable implements JWTSubject
         'nama',
         'email',
         'password',
-        'status',
         'desc',
         'birthdate',
         'fotoProfil',
@@ -57,6 +56,10 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'login_time' => time(),         // Timestamp saat ini
+            'random_id' => uniqid(),        // ID unik
+            'user_agent' => request()->userAgent() // Browser/perangkat yang digunakan
+        ];
     }
 }

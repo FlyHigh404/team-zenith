@@ -54,18 +54,11 @@ class AuthController extends Controller
                 'createdAt' => now(),
             ]);
 
-            // Buat token JWT
-            $token = JWTAuth::fromUser($user);
-
-            // Simpan token di tabel Authentication (jika diperlukan)
-            Authentication::create(['token' => $token]);
-
             return response()->json([
                 'message' => 'Pendaftaran berhasil',
                 'user' => $user,
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => config('jwt.ttl', 60) * 60
+                'redirect' => '/login', // URL untuk pengalihan ke halaman login
+                'status' => 'success'
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([

@@ -17,8 +17,7 @@ return new class extends Migration
             $table->char('email', 30)->unique();
             $table->char('username', 20)->unique();
             $table->char('nama', 30);
-            $table->enum('status', ['available', 'notavailable'])->default('available');
-            $table->string('desc', 500)->nullable();
+            $table->string('desc', 100)->nullable();
             $table->date('birthdate');
             $table->char('fotoProfil', 100)->nullable();
             $table->char('lokasi', 20);

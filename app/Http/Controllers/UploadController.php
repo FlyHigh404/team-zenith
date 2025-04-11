@@ -15,7 +15,6 @@ class UploadController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'status' => 'required|in:available,notavailable',
             'desc' => 'nullable|string|max:500',
             'fotoProfil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -33,7 +32,6 @@ class UploadController extends Controller
             $user->fotoProfil = $path;
         }
 
-        $user->status = $request->status;
         $user->desc = $request->desc;
         $user->save();
 
