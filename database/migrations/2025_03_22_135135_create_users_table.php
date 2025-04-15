@@ -10,23 +10,27 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->char('password', 100);
-            $table->char('email', 30)->unique();
-            $table->char('username', 20)->unique();
-            $table->char('nama', 30);
-            $table->string('desc', 100)->nullable();
-            $table->date('birthdate');
-            $table->char('fotoProfil', 100)->nullable();
-            $table->char('lokasi', 20);
-            $table->string('notelp', 25);
-            $table->enum('levelProfesional', ['1', '2', '3']);
-            $table->enum('keahlian', ['plate', 'pipe']);
-            $table->dateTime('createdAt');
-        });
-    }
+{
+    Schema::create('users', function (Blueprint $table) {
+        $table->id(); // Sesuai gambar: id INT NOT NULL PRIMARY KEY
+        $table->string('password', 100);
+        $table->char('email', 50) ->unique();
+        $table->char('username', 30) ->unique();
+        $table->char('nama', 30);
+        $table->string('desc', 100)->nullable();
+        $table->date('birthdate');
+        $table->char('fotoProfil', 255)->nullable();
+        $table->char('provinsi', 50);
+        $table->char('kota', 50);
+        $table->string('notelp', 25);
+        $table->json('levelProfesional');
+        $table->json('keahlian');
+        $table->char('pekerjaan', 50) ->nullable();
+        $table->dateTime('createdAt');
+    });
+}
+
+    
 
     /**
      * Reverse the migrations.

@@ -23,28 +23,30 @@ class UserSeeder extends Seeder
                 'desc' => 'System administrator',
                 'birthdate' => '1990-01-01',
                 'fotoProfil' => null,
-                'lokasi' => 'Jakarta',
+                'provinsi' => 'DKI Jakarta',
+                'kota' => 'Jakarta',
                 'notelp' => '081234567890',
-                'levelProfesional' => '3',
-                'keahlian' => 'plate',
+                'levelProfesional' => ['3G', '4G'],
+                'keahlian' => ['plate', 'pipe'],
                 'createdAt' => now(),
             ]
         );
 
-        // Create user with known credentials
+        // Create another user with known credentials
         User::firstOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'testuser@example.com'],
             [
                 'username' => 'testuser',
-                'nama' => 'User',
+                'nama' => 'Test User',
                 'password' => Hash::make('password'),
                 'desc' => 'Test account for development',
                 'birthdate' => '1995-05-15',
                 'fotoProfil' => null,
-                'lokasi' => 'Surabaya',
+                'provinsi' => 'Jawa Timur',
+                'kota' => 'Surabaya',
                 'notelp' => '082345678901',
-                'levelProfesional' => '2',
-                'keahlian' => 'pipe',
+                'levelProfesional' => ['1F', '2G'],
+                'keahlian' => ['fillet', 'pipe'],
                 'createdAt' => now(),
             ]
         );

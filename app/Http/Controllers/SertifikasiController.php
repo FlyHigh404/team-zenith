@@ -7,40 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Sertifikasi;
 
-class UploadController extends Controller
+class SertifikasiController extends Controller
 {
-    /**
-     * Update user profile with photo, status, and description.
-     */
-    public function updateProfile(Request $request)
-    {
-        $request->validate([
-            'desc' => 'nullable|string|max:500',
-            'fotoProfil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        $user = Auth::user();
-
-        if ($request->hasFile('fotoProfil')) {
-            // Delete old profile photo if exists
-            if ($user->fotoProfil) {
-                Storage::delete($user->fotoProfil);
-            }
-
-            // Store new profile photo
-            $path = $request->file('fotoProfil')->store('profile_photos');
-            $user->fotoProfil = $path;
-        }
-
-        $user->desc = $request->desc;
-        $user->save();
-
-        return response()->json([
-            'message' => 'Profile updated successfully.',
-            'user' => $user,
-        ]);
-    }
-
     /**
      * Upload user certifications.
      */
@@ -74,22 +42,6 @@ class UploadController extends Controller
         return response()->json([
             'message' => 'Certification uploaded successfully.',
             'sertifikasi' => $sertifikasi,
-        ]);
-    }
-
-    /**
-     * Get all certifications of the authenticated user.
-     */
-    public function getCertifications()
-    {
-        $user = Auth::user();
-
-        // Ambil semua sertifikasi milik user
-        $certifications = Sertifikasi::where('users_id', $user->id)->get();
-
-        return response()->json([
-            'message' => 'Certifications retrieved successfully.',
-            'certifications' => $certifications,
         ]);
     }
 }
