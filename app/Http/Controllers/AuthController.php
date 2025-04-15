@@ -54,18 +54,11 @@ class AuthController extends Controller
                 'createdAt' => now(),
             ]);
 
-            // Buat token JWT
-            $token = JWTAuth::fromUser($user);
-
-            // Simpan token di tabel Authentication (jika diperlukan)
-            Authentication::create(['token' => $token]);
-
             return response()->json([
                 'message' => 'Pendaftaran berhasil',
                 'user' => $user,
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => config('jwt.ttl', 60) * 60
+                'redirect' => '/login', // URL untuk pengalihan ke halaman login
+                'status' => 'success'
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -132,10 +125,35 @@ class AuthController extends Controller
     public function me()
     {
         try {
-            $user = JWTAuth::parseToken()->authenticate();
-            return response()->json(['user' => $user]);
+            // Ambil user berdasarkan token yang dikirim
+            $user = Auth::guard('api')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'error' => 'User not authenticated'
+                ], 401);
+            }
+
+            return response()->json([
+                'user' => $user
+            ]);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json([
+                'error' => 'Token has expired'
+            ], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return response()->json([
+                'error' => 'Token is invalid'
+            ], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json([
+                'error' => 'Token not provided'
+            ], 401);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 

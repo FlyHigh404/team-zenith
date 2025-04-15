@@ -22,19 +22,17 @@ class User extends Authenticatable implements JWTSubject
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'username',
         'nama',
+        'username',
         'email',
         'password',
-        'status',
-        'desc',
         'birthdate',
-        'fotoProfil',
-        'lokasi',
         'notelp',
+        'provinsi',
+        'kota',
         'levelProfesional',
         'keahlian',
-        'createdAt'
+        'createdAt',
     ];
 
     /**
@@ -57,6 +55,10 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'login_time' => time(),         // Timestamp saat ini
+            'random_id' => uniqid(),        // ID unik
+            'user_agent' => request()->userAgent() // Browser/perangkat yang digunakan
+        ];
     }
 }
