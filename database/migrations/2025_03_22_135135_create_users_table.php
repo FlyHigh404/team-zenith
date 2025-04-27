@@ -25,7 +25,7 @@ return new class extends Migration
         $table->string('notelp', 25);
         $table->json('levelProfesional');
         $table->json('keahlian');
-        $table->char('pekerjaan', 50) ->nullable();
+        $table->json('pekerjaan') ->nullable();
         $table->dateTime('createdAt');
     });
 }

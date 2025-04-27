@@ -11,6 +11,12 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
+    protected $casts = [
+        'levelProfesional' => 'array', // Konversi JSON ke array
+        'keahlian' => 'array',         // Konversi JSON ke array
+        'pekerjaan' => 'array',        // Konversi JSON ke array
+    ];
+    
     /**
      * Indicates if the model should be timestamped.
      *
