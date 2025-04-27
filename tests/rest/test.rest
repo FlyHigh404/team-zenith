@@ -1,0 +1,22 @@
+@base_url = http://127.0.0.1:8000/api
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDU3NDMzMzIsImV4cCI6MTc0NTc0NjkzMiwibmJmIjoxNzQ1NzQzMzMyLCJqdGkiOiJUMWR2NDRiVWs0V0ROMFlnIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJsb2dpbl90aW1lIjoxNzQ1NzQzMzMyLCJyYW5kb21faWQiOiI2ODBkZWRlNGMwNGVkIiwidXNlcl9hZ2VudCI6InZzY29kZS1yZXN0Y2xpZW50In0.g2wHE8yfQeS5-HHe-DPqE-pJVtuCCa61T5gUbvLL-H4
+
+### Login
+POST {{base_url}}/auth/login
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "email": "test@example.com",
+    "password": "testuser"
+}
+
+### Check User
+GET {{base_url}}/auth/me
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Logout
+POST {{base_url}}/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{token}}
