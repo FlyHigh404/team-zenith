@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('sertifikasi', function (Blueprint $table) {
             $table->id();
             $table->foreignId('users_id')->constrained('users')->onDelete('cascade');
-            $table->char('nama', 30);
+            $table->string('nama', 255);
             $table->date('tanggalisu')->nullable();
             $table->date('tanggalExpired')->nullable();
-            $table->char('levelSertifikasi', 20)->nullable();
-            $table->char('jenisSertifikat', 50)->nullable();
-            $table->char('media', 255)->nullable();
+            $table->string('levelSertifikasi', 255)->nullable();
+            $table->string('jenisSertifikat', 255)->nullable();
+            $table->string('media')->nullable();
             $table->timestamps();
         });
     }
