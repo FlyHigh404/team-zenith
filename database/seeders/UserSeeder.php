@@ -26,13 +26,12 @@ class UserSeeder extends Seeder
                 'provinsi' => 'DKI Jakarta',
                 'kota' => 'Jakarta',
                 'notelp' => '081234567890',
-                'levelProfesional' => ['3G', '4G'],
-                'keahlian' => ['plate', 'pipe'],
+                'levelProfesional' => json_encode(['3G', '4G']),
+                'keahlian' => json_encode(['plate', 'pipe']),
                 'createdAt' => now(),
             ]
         );
 
-        // Create another user with known credentials
         User::firstOrCreate(
             ['email' => 'testuser@example.com'],
             [
@@ -45,13 +44,10 @@ class UserSeeder extends Seeder
                 'provinsi' => 'Jawa Timur',
                 'kota' => 'Surabaya',
                 'notelp' => '082345678901',
-                'levelProfesional' => ['1F', '2G'],
-                'keahlian' => ['fillet', 'pipe'],
+                'levelProfesional' => json_encode(['1F', '2G']),
+                'keahlian' => json_encode(['fillet', 'pipe']),
                 'createdAt' => now(),
             ]
         );
-
-        // Create 10 random users
-        User::factory(10)->create();
     }
 }
