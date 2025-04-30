@@ -34,31 +34,42 @@ class AuthController extends Controller
                 'password' => 'required|string|min:6',
                 'nama' => 'required|string|max:30',
                 'birthdate' => 'required|date',
-                'lokasi' => 'required|string|max:20',
+                'provinsi' => 'required|string|max:50',
+                'kota' => 'required|string|max:50',
                 'notelp' => 'required|string|max:25',
-                'levelProfesional' => 'required|in:1,2,3',
-                'keahlian' => 'required|in:plate,pipe',
+                'levelProfesional' => 'required|array|min:1',
+                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
+                'keahlian' => 'required|array|min:1',
+                'keahlian.*' => 'string|in:fillet,pelat,pipe',
             ]);
 
             // Buat user baru
             $user = User::create([
-                'email' => $request->email,
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
                 'nama' => $request->nama,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
                 'birthdate' => $request->birthdate,
-                'lokasi' => $request->lokasi,
                 'notelp' => $request->notelp,
+                'provinsi' => $request->provinsi,
+                'kota' => $request->kota,
                 'levelProfesional' => $request->levelProfesional,
                 'keahlian' => $request->keahlian,
-                'createdAt' => now(),
+                'createdAt' => now()->setTimezone('Asia/Jakarta'), // Atur zona waktu ke WIB
             ]);
+
+            // Buat token JWT
+            $token = JWTAuth::fromUser($user);
+
+            // Simpan token di tabel Authentication (jika diperlukan)
+            Authentication::create(['token' => $token]);
 
             return response()->json([
                 'message' => 'Pendaftaran berhasil',
                 'user' => $user,
-                'redirect' => '/login', // URL untuk pengalihan ke halaman login
-                'status' => 'success'
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => config('jwt.ttl', 60) * 60
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
