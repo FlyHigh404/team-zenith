@@ -22,27 +22,16 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            // Validasi input
+            // Validasi hanya untuk email
             $request->validate([
                 'email' => [
                     'required',
                     'email',
                     'unique:users,email',
                     'regex:/^[a-zA-Z0-9._%+-]+@((gmail|yahoo|outlook|hotmail|icloud|aol|zoho|mail|protonmail|yandex|gmx)\.(com|id|edu|org|net))$/'
-                ],
-                'username' => 'required|string|min:3|max:20|unique:users,username',
-                'password' => 'required|string|min:6',
-                'nama' => 'required|string|max:30',
-                'birthdate' => 'required|date',
-                'provinsi' => 'required|string|max:50',
-                'kota' => 'required|string|max:50',
-                'notelp' => 'required|string|max:25',
-                'levelProfesional' => 'required|array|min:1',
-                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
-                'keahlian' => 'required|array|min:1',
-                'keahlian.*' => 'string|in:fillet,pelat,pipe',
+                ]
             ]);
-
+    
             // Buat user baru
             $user = User::create([
                 'nama' => $request->nama,
@@ -55,15 +44,15 @@ class AuthController extends Controller
                 'kota' => $request->kota,
                 'levelProfesional' => $request->levelProfesional,
                 'keahlian' => $request->keahlian,
-                'createdAt' => now()->setTimezone('Asia/Jakarta'), // Atur zona waktu ke WIB
+                'createdAt' => now()->setTimezone('Asia/Jakarta'),
             ]);
-
+    
             // Buat token JWT
             $token = JWTAuth::fromUser($user);
-
+    
             // Simpan token di tabel Authentication (jika diperlukan)
             Authentication::create(['token' => $token]);
-
+    
             return response()->json([
                 'message' => 'Pendaftaran berhasil',
                 'user' => $user,
@@ -85,6 +74,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    
 
     /**
      * Get a JWT via given credentials.

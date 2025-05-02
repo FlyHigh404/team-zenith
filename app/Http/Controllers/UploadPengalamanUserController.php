@@ -24,12 +24,12 @@ class UploadPengalamanUserController extends Controller
         }
     
         $validated = $request->validate([
-            'namaPerusahaan' => 'required|string|max:30',
-            'posisi' => 'required|string|max:30',
+            'namaPerusahaan' => 'required|string',
+            'posisi' => 'required|string',
             'levelProfesional' => 'required|array|min:1',
-            'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
-            'kota' => 'required|string|max:30',
-            'provinsi' => 'required|string|max:30',
+            'levelProfesional.*' => 'string',
+            'kota' => 'required|string',
+            'provinsi' => 'required|string',
             'tanggalMulai' => ['required', 'regex:/^(0[1-9]|1[0-2])-\d{4}$/'],
             'tanggalSelesai' => [
                 'nullable',
@@ -37,7 +37,6 @@ class UploadPengalamanUserController extends Controller
                 'after_or_equal:tanggalMulai'
             ],
             'masihBekerja' => 'required|boolean',
-            'media' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // Validasi file
         ], [], [
             'namaPerusahaan' => 'nama perusahaan',
             'levelProfesional' => 'level profesional',
@@ -47,12 +46,6 @@ class UploadPengalamanUserController extends Controller
         ]);
 
         $user = Auth::user();
-
-        // Simpan file media jika ada
-        $mediaPath = null;
-        if ($request->hasFile('media')) {
-            $mediaPath = $request->file('media')->store('pengalaman_media'); // Simpan file ke folder 'pengalaman_media'
-        }
 
         // Prepare data for creation
         $pengalamanData = [
@@ -64,7 +57,6 @@ class UploadPengalamanUserController extends Controller
             'provinsi' => $validated['provinsi'],
             'tanggalMulai' => $this->convertToDate($validated['tanggalMulai']),
             'masihBekerja' => $validated['masihBekerja'],
-            'media' => $mediaPath, // Tambahkan path file media
         ];
 
         // Only add tanggalSelesai if not currently working
@@ -115,14 +107,11 @@ class UploadPengalamanUserController extends Controller
     $validated = $request->validate([
         'namaPerusahaan' => 'sometimes|required|string|max:30',
         'posisi' => 'sometimes|required|string|max:30',
-        'levelProfesional' => 'sometimes|required|array|min:1',
-        'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
         'kota' => 'sometimes|required|string|max:30',
         'provinsi' => 'sometimes|required|string|max:30',
         'tanggalMulai' => ['sometimes', 'required', 'regex:/^(0[1-9]|1[0-2])-\d{4}$/'],
         'tanggalSelesai' => ['nullable', 'regex:/^(0[1-9]|1[0-2])-\d{4}$/', 'after_or_equal:tanggalMulai'],
         'masihBekerja' => 'sometimes|required|boolean',
-        'media' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
     // Hapus media lama jika diganti
