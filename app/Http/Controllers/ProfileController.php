@@ -16,115 +16,107 @@ class ProfileController extends Controller
     }
 
     /**
-     * Menampilkan profil pengguna
+     * Display the authenticated user's profile.
+     * GET /profile
      */
     public function show()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $user
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data profil berhasil diambil',
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data profil',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Memperbarui profil pengguna
+     * Update the authenticated user's profile.
+     * PUT /profile
      */
     public function update(Request $request)
     {
-        if ($request->has('levelProfesional') && is_string($request->levelProfesional)) {
-            $decoded = json_decode($request->levelProfesional, true);
-            if (is_array($decoded)) {
-                $request->merge(['levelProfesional' => $decoded]);
-            }
-        }
-    
-        if ($request->has('keahlian') && is_string($request->keahlian)) {
-            $decoded = json_decode($request->keahlian, true);
-            if (is_array($decoded)) {
-                $request->merge(['keahlian' => $decoded]);
-            }
-        }
+        try {
+            $user = Auth::user();
 
-        if ($request->has('pekerjaan') && is_string($request->pekerjaan)) {
-            $decoded = json_decode($request->pekerjaan, true);
-            if (is_array($decoded)) {
-                $request->merge(['pekerjaan' => $decoded]);
-            }
-        }
-        
-        $user = Auth::user();
+            $request->validate([
+                'nama' => 'sometimes|string|max:30',
+                'username' => 'sometimes|string|min:3|max:20|unique:users,username,' . $user->id,
+                'email' => 'sometimes|email|unique:users,email,' . $user->id,
+                'desc' => 'nullable|string|max:100',
+                'birthdate' => 'sometimes|date',
+                'notelp' => 'sometimes|string|max:25',
+                'provinsi' => 'sometimes|string|max:50',
+                'kota' => 'sometimes|string|max:50',
+                'levelProfesional' => 'sometimes|array',
+                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
+                'keahlian' => 'sometimes|array',
+                'keahlian.*' => 'string|in:fillet,pelat,pipe',
+                'fotoProfil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
 
-        // Perbarui username
-        if ($request->filled('username')) {
-            $user->username = $request->username;
-        }
+            // Kumpulkan field yang akan diupdate
+            $updateData = $request->only([
+                'nama', 'username', 'email', 'desc', 'birthdate',
+                'notelp', 'provinsi', 'kota', 'levelProfesional', 'keahlian'
+            ]);
 
-        // Perbarui nama
-        if ($request->filled('nama')) {
-            $user->nama = $request->nama;
-        }
+            // Filter nilai null/kosong
+            $updateData = array_filter($updateData, function ($value) {
+                return $value !== null;
+            });
 
-        // Perbarui tanggal lahir
-        if ($request->filled('birthdate')) {
-            $user->birthdate = $request->birthdate;
-        }
+            // Handle foto profil jika ada
+            if ($request->hasFile('fotoProfil')) {
+                // Hapus foto lama jika ada
+                if ($user->fotoProfil) {
+                    Storage::delete('public/profiles/' . $user->fotoProfil);
+                }
 
-        // Perbarui provinsi
-        if ($request->filled('provinsi')) {
-            $user->provinsi = $request->provinsi;
-        }
+                // Upload foto baru
+                $file = $request->file('fotoProfil');
+                $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/profiles', $fileName);
 
-        // Perbarui kota
-        if ($request->filled('kota')) {
-            $user->kota = $request->kota;
-        }
-
-        // Perbarui nomor telepon
-        if ($request->filled('notelp')) {
-            $user->notelp = $request->notelp;
-        }
-
-        // Perbarui level profesional
-        if ($request->filled('levelProfesional')) {
-            $user->levelProfesional = $request->levelProfesional;
-        }
-
-        // Perbarui keahlian
-        if ($request->filled('keahlian')) {
-            $user->keahlian = $request->keahlian;
-        }
-
-        // Tambahkan pekerjaan
-        if ($request->filled('pekerjaan')) {
-            $user->pekerjaan = $request->pekerjaan;
-        }
-
-        // Perbarui foto profil jika ada file baru
-        if ($request->hasFile('fotoProfil')) {
-            // Hapus foto profil lama jika ada
-            if ($user->fotoProfil) {
-                Storage::delete($user->fotoProfil);
+                $updateData['fotoProfil'] = $fileName;
             }
 
-            // Simpan foto profil baru
-            $path = $request->file('fotoProfil')->store('profile_photos');
-            $user->fotoProfil = $path;
+            // Update user
+            $user->update($updateData);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Profil berhasil diperbarui',
+                'data' => $user
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal memperbarui profil',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $user->save();
-
-        return response()->json([
-            'message' => 'Profile updated successfully.',
-            'user' => $user,
-        ]);
     }
 
     /**
-     * Mengubah password pengguna
+     * Update user password.
+     * PUT /profile/change-password
      */
-    public function changePassword(Request $request)
+    public function updatePassword(Request $request)
     {
         try {
             $user = Auth::user();
@@ -152,6 +144,12 @@ class ProfileController extends Controller
                 'status' => 'success',
                 'message' => 'Password berhasil diubah'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

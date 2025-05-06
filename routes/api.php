@@ -4,9 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UploadPengalamanUserController;
-use App\Http\Controllers\UploadSertifikatUserController;
-use App\Http\Controllers\KoneksiController;
+use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\CertificationController;
+use App\Http\Controllers\ConnectionController;
 
 // Route untuk mendapatkan data user yang sedang login
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -15,48 +15,48 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Auth routes
 Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
+    Route::post('register', [AuthController::class, 'store']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::get('me', [AuthController::class, 'me']);
+    Route::post('logout', [AuthController::class, 'destroy']);
+    Route::post('refresh', [AuthController::class, 'update']);
+    Route::get('me', [AuthController::class, 'show']);
 });
 
 // Protected routes (hanya dapat diakses oleh pengguna yang terautentikasi)
 Route::middleware('auth:api')->group(function () {
 
     // Pengalaman routes
-    Route::prefix('pengalaman')->group(function () {
-        Route::post('upload', [UploadPengalamanUserController::class, 'uploadPengalaman'])->name('pengalaman.upload');
-        Route::delete('delete/{id?}', [UploadPengalamanUserController::class, 'deletePengalaman']);
-        Route::post('update/{id}', [UploadPengalamanUserController::class, 'updatePengalaman']);
-        Route::get('/', [UploadPengalamanUserController::class, 'getPengalaman']);
+    Route::prefix('experience')->group(function () {
+        Route::get('/', [ExperienceController::class, 'index']);
+        Route::get('/{id}', [ExperienceController::class, 'show']);
+        Route::post('/', [ExperienceController::class, 'store']);
+        Route::put('/{id}', [ExperienceController::class, 'update']);
+        Route::delete('/{id?}', [ExperienceController::class, 'destroy']);
     });
 
     // Sertifikat routes
-    Route::prefix('sertifikat')->group(function () {
-        Route::post('upload', [UploadSertifikatUserController::class, 'uploadSertifikat']);
-        Route::delete('delete/{id?}', [UploadSertifikatUserController::class, 'deleteSertifikat']);
-        Route::get('/', [UploadSertifikatUserController::class, 'getSertifikat']);
-        Route::post('update/{id}', [UploadSertifikatUserController::class, 'updateSertifikat']);
+    Route::prefix('certifications')->group(function () {
+        Route::get('/', [CertificationController::class, 'index']);
+        Route::get('/{id}', [CertificationController::class, 'show']);
+        Route::post('/', [CertificationController::class, 'store']);
+        Route::put('/{id}', [CertificationController::class, 'update']);
+        Route::delete('/{id}', [CertificationController::class, 'destroy']);
+        Route::delete('/', [CertificationController::class, 'destroyAll']);
     });
 
-    // Koneksi routes
-    Route::prefix('koneksi')->group(function () {
-        Route::post('ajukan', [KoneksiController::class, 'ajukanKoneksi']);
-        Route::post('setujui', [KoneksiController::class, 'setujuiKoneksi']);
-        Route::post('tolak', [KoneksiController::class, 'tolakKoneksi']);
-        Route::post('batalkan', [KoneksiController::class, 'batalkanAjuanKoneksi']);
-        Route::delete('hapus', [KoneksiController::class, 'hapusKoneksi']);
-        Route::get('/', [KoneksiController::class, 'getKoneksi']);
+    // Koneksi routes - menggunakan nama resource connections untuk konsistensi
+    Route::prefix('connections')->group(function () {
+        Route::get('/', [ConnectionController::class, 'index']);
+        Route::get('/{id}', [ConnectionController::class, 'show']);
+        Route::post('/', [ConnectionController::class, 'store']);
+        Route::put('/{id}', [ConnectionController::class, 'update']);
+        Route::delete('/{id?}', [ConnectionController::class, 'destroy']);
     });
 
     // Profile routes
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'show']);
-        Route::post('/', [ProfileController::class, 'update']);
-        Route::put('change-password', [ProfileController::class, 'changePassword']);
+        Route::put('/', [ProfileController::class, 'update']);
+        Route::put('/change-password', [ProfileController::class, 'updatePassword']);
     });
 });
-
-

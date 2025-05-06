@@ -3,36 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Authentication;
 use App\Models\User;
+use App\Models\Authentication;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     */
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function register(Request $request)
+    /**
+     * Store a newly created user (Register).
+     */
+    public function store(Request $request)
     {
         try {
-            // Validasi hanya untuk email
             $request->validate([
                 'email' => [
                     'required',
                     'email',
                     'unique:users,email',
                     'regex:/^[a-zA-Z0-9._%+-]+@((gmail|yahoo|outlook|hotmail|icloud|aol|zoho|mail|protonmail|yandex|gmx)\.(com|id|edu|org|net))$/'
-                ]
+                ],
+                'username' => 'required|string|min:3|max:20|unique:users,username',
+                'password' => 'required|string|min:6',
+                'nama' => 'required|string|max:30',
+                'birthdate' => 'required|date',
+                'provinsi' => 'required|string|max:50',
+                'kota' => 'required|string|max:50',
+                'notelp' => 'required|string|max:25',
+                'levelProfesional' => 'required|array|min:1',
+                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
+                'keahlian' => 'required|array|min:1',
+                'keahlian.*' => 'string|in:fillet,pelat,pipe',
             ]);
-    
-            // Buat user baru
+
             $user = User::create([
                 'nama' => $request->nama,
                 'username' => $request->username,
@@ -46,38 +55,30 @@ class AuthController extends Controller
                 'keahlian' => $request->keahlian,
                 'createdAt' => now()->setTimezone('Asia/Jakarta'),
             ]);
-    
-            // Buat token JWT
-            $token = JWTAuth::fromUser($user);
-    
-            // Simpan token di tabel Authentication (jika diperlukan)
-            Authentication::create(['token' => $token]);
-    
+
             return response()->json([
-                'message' => 'Pendaftaran berhasil',
-                'user' => $user,
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => config('jwt.ttl', 60) * 60
+                'status' => 'success',
+                'message' => 'Registrasi berhasil! Silahkan login.',
+                'data' => $user
             ], 201);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
+                'status' => 'error',
                 'message' => 'Validasi gagal',
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Pendaftaran gagal',
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'status' => 'error',
+                'message' => 'Registrasi gagal',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
-    
 
     /**
-     * Get a JWT via given credentials.
+     * Get authentication token (Login).
      */
     public function login(Request $request)
     {
@@ -87,138 +88,119 @@ class AuthController extends Controller
                 'password' => 'required|string',
             ]);
 
-            // Custom authentication for handling 30-char password field limitation
             $user = User::where('email', $credentials['email'])->first();
 
-            if (!$user || !$this->verifyPassword($credentials['password'], $user->password)) {
-                return response()->json(['error' => 'Invalid credentials'], 401);
-            }
-
-            // Generate token manually using JWTAuth directly
-            $token = JWTAuth::fromUser($user);
-
-            // Store token in authentications table
-            Authentication::create(['token' => $token]);
-
-            return $this->respondWithToken($token, $user);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Login error',
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ], 500);
-        }
-    }
-
-    /**
-     * Custom password verification to handle 30-char limit
-     */
-    protected function verifyPassword($plainPassword, $hashedPassword)
-    {
-        // This is a simple implementation - you might need to adjust based on how passwords are stored
-        return Hash::check($plainPassword, $hashedPassword);
-    }
-
-    /**
-     * Get the authenticated User.
-     */
-    public function me()
-    {
-        try {
-            // Ambil user berdasarkan token yang dikirim
-            $user = Auth::guard('api')->user();
-
-            if (!$user) {
+            if (!$user || !Hash::check($credentials['password'], $user->password)) {
                 return response()->json([
-                    'error' => 'User not authenticated'
+                    'status' => 'error',
+                    'message' => 'Kredensial tidak valid'
                 ], 401);
             }
 
+            $token = JWTAuth::fromUser($user);
+
+            Authentication::updateOrCreate(
+                ['user_id' => $user->id],
+                ['token' => $token]
+            );
+
             return response()->json([
+                'status' => 'success',
+                'message' => 'Login berhasil',
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => config('jwt.ttl', 60) * 60,
                 'user' => $user
             ]);
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json([
-                'error' => 'Token has expired'
-            ], 401);
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json([
-                'error' => 'Token is invalid'
-            ], 401);
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json([
-                'error' => 'Token not provided'
-            ], 401);
+
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'An unexpected error occurred',
-                'message' => $e->getMessage()
+                'status' => 'error',
+                'message' => 'Login gagal',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Remove the authentication token (Logout).
      */
-    public function logout()
+    public function destroy()
     {
         try {
-            // Get the token
             $token = JWTAuth::getToken();
+            $user = Auth::user();
 
             if ($token) {
-                // Delete from authentications table
-                Authentication::where('token', $token->get())->delete();
-
-                // Invalidate token
+                Authentication::where('user_id', $user->id)->delete();
                 JWTAuth::invalidate($token);
             }
 
-            return response()->json(['message' => 'Successfully logged out']);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Logout berhasil'
+            ]);
+
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Logout error',
-                'message' => $e->getMessage()
+                'status' => 'error',
+                'message' => 'Logout gagal',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Refresh a token.
+     * Refresh authentication token.
      */
-    public function refresh()
+    public function update()
     {
         try {
             $currentToken = JWTAuth::getToken();
+            $user = Auth::user();
             $newToken = JWTAuth::refresh($currentToken);
 
-            // Update token in authentications table
-            Authentication::where('token', $currentToken->get())->update(['token' => $newToken]);
+            Authentication::where('user_id', $user->id)
+                ->update(['token' => $newToken]);
 
-            return $this->respondWithToken($newToken, JWTAuth::setToken($newToken)->authenticate());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Token berhasil diperbaharui',
+                'access_token' => $newToken,
+                'token_type' => 'bearer',
+                'expires_in' => config('jwt.ttl', 60) * 60,
+                'user' => $user
+            ]);
+
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Token refresh error',
-                'message' => $e->getMessage()
+                'status' => 'error',
+                'message' => 'Gagal memperbarui token',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Get the token array structure.
+     * Get the authenticated user (Me).
      */
-    protected function respondWithToken($token, $user = null)
+    public function show()
     {
-        if (!$user) {
-            $user = JWTAuth::setToken($token)->authenticate();
-        }
+        try {
+            $user = Auth::user();
 
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl', 60) * 60, // 10 minutes in seconds
-            'user' => $user
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data pengguna berhasil diambil',
+                'data' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data pengguna',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
