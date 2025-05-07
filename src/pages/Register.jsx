@@ -32,9 +32,9 @@ const Register = () => {
         <img src={img} className="sticky top-0 h-screen object-cover rounded-l-3xl" alt="" />
       </div>
 
-      <div className="hidden md:block lg:hidden w-full">
+      {/* <div className="hidden md:block lg:hidden w-full">
         <Footer />
-      </div>
+      </div> */}
     </div>
   )
 }

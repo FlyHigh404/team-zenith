@@ -87,17 +87,17 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
     };
 
     return (
-        <div className="py-3 md:py-10">
+        <div className="py-3 md:py-10 lg:py-5">
             <div className="relative flex items-center">
                 <button onClick={handleBack} className="absolute left-0">
                     <FaArrowLeftLong size={20} className="cursor-pointer text-lg" />
                 </button>
-                <h2 className="text-2xl font-semibold pl-10">Complete your Profile</h2>
+                <h2 className="text-3xl font-semibold pl-10">Lengkapi Profil Anda</h2>
             </div>
-            <p className="text-sm md:text-md mt-2 font-medium">Enter your personal details below</p>
+            <p className="text-sm md:text-base mt-2 font-medium">Silahkan isi informasi pribadi Anda</p>
 
-            <form className="mt-8" onSubmit={handleSubmit}>
-                <div className="mb-4 flex flex-col items-center">
+            <form className="mt-5 md:mt-10 lg:mt-5" onSubmit={handleSubmit}>
+                {/* <div className="mb-4 flex flex-col items-center">
                     <label className="relative cursor-pointer group">
                         <div className="avatar">
                             <div className="w-24 h-24 rounded-full border border-gray-300 flex items-center justify-center overflow-hidden relative bg-gray-100">
@@ -120,61 +120,74 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
                         </div>
                     </label>
                     <p className="text-sm font-medium text-gray-700 my-2">Profile Picture</p>
+                </div> */}
+
+                <div className="mb-4">
+                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Tanggal Lahir</label>
+                    <input type="date" name="birthdate" value={formData.birthdate} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm placeholder:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-xs font-medium mb-1">Address</label>
-                    <input type="text" name="lokasi" value={formData.lokasi} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs placeholder:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter your address home" required />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-xs font-medium mb-1">Birth Date</label>
-                    <input type="date" name="birthdate" value={formData.birthdate} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-xs placeholder:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-xs font-medium mb-1">Telephone Number</label>
+                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Nomor Telepon</label>
                     <input
                         type="text"
                         name="notelp"
                         value={formData.notelp}
                         onChange={handleChange}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-xs placeholder:text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm placeholder:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         onInput={(e) => (e.target.value = e.target.value.replace(/[^+\d]/g, ''))}
-                        placeholder="Enter a valid phone number (10-15 digits, may start with +))"
+                        placeholder="Masukkan nomor telepon yang valid (10-15 digit, dapat dimulai dengan +))"
                         required
                     />
                     {errors.notelp && <p className="text-red-500 text-xs mt-1">{errors.notelp}</p>}
                 </div>
 
                 <div className="mb-4 relative">
-                    <label className="block text-xs font-medium mb-1">Class</label>
-                    <select name="levelProfesional" value={formData.levelProfesional} onChange={handleChange} className="select bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="">- Choose your class -</option>
-                        <option value="1">1st Class</option>
-                        <option value="2">2nd Class</option>
-                        <option value="3">3rd Class</option>
+                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Provinsi</label>
+                    <select name="levelProfesional" value={formData.provinsi} onChange={handleChange} className="select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">- Pilih Provinsi Anda -</option>
+                        <option value="1">Jawa Timur</option>
+                        <option value="2">Jawa Barat</option>
+                        <option value="3">Jawa Tengah</option>
                     </select>
                 </div>
 
                 <div className="mb-4 relative">
-                    <label className="block text-xs font-medium mb-1">Speciality</label>
-                    <select name="keahlian" value={formData.keahlian} onChange={handleChange} className="select bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="">- Choose your speciality -</option>
-                        <option value="plate">Plate Speciality</option>
-                        <option value="pipe">Pipe Speciality</option>
+                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Kota</label>
+                    <select name="levelProfesional" value={formData.kota} onChange={handleChange} className="select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">- Pilih Kota Anda -</option>
+                        <option value="1">Sesuai Pilihan Provinsi</option>
+                    </select>
+                </div>
+
+                <div className="mb-4 relative">
+                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Kelas</label>
+                    <select name="levelProfesional" value={formData.levelProfesional} onChange={handleChange} className="select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">- Pilih Tingkat Kelas Anda -</option>
+                        <option value="1">Kelas 1</option>
+                        <option value="2">Kelas 2</option>
+                        <option value="3">Kelas 3</option>
+                    </select>
+                </div>
+
+                <div className="mb-4 relative">
+                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Keahlian</label>
+                    <select name="keahlian" value={formData.keahlian} onChange={handleChange} className="select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">- Pilih Jenis Keahlian Anda -</option>
+                        <option value="plate">Spesialis Pelat</option>
+                        <option value="pipe">Spesialis Pipa</option>
                     </select>
                 </div>
 
                 <div className="my-5 flex items-center">
                     <input type="checkbox" className="mr-2" name="terms" required />
                     <p className="font-medium text-black dark:text-white text-xs">
-                        I agree to <span className="underline">terms & policy</span>
+                        Saya setuju dengan <span className="underline">syarat dan ketentuan</span>
                     </p>
                 </div>
 
-                <button type="submit" className="btn btn-primary w-full text-xs rounded-[10px]">
-                    Sign Up
+                <button type="submit" className="btn btn-primary bg-[#86CEEB] border border-[#86CEEB] hover:bg-[#659BB0] hover:border-[#659BB0] w-full text-sm rounded-[10px]">
+                    Daftar Akun
                 </button>
             </form>
         </div>

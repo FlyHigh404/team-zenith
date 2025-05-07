@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Layout from './Layout'
+import LandingPage from './pages/LandingPage'
 import { Toaster } from 'react-hot-toast'
 import Register from './pages/Register'
 function App() {
@@ -15,7 +16,7 @@ function App() {
 
           {/* Halaman dengan Navbar */}
           <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<LandingPage />} />
           </Route>
         </Routes>
       </Router>
