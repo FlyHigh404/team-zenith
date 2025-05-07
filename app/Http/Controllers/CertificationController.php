@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Certification;
 use Illuminate\Http\Request;
-use App\Models\UserSertifikat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +22,7 @@ class CertificationController extends Controller
     {
         try {
             $user = Auth::user();
-            $sertifikasi = UserSertifikat::where('user_id', $user->id)->get();
+            $sertifikasi = Certification::where('user_id', $user->id)->get();
 
             return response()->json([
                 'status' => 'success',
@@ -46,7 +46,7 @@ class CertificationController extends Controller
     {
         try {
             $user = Auth::user();
-            $sertifikasi = UserSertifikat::where('id', $id)
+            $sertifikasi = Certification::where('id', $id)
                 ->where('user_id', $user->id)
                 ->first();
 
@@ -106,7 +106,7 @@ class CertificationController extends Controller
                 $sertifikasiData['media'] = $fileName;
             }
 
-            $sertifikasi = UserSertifikat::create($sertifikasiData);
+            $sertifikasi = Certification::create($sertifikasiData);
 
             return response()->json([
                 'status' => 'success',
@@ -136,7 +136,7 @@ class CertificationController extends Controller
     {
         try {
             $user = Auth::user();
-            $sertifikasi = UserSertifikat::where('id', $id)
+            $sertifikasi = Certification::where('id', $id)
                 ->where('user_id', $user->id)
                 ->first();
 
@@ -204,7 +204,7 @@ class CertificationController extends Controller
     {
         try {
             $user = Auth::user();
-            $sertifikasi = UserSertifikat::where('id', $id)
+            $sertifikasi = Certification::where('id', $id)
                 ->where('user_id', $user->id)
                 ->first();
 
@@ -243,7 +243,7 @@ class CertificationController extends Controller
     {
         try {
             $user = Auth::user();
-            $sertifikasi = UserSertifikat::where('user_id', $user->id)->get();
+            $sertifikasi = Certification::where('user_id', $user->id)->get();
 
             foreach ($sertifikasi as $item) {
                 if ($item->media) {

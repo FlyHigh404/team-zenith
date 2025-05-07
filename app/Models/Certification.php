@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserSertifikat extends Model
+class Certification extends Model
 {
     use HasFactory;
 
@@ -17,6 +17,17 @@ class UserSertifikat extends Model
         'materiSertifikasi',
         'tanggalMulai',
         'tanggalBerakhir',
-        'media',
+        'media'
     ];
+
+    protected $casts = [
+        'tanggalMulai' => 'date',
+        'tanggalBerakhir' => 'date'
+    ];
+
+    // Relasi dengan user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

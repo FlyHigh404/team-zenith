@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Koneksi extends Model
+class Connection extends Model
 {
     use HasFactory;
 
@@ -16,6 +16,10 @@ class Koneksi extends Model
         'koneksi_user_id',
         'status',
         'tanggalKoneksi',
+    ];
+
+    protected $casts = [
+        'tanggalKoneksi' => 'datetime'
     ];
 
     /**

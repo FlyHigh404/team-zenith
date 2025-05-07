@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Koneksi;
+use App\Models\Connection;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +28,7 @@ class ConnectionController extends Controller
                 'status' => 'nullable|in:diajukan,diterima,ditolak',
             ]);
 
-            $query = Koneksi::where(function ($query) use ($user) {
+            $query = Connection::where(function ($query) use ($user) {
                 $query->where('user_id', $user->id)
                     ->orWhere('koneksi_user_id', $user->id);
             });
@@ -98,7 +98,7 @@ class ConnectionController extends Controller
             }
 
             // Cek apakah sudah ada permintaan koneksi yang belum diterima
-            $pendingKoneksi = Koneksi::where('user_id', $user->id)
+            $pendingKoneksi = Connection::where('user_id', $user->id)
                 ->where('koneksi_user_id', $request->koneksi_user_id)
                 ->first();
 
@@ -110,7 +110,7 @@ class ConnectionController extends Controller
             }
 
             // Cek apakah sudah ada permintaan koneksi dari pengguna lain
-            $incomingKoneksi = Koneksi::where('user_id', $request->koneksi_user_id)
+            $incomingKoneksi = Connection::where('user_id', $request->koneksi_user_id)
                 ->where('koneksi_user_id', $user->id)
                 ->first();
 
@@ -122,7 +122,7 @@ class ConnectionController extends Controller
             }
 
             // Buat permintaan koneksi baru
-            $koneksi = Koneksi::create([
+            $koneksi = Connection::create([
                 'user_id' => $user->id,
                 'koneksi_user_id' => $request->koneksi_user_id,
                 'status' => 'diajukan',
@@ -161,7 +161,7 @@ class ConnectionController extends Controller
             ]);
 
             $user = Auth::user();
-            $koneksi = Koneksi::findOrFail($id);
+            $koneksi = Connection::findOrFail($id);
 
             // Pastikan bahwa permintaan koneksi memang ditujukan untuk pengguna ini
             if ($koneksi->koneksi_user_id != $user->id) {
@@ -185,12 +185,12 @@ class ConnectionController extends Controller
                 $koneksi->save();
 
                 // Tambahkan koneksi balik untuk menyetujui permintaan
-                $existingKoneksi = Koneksi::where('user_id', $user->id)
+                $existingKoneksi = Connection::where('user_id', $user->id)
                     ->where('koneksi_user_id', $koneksi->user_id)
                     ->first();
 
                 if (!$existingKoneksi) {
-                    Koneksi::create([
+                    Connection::create([
                         'user_id' => $user->id,
                         'koneksi_user_id' => $koneksi->user_id,
                         'status' => 'diterima',
@@ -245,7 +245,7 @@ class ConnectionController extends Controller
 
             if ($id) {
                 // Handle removing a specific connection
-                $koneksi = Koneksi::findOrFail($id);
+                $koneksi = Connection::findOrFail($id);
 
                 // Verify that the connection belongs to the user
                 if ($koneksi->user_id != $user->id && $koneksi->koneksi_user_id != $user->id) {
@@ -258,7 +258,7 @@ class ConnectionController extends Controller
                 // If connection is 'diterima', remove both sides of the connection
                 if ($koneksi->status === 'diterima') {
                     // Delete the opposite connection too
-                    Koneksi::where('user_id', $koneksi->koneksi_user_id)
+                    Connection::where('user_id', $koneksi->koneksi_user_id)
                           ->where('koneksi_user_id', $koneksi->user_id)
                           ->delete();
                 }
@@ -276,7 +276,7 @@ class ConnectionController extends Controller
                 ]);
 
                 // Find the connection
-                $koneksi = Koneksi::where(function ($query) use ($user, $request) {
+                $koneksi = Connection::where(function ($query) use ($user, $request) {
                     $query->where('user_id', $user->id)
                         ->where('koneksi_user_id', $request->koneksi_user_id);
                 })->orWhere(function ($query) use ($user, $request) {
@@ -328,7 +328,7 @@ class ConnectionController extends Controller
     {
         try {
             $user = Auth::user();
-            $koneksi = Koneksi::findOrFail($id);
+            $koneksi = Connection::findOrFail($id);
 
             // Pastikan koneksi ini milik user yang sedang login
             if ($koneksi->user_id != $user->id && $koneksi->koneksi_user_id != $user->id) {
@@ -390,7 +390,7 @@ class ConnectionController extends Controller
         }
 
         // Cek apakah sudah ada permintaan koneksi yang belum diterima
-        $pendingKoneksi = Koneksi::where('user_id', $user->id)
+        $pendingKoneksi = Connection::where('user_id', $user->id)
             ->where('koneksi_user_id', $request->koneksi_user_id)
             ->first();
 
@@ -401,7 +401,7 @@ class ConnectionController extends Controller
         }
 
         // Cek apakah sudah ada koneksi dua arah (sudah saling terhubung)
-        $existingKoneksi = Koneksi::where(function ($query) use ($user, $request) {
+        $existingKoneksi = Connection::where(function ($query) use ($user, $request) {
             $query->where('user_id', $user->id)
                   ->where('koneksi_user_id', $request->koneksi_user_id);
         })->orWhere(function ($query) use ($user, $request) {
@@ -416,7 +416,7 @@ class ConnectionController extends Controller
         }
 
         // Buat permintaan koneksi baru
-        Koneksi::create([
+        Connection::create([
             'user_id' => $user->id,
             'koneksi_user_id' => $request->koneksi_user_id,
             'status' => 'diajukan',
@@ -440,7 +440,7 @@ class ConnectionController extends Controller
         $user = Auth::user();
 
         // Cari permintaan koneksi yang diajukan oleh pengguna
-        $koneksi = Koneksi::where('user_id', $user->id)
+        $koneksi = Connection::where('user_id', $user->id)
             ->where('koneksi_user_id', $request->koneksi_user_id)
             ->where('status', 'diajukan')
             ->first();
@@ -471,7 +471,7 @@ class ConnectionController extends Controller
         $user = Auth::user();
 
         // Cari permintaan koneksi
-        $koneksi = Koneksi::where('user_id', $request->koneksi_user_id)
+        $koneksi = Connection::where('user_id', $request->koneksi_user_id)
             ->where('koneksi_user_id', $user->id)
             ->where('status', 'diajukan')
             ->first();
@@ -483,7 +483,7 @@ class ConnectionController extends Controller
         }
 
         // Cek apakah permintaan koneksi sudah diterima (sudah saling koneksi)
-        $existingKoneksi = Koneksi::where('user_id', $user->id)
+        $existingKoneksi = Connection::where('user_id', $user->id)
             ->where('koneksi_user_id', $request->koneksi_user_id)
             ->first();
 
@@ -494,7 +494,7 @@ class ConnectionController extends Controller
         }
 
         // Tambahkan koneksi balik untuk menyetujui permintaan
-        Koneksi::create([
+        Connection::create([
             'user_id' => $user->id,
             'koneksi_user_id' => $request->koneksi_user_id,
             'status' => 'diterima',
@@ -518,7 +518,7 @@ class ConnectionController extends Controller
         $user = Auth::user();
 
         // Cari permintaan koneksi
-        $koneksi = Koneksi::where('user_id', $request->koneksi_user_id)
+        $koneksi = Connection::where('user_id', $request->koneksi_user_id)
             ->where('koneksi_user_id', $user->id)
             ->where('status', 'diajukan')
             ->first();
@@ -549,7 +549,7 @@ class ConnectionController extends Controller
         $user = Auth::user();
 
         // Cari koneksi yang sudah saling terhubung
-        $koneksi = Koneksi::where(function ($query) use ($user, $request) {
+        $koneksi = Connection::where(function ($query) use ($user, $request) {
             $query->where('user_id', $user->id)
                 ->where('koneksi_user_id', $request->koneksi_user_id);
         })->orWhere(function ($query) use ($user, $request) {
@@ -585,7 +585,7 @@ class ConnectionController extends Controller
         ]);
 
         // Ambil koneksi berdasarkan status (jika diberikan)
-        $query = Koneksi::where(function ($query) use ($user) {
+        $query = Connection::where(function ($query) use ($user) {
             $query->where('user_id', $user->id)
                   ->orWhere('koneksi_user_id', $user->id);
         });

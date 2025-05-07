@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Experience;
 use Illuminate\Http\Request;
-use App\Models\Pengalaman;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +22,7 @@ class ExperienceController extends Controller
     {
         try {
             $user = Auth::user();
-            $pengalaman = Pengalaman::where('users_id', $user->id)->get();
+            $pengalaman = Experience::where('users_id', $user->id)->get();
 
             return response()->json([
                 'status' => 'success',
@@ -46,7 +46,7 @@ class ExperienceController extends Controller
     {
         try {
             $user = Auth::user();
-            $pengalaman = Pengalaman::where('id', $id)
+            $pengalaman = Experience::where('id', $id)
                 ->where('users_id', $user->id)
                 ->first();
 
@@ -127,7 +127,7 @@ class ExperienceController extends Controller
             }
 
             // Save experience to database
-            $pengalaman = Pengalaman::create($pengalamanData);
+            $pengalaman = Experience::create($pengalamanData);
 
             return response()->json([
                 'status' => 'success',
@@ -157,7 +157,7 @@ class ExperienceController extends Controller
     {
         try {
             $user = Auth::user();
-            $pengalaman = Pengalaman::where('id', $id)
+            $pengalaman = Experience::where('id', $id)
                 ->where('users_id', $user->id)
                 ->first();
 
@@ -240,7 +240,7 @@ class ExperienceController extends Controller
 
             // Delete all experiences if id is 'all'
             if ($id === 'all') {
-                $pengalamanList = Pengalaman::where('users_id', $user->id)->get();
+                $pengalamanList = Experience::where('users_id', $user->id)->get();
 
                 foreach ($pengalamanList as $pengalaman) {
                     if ($pengalaman->media && Storage::exists('public/pengalaman/' . $pengalaman->media)) {
@@ -256,7 +256,7 @@ class ExperienceController extends Controller
             }
 
             // Delete specific experience
-            $pengalaman = Pengalaman::where('id', $id)
+            $pengalaman = Experience::where('id', $id)
                 ->where('users_id', $user->id)
                 ->first();
 
