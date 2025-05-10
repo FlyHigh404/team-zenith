@@ -16,27 +16,37 @@ class ProfileController extends Controller
     }
 
     /**
-     * Menampilkan profil pengguna
+     * Display the authenticated user's profile.
+     * GET /profile
      */
     public function show()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $user
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data profil berhasil diambil',
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data profil',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Memperbarui profil pengguna
+     * Update the authenticated user's profile.
+     * PUT /profile
      */
     public function update(Request $request)
     {
         try {
             $user = Auth::user();
 
-            // Validasi input
             $request->validate([
                 'nama' => 'sometimes|string|max:30',
                 'username' => 'sometimes|string|min:3|max:20|unique:users,username,' . $user->id,
@@ -46,23 +56,25 @@ class ProfileController extends Controller
                 'notelp' => 'sometimes|string|max:25',
                 'provinsi' => 'sometimes|string|max:50',
                 'kota' => 'sometimes|string|max:50',
-                'levelProfesional' => 'sometimes',
-                'keahlian' => 'sometimes',
+                'levelProfesional' => 'sometimes|array',
+                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
+                'keahlian' => 'sometimes|array',
+                'keahlian.*' => 'string|in:fillet,pelat,pipe',
                 'fotoProfil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
-            // Update data non-file
+            // Kumpulkan field yang akan diupdate
             $updateData = $request->only([
                 'nama', 'username', 'email', 'desc', 'birthdate',
                 'notelp', 'provinsi', 'kota', 'levelProfesional', 'keahlian'
             ]);
 
-            // Filter untuk hanya memperbarui field yang dikirim oleh request
+            // Filter nilai null/kosong
             $updateData = array_filter($updateData, function ($value) {
                 return $value !== null;
             });
 
-            // Update foto profil jika ada
+            // Handle foto profil jika ada
             if ($request->hasFile('fotoProfil')) {
                 // Hapus foto lama jika ada
                 if ($user->fotoProfil) {
@@ -94,16 +106,17 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Terjadi kesalahan saat memperbarui profil',
+                'message' => 'Gagal memperbarui profil',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Mengubah password pengguna
+     * Update user password.
+     * PUT /profile/change-password
      */
-    public function changePassword(Request $request)
+    public function updatePassword(Request $request)
     {
         try {
             $user = Auth::user();
@@ -131,6 +144,12 @@ class ProfileController extends Controller
                 'status' => 'success',
                 'message' => 'Password berhasil diubah'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

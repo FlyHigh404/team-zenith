@@ -11,60 +11,74 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    protected $casts = [
-        'levelProfesional' => 'array', // Konversi JSON ke array
-        'keahlian' => 'array',         // Konversi JSON ke array
-        'pekerjaan' => 'array',        // Konversi JSON ke array
-    ];
-    
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
     public $timestamps = false;
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'nama',
         'username',
         'email',
         'password',
+        'desc',
         'birthdate',
-        'notelp',
+        'fotoProfil',
         'provinsi',
         'kota',
+        'notelp',
         'levelProfesional',
         'keahlian',
+        'pekerjaan',
         'createdAt',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     */
     protected $hidden = [
         'password',
     ];
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     */
+    protected $casts = [
+        'levelProfesional' => 'array',
+        'keahlian' => 'array',
+        'pekerjaan' => 'array',
+        'birthdate' => 'date',
+        'createdAt' => 'datetime',
+    ];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     */
     public function getJWTCustomClaims()
     {
-        return [
-            'login_time' => time(),         // Timestamp saat ini
-            'random_id' => uniqid(),        // ID unik
-            'user_agent' => request()->userAgent() // Browser/perangkat yang digunakan
-        ];
+        return [];
+    }
+
+    // Relasi dengan pengalaman
+    public function pengalaman()
+    {
+        return $this->hasMany(Experience::class, 'users_id');
+    }
+
+    // Relasi dengan sertifikat
+    public function sertifikat()
+    {
+        return $this->hasMany(Certification::class, 'user_id');
+    }
+
+    // Relasi koneksi yang dikirim oleh user
+    public function koneksiDikirim()
+    {
+        return $this->hasMany(Connection::class, 'user_id');
+    }
+
+    // Relasi koneksi yang diterima oleh user
+    public function koneksiDiterima()
+    {
+        return $this->hasMany(Connection::class, 'koneksi_user_id');
+    }
+
+    // Relasi dengan authentication
+    public function authentication()
+    {
+        return $this->hasOne(Authentication::class);
     }
 }
