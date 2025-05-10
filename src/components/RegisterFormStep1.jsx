@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom'
 
 const RegisterFormStep1 = ({ formData, setFormData, setStep }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,6 +23,10 @@ const RegisterFormStep1 = ({ formData, setFormData, setStep }) => {
             return;
         }
         setStep(2);
+    };
+
+    const handleLogin = () => {
+        navigate("/login");
     };
 
     return (
@@ -96,9 +102,9 @@ const RegisterFormStep1 = ({ formData, setFormData, setStep }) => {
             </div>
             <p className="text-center font-normal mt-4 text-xs">
                 Sudah punya akun?{' '}
-                <a href="/login" className="text-blue-600 font-medium hover:underline">
+                <span onClick={handleLogin} className="text-blue-600 font-medium hover:underline">
                     Masuk
-                </a>
+                </span>
             </p>
         </div>
     );

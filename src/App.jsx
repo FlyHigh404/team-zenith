@@ -5,6 +5,8 @@ import Layout from './Layout'
 import LandingPage from './pages/LandingPage'
 import { Toaster } from 'react-hot-toast'
 import Register from './pages/Register'
+import Login from './pages/Login'
+import ForgotPassword from './pages/ForgotPassword'
 function App() {
   return (
     <>
@@ -13,6 +15,8 @@ function App() {
         <Routes>
           {/* Halaman tanpa Navbar */}
           <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Halaman dengan Navbar */}
           <Route element={<Layout />}>
