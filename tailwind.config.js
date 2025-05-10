@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
+        // poppins: ['Poppins', 'sans-serif'],
+        dm_sans: ['DM Sans', 'sans-serif']
       },
     },
   },
