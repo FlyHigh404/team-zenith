@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FaRegUser } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi'
 
 function NavbarLp() {
@@ -24,10 +24,10 @@ function NavbarLp() {
 
                 {/* Menu untuk Desktop */}
                 <ul className="hidden lg:flex space-x-6 text-gray-700 font-medium">
-                    <li className="hover:text-gray-900 cursor-pointer text-sm">Tentang Perusahaan</li>
-                    <li className="hover:text-gray-900 cursor-pointer text-sm">Kegunaan</li>
-                    <li className="hover:text-gray-900 cursor-pointer text-sm">Keunggulan</li>
-                    <li className="hover:text-gray-900 cursor-pointer text-sm">Cara Pendaftaran</li>
+                    <li className="hover:text-gray-900 cursor-pointer text-sm"><a href="#tentang">Tentang Perusahaan</a></li>
+                    <li className="hover:text-gray-900 cursor-pointer text-sm"><a href="#kegunaan">Kegunaan</a></li>
+                    <li className="hover:text-gray-900 cursor-pointer text-sm"><a href="#keunggulan">Keunggulan</a></li>
+                    <li className="hover:text-gray-900 cursor-pointer text-sm"><a href="#carapendaftaran">Cara Pendaftaran</a></li>
                 </ul>
 
                 {/* Tombol Join Us & Profile (Desktop) */}
@@ -46,10 +46,10 @@ function NavbarLp() {
             {/* Mobile Menu */}
             <div className={`lg:hidden flex flex-col items-center absolute w-full bg-white shadow-md transition-all duration-300 ${isMenuOpen ? 'top-[60px] opacity-100' : 'top-[-300px] opacity-0 pointer-events-none'}`}>
                 <ul className="flex flex-col items-center space-y-4 py-6 text-gray-700 font-medium">
-                    <li className="hover:text-gray-900 cursor-pointer">Tentang Perusahaan</li>
-                    <li className="hover:text-gray-900 cursor-pointer">Kegunaan</li>
-                    <li className="hover:text-gray-900 cursor-pointer">Keunggulan</li>
-                    <li className="hover:text-gray-900 cursor-pointer">Cara Pendaftaran</li>
+                    <li className="hover:text-gray-900 cursor-pointer"><a href="#tentang">Tentang Perusahaan</a></li>
+                    <li className="hover:text-gray-900 cursor-pointer"><a href="#kegunaan">Kegunaan</a></li>
+                    <li className="hover:text-gray-900 cursor-pointer"><a href="#keunggulan">Keunggulan</a></li>
+                    <li className="hover:text-gray-900 cursor-pointer"><a href="#carapendaftaran">Cara Pendaftaran</a></li>
                 </ul>
 
                 {/* Tombol Join Us & Profile (Mobile) */}

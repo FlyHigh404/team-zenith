@@ -1,12 +1,19 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Layout from './Layout'
+
+import AdminLayout from './layout/AdminLayout'
+import DashboardAdmin from './pages/admin/DashboardAdmin'
+import PekerjaanAdmin from './pages/admin/PekerjaanAdmin'
+
+import Layout from './layout/Layout'
 import LandingPage from './pages/LandingPage'
+
 import { Toaster } from 'react-hot-toast'
+
 import Register from './pages/Register'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
+
 function App() {
   return (
     <>
@@ -21,6 +28,12 @@ function App() {
           {/* Halaman dengan Navbar */}
           <Route element={<Layout />}>
             <Route path="/" element={<LandingPage />} />
+          </Route>
+
+          {/* Halaman Admin */}
+          <Route element={<AdminLayout />}>
+            <Route path="/dashboard-admin" element={<DashboardAdmin />} />
+            <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
           </Route>
         </Routes>
       </Router>
