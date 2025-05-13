@@ -11,7 +11,7 @@ import Footer from '../components/Footer'
 const LandingPage = () => {
     return (
         <div>
-            <Navbar />
+
             <Banner />
             <Logo />
             <Tentang />
