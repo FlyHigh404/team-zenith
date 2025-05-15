@@ -19,7 +19,7 @@ class AuthController extends Controller
     /**
      * Store a newly created user (Register).
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         try {
             $request->validate([
