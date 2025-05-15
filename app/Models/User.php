@@ -28,6 +28,7 @@ class User extends Authenticatable implements JWTSubject
         'keahlian',
         'pekerjaan',
         'createdAt',
+        'role', // Menambahkan kolom role
     ];
 
     protected $hidden = [
@@ -80,5 +81,11 @@ class User extends Authenticatable implements JWTSubject
     public function authentication()
     {
         return $this->hasOne(Authentication::class);
+    }
+
+    // Tambahkan relasi dengan pendaftaran sertifikasi
+    public function sertifikasiPendaftaran()
+    {
+        return $this->hasMany(CertificationRegistration::class, 'user_id');
     }
 }
