@@ -15,7 +15,13 @@ class Authentication extends Model
 
     protected $fillable = [
         'user_id',
-        'token'
+        'email',
+        'role',
+        'login_at'
+    ];
+
+    protected $casts = [
+        'login_at' => 'datetime',
     ];
 
     // Relasi dengan user

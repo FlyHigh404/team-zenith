@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('authentications', function (Blueprint $table) {
+        Schema::create('sertifikasi_pendaftaran', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('email');
-            $table->string('role')->default('user');
-            $table->timestamp('login_at');
+            $table->foreignId('sertifikasi_id')->constrained('sertifikasi_admin')->onDelete('cascade');
+            $table->enum('status', ['Menunggu', 'Diterima', 'Ditolak'])->default('Menunggu');
+            $table->text('alasan')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('authentications');
+        Schema::dropIfExists('sertifikasi_pendaftaran');
     }
 };

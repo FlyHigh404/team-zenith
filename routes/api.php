@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Auth routes
 Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'store']);
+    Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'destroy']);
     Route::post('refresh', [AuthController::class, 'update']);
@@ -58,5 +58,31 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [ProfileController::class, 'show']);
         Route::put('/', [ProfileController::class, 'update']);
         Route::put('/change-password', [ProfileController::class, 'updatePassword']);
+    });
+
+    // Sertifikasi yang tersedia
+    Route::prefix('certification-programs')->group(function () {
+        Route::get('/', [\App\Http\Controllers\CertificationRegistrationController::class, 'index']);
+        Route::get('/{id}', [\App\Http\Controllers\CertificationRegistrationController::class, 'show']);
+        Route::post('/{id}/apply', [\App\Http\Controllers\CertificationRegistrationController::class, 'apply']);
+        Route::delete('/{id}/cancel', [\App\Http\Controllers\CertificationRegistrationController::class, 'cancel']);
+        Route::get('/my-applications', [\App\Http\Controllers\CertificationRegistrationController::class, 'myApplications']);
+    });
+});
+
+// Admin routes - dengan middleware admin
+Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
+    // Sertifikasi admin
+    Route::prefix('certification-lists')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'index']);
+        Route::post('/', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'store']);
+        Route::get('/{id}',
+        [\App\Http\Controllers\Admin\AdminCertificationController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'destroy']);
+
+        // Mengelola pendaftar
+        Route::get('/{id}/applicants', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'getApplicants']);
+        Route::put('/applicants/{id}', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'updateApplicantStatus']);
     });
 });

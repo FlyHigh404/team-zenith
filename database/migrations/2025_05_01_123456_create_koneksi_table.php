@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
             $table->unsignedBigInteger('user_id'); // user_id INT NOT NULL
             $table->unsignedBigInteger('koneksi_user_id'); // koneksi_user_id INT NOT NULL
-            $table->enum('status', ['diajukan', 'diterima', 'ditolak'])->default('pending'); // Status koneksi
+            $table->enum('status', ['diajukan', 'diterima', 'ditolak'])->default('diajukan'); // Status koneksi
             $table->date('tanggalKoneksi'); // tanggalKoneksi DATE NOT NULL
             $table->timestamps(); // created_at dan updated_at
 

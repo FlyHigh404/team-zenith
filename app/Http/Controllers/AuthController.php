@@ -19,7 +19,7 @@ class AuthController extends Controller
     /**
      * Store a newly created user (Register).
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         try {
             $request->validate([
@@ -97,12 +97,16 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            // Generate token
             $token = JWTAuth::fromUser($user);
 
-            Authentication::updateOrCreate(
-                ['user_id' => $user->id],
-                ['token' => $token]
-            );
+            // Catat history login
+            Authentication::create([
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'role' => $user->role ?? 'user',
+                'login_at' => now()
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -129,10 +133,8 @@ class AuthController extends Controller
     {
         try {
             $token = JWTAuth::getToken();
-            $user = Auth::user();
 
             if ($token) {
-                Authentication::where('user_id', $user->id)->delete();
                 JWTAuth::invalidate($token);
             }
 
@@ -159,9 +161,6 @@ class AuthController extends Controller
             $currentToken = JWTAuth::getToken();
             $user = Auth::user();
             $newToken = JWTAuth::refresh($currentToken);
-
-            Authentication::where('user_id', $user->id)
-                ->update(['token' => $newToken]);
 
             return response()->json([
                 'status' => 'success',
