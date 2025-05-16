@@ -38,20 +38,20 @@ const Kegunaan = () => {
     return (
         <section id='kegunaan'>
             <div className='lg:mx-14 mx-5 md:mx-10'>
-                <p className='text-sky-700 text-base lg:text-lg font-bold mt-10'>KEGUNAAN WEBSITE</p>
-                <h1 className='font-medium text-lg lg:text-2xl my-1'>Meningkatkan Karir Profesional Anda </h1>
+                <p className='text-sky-700 dark:text-sky-500 text-base lg:text-lg font-bold mt-10'>KEGUNAAN WEBSITE</p>
+                <h1 className='dark:text-white font-medium text-lg lg:text-2xl my-1'>Meningkatkan Karir Profesional Anda </h1>
                 <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-4 my-5'>
                     {fiturSteps.map((step, index) => (
                         <div
                             key={index}
-                            className="max-w-sm p-6 bg-white border-2 border-gray-300 rounded-xl hover:border-[#86CEEB]"
+                            className="max-w-sm p-6 bg-white dark:bg-[#1D232A] border-2 border-gray-300 dark:border-[#2F4852] rounded-xl hover:border-[#86CEEB] dark:hover:border-[#659BB0]"
                         >
                             <div>
-                                <div className="bg-[#86CEEB] border-2 border-sky-500 p-4 rounded-md text-white text-4xl md:text-2xl inline-block mb-4">
+                                <div className="bg-[#86CEEB] dark:bg-[#659BB0] border-2 border-sky-500 dark:border-[#659BB0] p-4 rounded-md text-white text-4xl md:text-2xl inline-block mb-4">
                                     {step.icon}
                                 </div>
                                 <h5 className="mb-2 text-xl md:text-lg font-medium tracking-tight">{step.title}</h5>
-                                <p className="text-sm font-reguler text-[#424242]">{step.desc}</p>
+                                <p className="text-sm font-reguler text-[#424242] dark:text-slate-300">{step.desc}</p>
                             </div>
                         </div>
                     ))}

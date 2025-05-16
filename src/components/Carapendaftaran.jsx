@@ -29,9 +29,9 @@ const Carapendaftaran = () => {
             <div className='lg:mx-14 md:mx-10 mx-5 mt-10'>
                 <div className="grid md:grid-cols-[40%_60%] gap-6">
                     <div>
-                        <p className='text-sky-700 text-base lg:text-lg font-bold'>CARA PENDAFTARAN</p>
+                        <p className='text-sky-700 dark:text-sky-500 text-base lg:text-lg font-bold'>CARA PENDAFTARAN</p>
                         <h1 className='font-medium text-xl md:text-lg lg:text-2xl my-1'>Mulai Jadi Bagian Komunitas</h1>
-                        <p className='font-reguler text-sm text-justify'>Gabung ke dalam komunitas welder profesional dan industri hanya dengan beberapa langkah mudah. Daftar sekarang dan bangun koneksi yang relevan untuk masa depan kariermu.</p>
+                        <p className='dark:text-slate-300 font-reguler text-sm text-justify'>Gabung ke dalam komunitas welder profesional dan industri hanya dengan beberapa langkah mudah. Daftar sekarang dan bangun koneksi yang relevan untuk masa depan kariermu.</p>
                     </div>
                     <div className='mt-10 md:mt-0 '>
                         <div className="relative">
@@ -41,15 +41,15 @@ const Carapendaftaran = () => {
                                 <div className="flex items-start relative pb-8" key={index}>
                                     {/* Nomor bulat biru */}
                                     <div className="flex flex-col items-center z-10 w-10 relative">
-                                        <div className="w-10 h-10 bg-[#86CEEB] text-white rounded-full flex items-center justify-center font-medium text-xl">
+                                        <div className="w-10 h-10 bg-[#86CEEB] dark:bg-[#659BB0] text-white rounded-full flex items-center justify-center font-medium text-xl">
                                             {step.number}
                                         </div>
                                     </div>
 
                                     {/* Konten */}
                                     <div className="ml-4 text-justify">
-                                        <h3 className="font-medium text-xl md:text-lg mb-1">{step.title}</h3>
-                                        <p className="text-sm text-[#424242]">{step.description}</p>
+                                        <h3 className="dark:text-white font-medium text-xl md:text-lg mb-1">{step.title}</h3>
+                                        <p className="text-sm text-[#424242] dark:text-slate-300">{step.description}</p>
                                     </div>
                                 </div>
                             ))}
