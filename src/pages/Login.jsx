@@ -10,7 +10,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [rememberCheck, setRememberCheck] = useState(false);
-    
+
 
     const [formData, setFormData] = useState(() => {
         // return location.state || JSON.parse(localStorage.getItem("formData")) || {
@@ -64,12 +64,12 @@ const Login = () => {
             });
 
             localStorage.setItem("token", response.data.token); //Simpan token ke localStorage
-            
+
             //ingat untuk 14 hari
             if (rememberCheck) {
                 const fourteenDays = 14 * 24 * 60 * 60 * 1000;
                 const expiresAt = new Date().getTime() + fourteenDays;
-    
+
                 localStorage.setItem("rememberedUser", JSON.stringify({
                     email: formData.email,
                     password: formData.password,
@@ -78,7 +78,7 @@ const Login = () => {
             } else {
                 localStorage.removeItem("rememberedUser");
             }
-            
+
             toast.success("Login successful!");
             navigate("/");
 
@@ -99,12 +99,12 @@ const Login = () => {
         <div className="flex md:flex-col lg:flex-row h-screen">
             <div className="flex-grow w-full lg:w-[55%] flex flex-col justify-center px-6 md:px-20 overflow-y-auto font-sans">
                 <h2 className="text-3xl font-semibold">Selamat Datang</h2>
-                <p className="text-sm md:text-base mt-1 font-medium">Masuk ke akunmu dan jelajahi peluang tanpa batas!</p>
+                <p className="dark:text-slate-300 text-sm md:text-base mt-1 font-medium">Masuk ke akunmu dan jelajahi peluang tanpa batas!</p>
 
                 <form className="mt-5 md:mt-10 lg:mt-5" onSubmit={handleSubmit}>
                     <div className="mb-4 md:mb-7 lg:mb-4">
                         <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Email</label>
-                        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Masukkan alamat email Anda" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm placeholder:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Masukkan alamat email Anda" className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
                     </div>
 
                     <div className="mb-2">
@@ -116,10 +116,10 @@ const Login = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 placeholder="Buat kata sandi Anda"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm placeholder:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required
                             />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 cursor-pointer text-gray-500">
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 cursor-pointer text-gray-500 dark:text-slate-300">
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
                             </button>
                         </div>
@@ -132,11 +132,11 @@ const Login = () => {
                             </button>
                             <p className='text-sm ml-1.5'>Ingat untuk 14 hari</p>
                         </div>
-                        <span onClick={handleForgotPassword} className="text-sm font-medium text-[#0284C7] text-right cursor-pointer">Lupa kata sandi?</span>
+                        <span onClick={handleForgotPassword} className="text-sm font-medium text-[#0284C7] dark:text-sky-500 hover:underline text-right cursor-pointer">Lupa kata sandi?</span>
                     </div>
-                    
 
-                    <button type="submit" className="btn btn-primary bg-[#86CEEB] border border-[#86CEEB] hover:bg-[#659BB0] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]">
+
+                    <button type="submit" className="btn btn-primary bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]">
                         Masuk sekarang
                     </button>
                 </form>
@@ -153,14 +153,14 @@ const Login = () => {
                 </div>
                 <p className="text-center font-normal mt-4 text-sm">
                     Tidak punya akun?{' '}
-                    <span onClick={handleRegister} className="text-[#0284C7] font-medium hover:underline cursor-pointer text-sm">
+                    <span onClick={handleRegister} className="text-[#0284C7] dark:text-sky-500 font-medium hover:underline cursor-pointer text-sm">
                         Daftar
                     </span>
                 </p>
             </div>
-            
+
             <div className="hidden lg:flex w-[45%] justify-end">
-                    <img src={img} className="sticky top-0 h-screen object-cover rounded-l-3xl" alt="" />
+                <img src={img} className="sticky top-0 h-screen object-cover rounded-l-3xl" alt="" />
             </div>
         </div>
     );

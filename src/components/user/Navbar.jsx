@@ -16,7 +16,9 @@ function Navbar() {
   }, [])
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'lg:bg-white/50 lg:backdrop-blur-md lg:shadow-md bg-white' : 'bg-white'}`}>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 
+  ${isScrolled ? 'lg:bg-white/50 lg:backdrop-blur-md lg:shadow-md bg-white dark:bg-[#1D232A]/50' : 'bg-white dark:bg-[#1D232A]'}`}>
+
       <div className="max-w-full mx-auto px-6 md:px-24 py-4 flex justify-between items-center">
         <a href="/" className="text-2xl font-bold text-[#86CEEB]">
           UNEDO
@@ -33,7 +35,7 @@ function Navbar() {
         {/* Tombol Join Us & Profile (Desktop) */}
         <div className="hidden lg:flex space-x-4">
           <a href="/login">
-            <button className="px-8 py-2 text-sm border border-white bg-[#86CEEB] text-white rounded-xl hover:bg-sky-500">Masuk</button>
+            <button className="px-8 py-2 text-sm border border-white bg-[#86CEEB] dark:bg-[#659BB0] text-white rounded-xl hover:bg-sky-500">Masuk</button>
           </a>
         </div>
 
