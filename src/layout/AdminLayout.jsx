@@ -8,9 +8,11 @@ const getTitle = (path) => {
         case '/dashboard-admin':
             return 'Overview'
         case '/pekerjaan-admin':
-            return 'Pekerjaan'
+            return 'Kelola Pekerjaan'
         case '/sertifikasi-admin':
-            return 'Sertifikasi'
+            return 'Kelola Sertifikasi'
+        case '/pelamar-sertifikasi':
+            return 'Daftar Pelamar Sertifikasi'
         default:
             return 'Dashboard'
     }

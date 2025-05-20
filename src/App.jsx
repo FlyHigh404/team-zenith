@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import AdminLayout from './layout/AdminLayout'
 import DashboardAdmin from './pages/admin/DashboardAdmin'
 import PekerjaanAdmin from './pages/admin/PekerjaanAdmin'
+import SertifikasiAdmin from './pages/admin/SertifikasiAdmin'
+import PelamarSertifikasi from './pages/admin/PelamarSertifikasi'
 
 import Layout from './layout/Layout'
 import LandingPage from './pages/LandingPage'
@@ -34,6 +36,8 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/dashboard-admin" element={<DashboardAdmin />} />
             <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
+            <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
+            <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
           </Route>
         </Routes>
       </Router>
