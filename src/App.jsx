@@ -2,8 +2,10 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import AdminLayout from './layout/AdminLayout'
+import AdminLayout2 from './layout/AdminLayout2'
 import DashboardAdmin from './pages/admin/DashboardAdmin'
 import PekerjaanAdmin from './pages/admin/PekerjaanAdmin'
+import ProfilAdmin from './pages/admin/ProfilAdmin'
 import SertifikasiAdmin from './pages/admin/SertifikasiAdmin'
 import PelamarSertifikasi from './pages/admin/PelamarSertifikasi'
 import PelamarPekerjaan from './pages/admin/PelamarPekerjaan'
@@ -41,6 +43,11 @@ function App() {
             <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
             <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
           </Route>
+
+          <Route element={<AdminLayout2 />}>
+            <Route path="/profil-admin" element={<ProfilAdmin />} />
+          </Route>
+            
         </Routes>
       </Router>
     </>
