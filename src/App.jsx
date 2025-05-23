@@ -6,6 +6,9 @@ import AdminLayout2 from './layout/AdminLayout2'
 import DashboardAdmin from './pages/admin/DashboardAdmin'
 import PekerjaanAdmin from './pages/admin/PekerjaanAdmin'
 import ProfilAdmin from './pages/admin/ProfilAdmin'
+import SertifikasiAdmin from './pages/admin/SertifikasiAdmin'
+import PelamarSertifikasi from './pages/admin/PelamarSertifikasi'
+import PelamarPekerjaan from './pages/admin/PelamarPekerjaan'
 
 import Layout from './layout/Layout'
 import LandingPage from './pages/LandingPage'
@@ -36,6 +39,9 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/dashboard-admin" element={<DashboardAdmin />} />
             <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
+            <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
+            <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
+            <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
           </Route>
 
           <Route element={<AdminLayout2 />}>
