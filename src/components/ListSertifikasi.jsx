@@ -1,10 +1,14 @@
 import React from 'react'
 import img from '../assets/img/sertifikasi.png'
-import { FaBookmark, FaClock, FaToolbox, FaCalendar, FaShare, FaLocationDot } from "react-icons/fa6";
+import { FaRegBookmark, FaClock, FaToolbox, FaCalendar, FaShare, FaLocationDot } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 
 
 const ListSertifikasi = () => {
+    const openTambahModal = () => {
+        document.getElementById('tambahModal').showModal()
+    }
+
     const openDetailModal = () => {
         document.getElementById('detailModal').showModal()
     }
@@ -19,7 +23,42 @@ const ListSertifikasi = () => {
         <div className='mt-10 mx-5'>
             <div className='flex justify-between'>
                 <h1 className='text-[#333B69] text-xl font-semibold'>Sertifikasi Saat Ini</h1>
-                <button className="btn bg-sky-400 hover:bg-sky-500 text-white font-light rounded-xl px-8">+ Tambah</button>
+                <button onClick={openTambahModal} className="btn bg-sky-400 hover:bg-sky-500 text-white font-light rounded-xl px-8">+ Tambah</button>
+
+                <dialog id="tambahModal" className="modal">
+                    <div className="modal-box">
+                        <form method="dialog">
+                            <div className='flex justify-between'>
+                                <h3 className="font-bold text-lg">Tambah Sertifikasi</h3>
+                                <button className="btn btn-sm btn-circle btn-ghost absolute right-4 top-5 text-xl">✕</button>
+                            </div>
+                        </form>
+                        <hr className='my-3 text-gray-200' />
+
+                        <div className='my-2 space-y-2'>
+                            {[
+                                "Nama Sertifikasi",
+                                "Bidang Sertifikasi",
+                                "Keahlian",
+                                "Tanggal Pelaksanaan",
+                                "Waktu Pelaksanaan",
+                                "Lokasi Pelaksanaan",
+                                "Status Pelaksanaan",
+                                "Deskripsi Sertifikasi"
+                            ].map((label, i) => (
+                                <div key={i}>
+                                    <label className='font-medium text-md'>{label}</label>
+                                    <input className="input input-bordered w-full mt-1.5" placeholder={label} />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="modal-action flex justify-end">
+                            <button className="btn bg-sky-400 text-white rounded-full px-10">Simpan</button>
+                        </div>
+                    </div>
+                </dialog>
+
             </div>
 
             <div className="mt-5 space-y-4">
@@ -107,7 +146,7 @@ const ListSertifikasi = () => {
                                         </div>
                                     </div>
                                     <div className='flex gap-4 text-gray-400 py-1'>
-                                        <FaBookmark className='text-xl' />
+                                        <FaRegBookmark className='text-xl' />
                                         <FaShare className='text-xl' />
                                     </div>
                                 </div>
@@ -181,9 +220,6 @@ const ListSertifikasi = () => {
                     </div>
                 ))}
             </div>
-
-
-
         </div>
     )
 }

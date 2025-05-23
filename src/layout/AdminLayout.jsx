@@ -13,6 +13,8 @@ const getTitle = (path) => {
             return 'Kelola Sertifikasi'
         case '/pelamar-sertifikasi':
             return 'Daftar Pelamar Sertifikasi'
+        case '/pekerjaan-admin/pelamar':
+            return 'Daftar Pelamar Pekerjaan'
         default:
             return 'Dashboard'
     }

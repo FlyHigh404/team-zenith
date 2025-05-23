@@ -1,9 +1,14 @@
 import React from 'react'
 import img from '../assets/img/sertifikasi.png'
-import { FaBookmark, FaClock, FaToolbox } from "react-icons/fa6";
+import { FaRegBookmark, FaClock, FaToolbox } from "react-icons/fa6";
 import { FaHardHat } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const ListPekerjaan = () => {
+    const openTambahModal = () => {
+        document.getElementById('tambahModal').showModal()
+    }
+
     const openDetailModal = () => {
         document.getElementById('detailModal').showModal()
     }
@@ -12,35 +17,90 @@ const ListPekerjaan = () => {
         document.getElementById('editModal').showModal()
     }
 
+    const navigate = useNavigate();
+
     return (
         <div className='mt-10 mx-5'>
             <div className='flex justify-between'>
-                <h1 className='text-[#333B69] text-xl font-semibold'>Sertifikasi Saat Ini</h1>
-                <button className="btn bg-sky-400 hover:bg-sky-500 text-white font-light rounded-xl px-8">+ Tambah</button>
+                <h1 className='text-[#333B69] text-xl font-semibold'>Lowongan Saat Ini</h1>
+                <button onClick={openTambahModal} className="btn bg-sky-400 hover:bg-sky-500 text-white font-light rounded-xl px-8">+ Tambah</button>
+
+                <dialog id="tambahModal" className="modal">
+                    <div className="modal-box">
+                        <form method="dialog">
+                            <div className='flex justify-between'>
+                                <h3 className="font-bold text-lg">Tambah Lowongan</h3>
+                                <button className="btn btn-sm btn-circle btn-ghost absolute right-4 top-5 text-xl">✕</button>
+                            </div>
+                        </form>
+                        <hr className='my-3 text-gray-200' />
+
+                        <div className='my-2 space-y-2'>
+                            {[
+                                "Bidang Pekerjaan",
+                                "Nama Perusahaan",
+                                "Lokasi Kerja",
+                                "Status Pekerjaan",
+                                "Durasi Pekerjaan",
+                                "Pengalaman",
+                                "Bidang Pekerjaan",
+                                "Deskripsi Pekerjaan",
+                                "Pendidikan Terakhir"
+                            ].map((label, i) => (
+                                <div key={i}>
+                                    <label className='font-medium text-md'>{label}</label>
+                                    <input className="input input-bordered w-full mt-1.5" placeholder={label} />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="modal-action flex justify-end">
+                            <button className="btn bg-sky-400 text-white rounded-full px-10">Simpan</button>
+                        </div>
+                    </div>
+                </dialog>
+
             </div>
 
             <div className="mt-5 space-y-4">
-                {[{
-                    title: 'Sertifikasi SMAW 3G Plate',
-                    bidang: 'Welder',
-                    keahlian: 'Plate',
-                    tanggal: '12 Januari 2025'
-                }, {
-                    title: 'Sertifikasi TIG 6G Pipe',
-                    bidang: 'Welder',
-                    keahlian: 'Pipe',
-                    tanggal: '28 Februari 2025'
-                }, {
-                    title: 'Sertifikasi MIG 2G Structural',
-                    bidang: 'Welder',
-                    keahlian: 'Structural',
-                    tanggal: '15 Maret 2025'
-                }, {
-                    title: 'Sertifikasi Welding Inspector Level 1',
-                    bidang: 'Inspector',
-                    keahlian: 'Inspector',
-                    tanggal: '22 Maret 2025'
-                }].map((item, index) => (
+                {[
+                    {
+                        title: 'Welder - SMAW 3',
+                        perusahaan: 'PT Karya Baja',
+                        industri: 'Konstruksi',
+                        lokasi: 'Cilegon',
+                        waktu: 'Jangka Panjang',
+                        bidang: 'konstruksi',
+                        pengalaman: '3-6 tahun'
+                    },
+                    {
+                        title: 'Welding Inspector',
+                        perusahaan: 'PT Petro Weldindo',
+                        industri: 'Konstruksi',
+                        lokasi: 'Surabaya',
+                        waktu: 'Jangka Panjang',
+                        bidang: 'konstruksi',
+                        pengalaman: '3-6 tahun'
+                    },
+                    {
+                        title: 'Painter - Industrial Coating',
+                        perusahaan: 'PT Energi Maritim',
+                        industri: 'Konstruksi',
+                        lokasi: 'Batam',
+                        waktu: 'Jangka Panjang',
+                        bidang: 'konstruksi',
+                        pengalaman: '3-6 tahun'
+                    },
+                    {
+                        title: 'Welder - GTAW Stainless',
+                        perusahaan: 'PT Surya Teknik',
+                        industri: 'Konstruksi',
+                        lokasi: 'Jakarta Utara',
+                        waktu: 'Jangka Panjang',
+                        bidang: 'konstruksi',
+                        pengalaman: '3-6 tahun'
+                    }
+                ].map((item, index) => (
                     <div key={index} className="flex items-center justify-between bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
                         <div className='p-2'>
                             <img src={img} alt="" />
@@ -48,22 +108,22 @@ const ListPekerjaan = () => {
 
                         <div className="flex flex-col w-[200px]">
                             <p className="font-medium text-base truncate">{item.title}</p>
-                            <p className="text-sm text-sky-400">Materi Sertifikasi</p>
+                            <p className="text-sm text-sky-400">Bidang Pekerjaan</p>
+                        </div>
+
+                        <div className="flex flex-col w-[200px]">
+                            <p className="font-medium text-base">{item.perusahaan}</p>
+                            <p className="text-sm text-sky-400">Perusahaan</p>
                         </div>
 
                         <div className="flex flex-col w-[100px]">
-                            <p className="font-medium text-base">{item.bidang}</p>
-                            <p className="text-sm text-sky-400">Bidang</p>
-                        </div>
-
-                        <div className="flex flex-col w-[100px]">
-                            <p className="font-medium text-base">{item.keahlian}</p>
-                            <p className="text-sm text-sky-400">Keahlian</p>
+                            <p className="font-medium text-base">{item.industri}</p>
+                            <p className="text-sm text-sky-400">Industri</p>
                         </div>
 
                         <div className="flex flex-col w-[150px]">
-                            <p className="font-medium text-base">{item.tanggal}</p>
-                            <p className="text-sm text-sky-400">Tanggal Pelaksanaan</p>
+                            <p className="font-medium text-base">{item.lokasi}</p>
+                            <p className="text-sm text-sky-400">Lokasi</p>
                         </div>
 
                         <div className='p-2'>
@@ -74,72 +134,102 @@ const ListPekerjaan = () => {
                                 Lihat Detail
                             </button>
                         </div>
+
+                        {/* Detail Modal */}
+                        <dialog id="detailModal" className="modal">
+                            <div className="modal-box w-full max-w-md rounded-xl shadow-lg p-6">
+                                {/* Header */}
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex items-center gap-4">
+                                        <img src={img} alt="Company Logo" className="w-12 h-12 rounded-md bg-gray-200" />
+                                        <div>
+                                            <p className="font-semibold text-base">{item.perusahaan}</p>
+                                            <p className="text-sm text-gray-500">{item.lokasi}</p>
+                                        </div>
+                                    </div>
+                                    <FaRegBookmark className="text-gray-400 text-lg mt-1" />
+                                </div>
+
+                                {/* Title */}
+                                <p className="text-lg font-medium text-gray-900 mb-2">{item.title}</p>
+
+                                {/* Info Grid */}
+                                <div className="grid grid-cols-2 gap-y-3 text-sm text-gray-500 mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <FaClock className="text-gray-400" />
+                                        <span>{item.waktu}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <FaHardHat className="text-gray-400" />
+                                        <span>{item.bidang}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <FaToolbox className="text-gray-400" />
+                                        <span>{item.pengalaman}</span>
+                                    </div>
+                                </div>
+
+                                {/* Deskripsi */}
+                                <p className="text-sm text-gray-700 mb-4">
+                                    Pengelasan struktur baja untuk jembatan dan tangki penyimpanan, dengan posisi vertical-up.
+                                </p>
+
+                                {/* Action */}
+                                <div className="modal-action flex justify-between mt-6">
+                                    <button
+                                        type="button"
+                                        className="text-sm text-gray-500 hover:underline"
+                                        onClick={openEditModal}
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        className="text-sm text-[#86CEEB] font-medium hover:underline"
+                                        onClick={() => navigate('/pelamar-pekerjaan')}
+                                    >
+                                        Daftar Pelamar
+                                    </button>
+                                </div>
+                            </div>
+                        </dialog>
+
+                        {/* Edit Modal */}
+                        <dialog id="editModal" className="modal">
+                            <div className="modal-box">
+                                <form method="dialog">
+                                    <div className='flex justify-between'>
+                                        <h3 className="font-bold text-lg">Edit Pekerjaan</h3>
+                                        <button className="btn btn-sm btn-circle btn-ghost absolute right-4 top-5 text-xl">✕</button>
+                                    </div>
+                                </form>
+                                <hr className='my-3 text-gray-200' />
+                                <div className='my-2 space-y-2'>
+                                    {[
+                                        "Bidang Pekerjaan",
+                                        "Nama Perusahaan",
+                                        "Lokasi Kerja",
+                                        "Status Pekerjaan",
+                                        "Durasi Pekerjaan",
+                                        "Pengalaman",
+                                        "Bidang Pekerjaan",
+                                        "Deskripsi Pekerjaan",
+                                        "Pendidikan Terakhir"
+                                    ].map((label, i) => (
+                                        <div key={i}>
+                                            <label className='font-medium text-md'>{label}</label>
+                                            <input className="input input-bordered w-full mt-1.5" placeholder={label} />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="modal-action flex justify-between">
+                                    <button className="btn bg-red-500 text-white rounded-full px-10">Hapus</button>
+                                    <button className="btn bg-sky-400 text-white rounded-full px-10">Simpan Perubahan</button>
+                                </div>
+                            </div>
+                        </dialog>
                     </div>
                 ))}
             </div>
-
-            {/* Detail Modal */}
-            <dialog id="detailModal" className="modal">
-                <div className="modal-box w-90">
-                    <div className='flex justify-between'>
-                        <div className='flex gap-4'>
-                            <img src={img} className='w-10' />
-                            <div>
-                                <p className="font-semibold text-base truncate">PT. Karya Baja</p>
-                                <p className="text-sm">Cilegon, Banten</p>
-                            </div>
-                        </div>
-                        <FaBookmark className='text-sm' />
-                    </div>
-
-                    <div className='mt-4'>
-                        {/* <p className="font-medium text-lg">Welder – SMAW 3G</p> */}
-                        <div className='grid grid-cols-4 my-2 text-gray-400'>
-                            <div className='flex gap-4'>
-                                <FaClock />
-                                <p>Jangka Panjang</p>
-                            </div>
-                            <div className='flex gap-4'>
-                                <FaHardHat />
-                                <p>Konstruksi</p>
-                            </div>
-                            <div className='flex gap-4'>
-                                <FaToolbox />
-                                <p>3 - 6 tahun</p>
-                            </div>
-                        </div>
-                        {/* <p className='font-medium text-md'>Pengelasan struktur baja untuk jembatan dan tangki penyimpanan, dengan posisi vertical-up.</p> */}
-                    </div>
-
-                    <div className="modal-action flex justify-between">
-                        <button className="btn text-gray-400" type="button" onClick={openEditModal}>
-                            Edit
-                        </button>
-                        <form method="dialog">
-                            <button className="btn text-[#86CEEB]">Daftar Pelamar</button>
-                        </form>
-                    </div>
-                </div>
-            </dialog>
-
-            {/* Edit Modal */}
-            <dialog id="editModal" className="modal">
-                <div className="modal-box">
-                    <form method="dialog">
-                        {/* if there is a button in form, it will close the modal */}
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
-                    <h3 className="font-bold text-lg">Edit Sertifikasi</h3>
-                    <div>
-                        <input className="input input-bordered w-full mt-3" placeholder="Nama Sertifikasi" />
-                    </div>
-                    <div className="modal-action">
-                        <form method="dialog">
-                            <button className="btn">Simpan</button>
-                        </form>
-                    </div>
-                </div>
-            </dialog>
         </div>
     )
 }
