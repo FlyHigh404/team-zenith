@@ -88,4 +88,16 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(CertificationRegistration::class, 'user_id');
     }
+
+    // Relasi dengan lowongan yang dibuat user
+    public function loker()
+    {
+        return $this->hasMany(Loker::class);
+    }
+
+    // Relasi dengan lamaran kerja yang dibuat user
+    public function jobApplications()
+    {
+        return $this->hasMany(LokerApplicant::class);
+    }
 }
