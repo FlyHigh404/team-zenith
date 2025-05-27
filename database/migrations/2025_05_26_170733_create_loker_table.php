@@ -18,9 +18,9 @@ return new class extends Migration
             $table->text('desc');
             $table->enum('durasi', ['Full Time', 'Part Time', 'Contract', 'Internship']);
             $table->string('lokasi', 100);
-            $table->enum('pengalaman', ['< 1 tahun', '1-3 tahun', '3-5 tahun', '> 5 tahun']);
-            $table->enum('jenisIndustri', ['Pengelasan', 'Manufaktur', 'Konstruksi', 'Otomotif', 'Minyak & Gas', 'Industri Berat', 'Lainnya']);
-            $table->enum('gaji', ['< Rp5.000.000', 'Rp5.000.000 - Rp10.000.000', '> Rp10.000.000', 'Negosiasi']);
+            $table->integer('pengalaman');
+            $table->json('jenisIndustri');
+            $table->integer('gaji');
             $table->date('tanggalMulai');
             $table->date('tanggalSelesai');
             $table->text('kualifikasi');

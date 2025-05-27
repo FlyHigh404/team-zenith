@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('loker_id')->constrained('loker')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->char('nama', 30);
+            $table->string('notelp', 25);
+            $table->char('alamat', 50)->nullable();
+            $table->text('tentang')->nullable();
+            $table->char('cv', 50);
             $table->enum('status', ['Menunggu', 'Diterima', 'Ditolak'])->default('Menunggu');
             $table->text('alasan')->nullable();
             $table->timestamps();
