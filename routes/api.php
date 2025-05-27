@@ -6,7 +6,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\CertificationController;
+use App\Http\Controllers\CertificationRegistrationController;
 use App\Http\Controllers\ConnectionController;
+use App\Http\Controllers\LokerController;
+use App\Http\Controllers\Admin\AdminCertificationController;
+use App\Http\Controllers\Admin\AdminLokerController;
 
 // Route untuk mendapatkan data user yang sedang login
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -62,11 +66,19 @@ Route::middleware('auth:api')->group(function () {
 
     // Sertifikasi yang tersedia
     Route::prefix('certification-programs')->group(function () {
-        Route::get('/', [\App\Http\Controllers\CertificationRegistrationController::class, 'index']);
-        Route::get('/{id}', [\App\Http\Controllers\CertificationRegistrationController::class, 'show']);
-        Route::post('/{id}/apply', [\App\Http\Controllers\CertificationRegistrationController::class, 'apply']);
-        Route::delete('/{id}/cancel', [\App\Http\Controllers\CertificationRegistrationController::class, 'cancel']);
-        Route::get('/my-applications', [\App\Http\Controllers\CertificationRegistrationController::class, 'myApplications']);
+        Route::get('/', [CertificationRegistrationController::class, 'index']);
+        Route::get('/{id}', [CertificationRegistrationController::class, 'show']);
+        Route::post('/{id}/apply', [CertificationRegistrationController::class, 'apply']);
+        Route::delete('/{id}/cancel', [CertificationRegistrationController::class, 'cancel']);
+        Route::get('/my-applications', [CertificationRegistrationController::class, 'myApplications']);
+    });
+
+    // Lowongan kerja routes
+    Route::prefix('job-listings')->group(function () {
+        Route::get('/', [LokerController::class, 'index']);
+        Route::get('/{id}', [LokerController::class, 'show']);
+        Route::post('/{id}/apply', [LokerController::class, 'apply']);
+        Route::get('/my-applications', [LokerController::class, 'myApplications']);
     });
 });
 
@@ -74,15 +86,28 @@ Route::middleware('auth:api')->group(function () {
 Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     // Sertifikasi admin
     Route::prefix('certification-lists')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'index']);
-        Route::post('/', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'store']);
+        Route::get('/', [AdminCertificationController::class, 'index']);
+        Route::post('/', [AdminCertificationController::class, 'store']);
         Route::get('/{id}',
-        [\App\Http\Controllers\Admin\AdminCertificationController::class, 'show']);
-        Route::put('/{id}', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'update']);
-        Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'destroy']);
+        [AdminCertificationController::class, 'show']);
+        Route::put('/{id}', [AdminCertificationController::class, 'update']);
+        Route::delete('/{id}', [AdminCertificationController::class, 'destroy']);
 
         // Mengelola pendaftar
-        Route::get('/{id}/applicants', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'getApplicants']);
-        Route::put('/applicants/{id}', [\App\Http\Controllers\Admin\AdminCertificationController::class, 'updateApplicantStatus']);
+        Route::get('/{id}/applicants', [AdminCertificationController::class, 'getApplicants']);
+        Route::put('/applicants/{id}', [AdminCertificationController::class, 'updateApplicantStatus']);
+    });
+
+    // Admin job listings
+    Route::prefix('job-listings')->group(function () {
+        Route::get('/', [AdminLokerController::class, 'index']);
+        Route::post('/', [AdminLokerController::class, 'store']);
+        Route::get('/{id}', [AdminLokerController::class, 'show']);
+        Route::put('/{id}', [AdminLokerController::class, 'update']);
+        Route::delete('/{id}', [AdminLokerController::class, 'destroy']);
+
+        // Mengelola pelamar
+        Route::get('/{id}/applicants', [AdminLokerController::class, 'getApplicants']);
+        Route::put('/applicants/{id}', [AdminLokerController::class, 'updateApplicantStatus']);
     });
 });
