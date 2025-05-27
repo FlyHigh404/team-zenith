@@ -6,6 +6,7 @@ use App\Models\Loker;
 use App\Models\LokerApplicant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class LokerController extends Controller
 {
@@ -102,10 +103,10 @@ class LokerController extends Controller
     }
 
     /**
-     * Apply for a job
+     * Apply for a job with experience and CV
      * POST /job-listings/{id}/apply
      */
-    public function apply($id)
+    public function apply(Request $request, $id)
     {
         try {
             $user = Auth::user();
@@ -124,11 +125,38 @@ class LokerController extends Controller
                 ], 400);
             }
 
-            // Buat aplikasi baru
+            // Validasi input lamaran
+            $validator = Validator::make($request->all(), [
+                'nama' => 'required|string|max:30',
+                'notelp' => 'required|string|max:25',
+                'alamat' => 'nullable|string|max:50',
+                'tentang' => 'nullable|string',
+                'cv' => 'required|file|mimes:pdf|max:5120', // Max 5MB
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validasi gagal',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Upload CV
+            $cvFile = $request->file('cv');
+            $cvFileName = time() . '_' . $user->id . '_cv.' . $cvFile->getClientOriginalExtension();
+            $cvFile->storeAs('public/cv', $cvFileName);
+
+            // Buat lamaran baru
             $application = LokerApplicant::create([
                 'loker_id' => $id,
                 'user_id' => $user->id,
-                'status' => 'Menunggu'
+                'nama' => $request->nama,
+                'notelp' => $request->notelp,
+                'alamat' => $request->alamat,
+                'tentang' => $request->tentang,
+                'cv' => $cvFileName,
+                'status' => 'Menunggu',
             ]);
 
             return response()->json([

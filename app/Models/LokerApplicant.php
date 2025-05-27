@@ -14,6 +14,11 @@ class LokerApplicant extends Model
     protected $fillable = [
         'loker_id',
         'user_id',
+        'nama',
+        'notelp',
+        'alamat',
+        'tentang',
+        'cv',
         'status',
         'alasan',
     ];
