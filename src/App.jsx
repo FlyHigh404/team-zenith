@@ -19,6 +19,10 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 
+import ForumLayout from './layout/ForumLayout'
+import ForumLoker from './pages/forum/ForumLoker'
+import DetailLoker from './pages/forum/DetailLoker'
+
 function App() {
   return (
     <>
@@ -46,8 +50,13 @@ function App() {
 
           <Route element={<AdminLayout2 />}>
             <Route path="/profil-admin" element={<ProfilAdmin />} />
+            <Route path="/loker/:id" element={<DetailLoker />} />
           </Route>
-            
+
+          <Route element={<ForumLayout />}>
+            <Route path="/forum/loker" element={<ForumLoker />} />
+          </Route>
+
         </Routes>
       </Router>
     </>
