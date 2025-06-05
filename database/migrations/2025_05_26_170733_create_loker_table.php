@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('loker', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('judul', 100);
-            $table->text('desc');
-            $table->enum('durasi', ['Full Time', 'Part Time', 'Contract', 'Internship']);
-            $table->string('lokasi', 100);
-            $table->integer('pengalaman');
+            $table->foreignId('perusahaan_id')->constrained('perusahaan')->onDelete('cascade');
+            $table->string('judul', 100); // Nama lowongan pekerjaan
+            $table->text('desc'); // Deskripsi pekerjaan
+            $table->integer('durasi_bulan'); // Durasi kontrak dalam bulan
+            $table->integer('pengalaman'); // Pengalaman yang dibutuhkan dalam tahun
+            $table->string('lokasi', 100); // Lokasi pekerjaan (provinsi, kota)
+            $table->string('provinsi', 50); // Untuk filtering
+            $table->string('kota', 50); // Untuk filtering
             $table->json('jenisIndustri');
             $table->integer('gaji');
             $table->date('tanggalMulai');

@@ -15,13 +15,17 @@ return new class extends Migration
             $table->id();
             $table->foreignId('loker_id')->constrained('loker')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->char('nama', 30);
-            $table->string('notelp', 25);
-            $table->char('alamat', 50)->nullable();
-            $table->text('tentang')->nullable();
-            $table->char('cv', 50);
-            $table->enum('status', ['Menunggu', 'Diterima', 'Ditolak'])->default('Menunggu');
-            $table->text('alasan')->nullable();
+            $table->string('nama', 100); // Nama lengkap pelamar
+            $table->date('tanggalLahir'); // Tanggal lahir
+            $table->string('notelp', 25); // Nomor telepon
+            $table->string('email', 100); // Email
+            $table->text('alamat'); // Alamat
+            $table->string('provinsi', 50); // Provinsi
+            $table->string('kota', 50); // Kota
+            $table->text('tentang')->nullable(); // Tentang diri pelamar
+            $table->string('cv', 100); // File CV yang diupload
+            $table->enum('status', ['Dilamar', 'Diterima', 'Ditolak'])->default('Dilamar');
+            $table->text('alasan')->nullable(); // Alasan diterima/ditolak
             $table->timestamps();
         });
     }

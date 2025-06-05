@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class LokerApplicant extends Model
 {
@@ -15,12 +16,20 @@ class LokerApplicant extends Model
         'loker_id',
         'user_id',
         'nama',
+        'tanggalLahir',
         'notelp',
+        'email',
         'alamat',
+        'provinsi',
+        'kota',
         'tentang',
         'cv',
         'status',
         'alasan',
+    ];
+
+    protected $casts = [
+        'tanggalLahir' => 'date',
     ];
 
     // Relasi ke loker
@@ -33,5 +42,11 @@ class LokerApplicant extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Hitung umur dari tanggal lahir
+    public function getUmurAttribute()
+    {
+        return Carbon::parse($this->tanggalLahir)->age;
     }
 }
