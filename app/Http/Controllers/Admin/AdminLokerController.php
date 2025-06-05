@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Loker;
 use App\Models\LokerApplicant;
+use App\Models\Perusahaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class AdminLokerController extends Controller
 {
@@ -16,11 +18,36 @@ class AdminLokerController extends Controller
      * Display a listing of job listings
      * GET /admin/job-listings
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $user = Auth::user();
-            $loker = Loker::where('user_id', $user->id)->get();
+
+            // Ambil semua perusahaan milik user
+            $companies = Perusahaan::where('user_id', $user->id)->pluck('id');
+
+            // Query untuk semua loker dari perusahaan yang dimiliki user
+            $query = Loker::whereIn('perusahaan_id', $companies);
+
+            // Filter berdasarkan perusahaan jika disediakan
+            if ($request->has('perusahaan_id')) {
+                $query->where('perusahaan_id', $request->perusahaan_id);
+            }
+
+            $loker = $query->with('perusahaan')->get();
+
+            // Hitung jumlah pelamar untuk setiap lowongan
+            foreach ($loker as $job) {
+                $job->total_applicants = $job->jumlahApplicants();
+
+                // Hitung jumlah per status
+                $job->dilamar_applicants = $job->applicants()->where('status', 'Dilamar')->count();
+                $job->diterima_applicants = $job->applicants()->where('status', 'Diterima')->count();
+                $job->ditolak_applicants = $job->applicants()->where('status', 'Ditolak')->count();
+
+                // Tambahkan kategori durasi
+                $job->durasi_kategori = $job->getDurasiKategoriAttribute();
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -44,13 +71,17 @@ class AdminLokerController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
+                'perusahaan_id' => 'required|exists:perusahaan,id',
                 'judul' => 'required|string|max:100',
                 'desc' => 'required|string',
-                'durasi' => 'required|in:Full Time,Part Time,Contract,Internship',
+                'durasi_bulan' => 'required|integer|min:1',
+                'pengalaman' => 'required|integer|min:0',
                 'lokasi' => 'required|string|max:100',
-                'pengalaman' => 'required|in:< 1 tahun,1-3 tahun,3-5 tahun,> 5 tahun',
-                'jenisIndustri' => 'required|in:Pengelasan,Manufaktur,Konstruksi,Otomotif,Minyak & Gas,Industri Berat,Lainnya',
-                'gaji' => 'required|in:< Rp5.000.000,Rp5.000.000 - Rp10.000.000,> Rp10.000.000,Negosiasi',
+                'provinsi' => 'required|string|max:50',
+                'kota' => 'required|string|max:50',
+                'jenisIndustri' => 'required|array',
+                'jenisIndustri.*' => 'string',
+                'gaji' => 'required|integer|min:0',
                 'tanggalMulai' => 'required|date',
                 'tanggalSelesai' => 'required|date|after_or_equal:tanggalMulai',
                 'kualifikasi' => 'required|string',
@@ -66,8 +97,13 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
+            // Periksa apakah perusahaan ini milik user yang login
+            $user = Auth::user();
+            $perusahaan = Perusahaan::where('id', $request->perusahaan_id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
             $data = $validator->validated();
-            $data['user_id'] = Auth::id();
             $data['createdAt'] = now();
 
             // Handle upload gambar
@@ -102,8 +138,13 @@ class AdminLokerController extends Controller
     {
         try {
             $user = Auth::user();
-            $loker = Loker::where('id', $id)
-                ->where('user_id', $user->id)
+
+            // Ambil semua perusahaan milik user
+            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
+
+            $loker = Loker::whereIn('perusahaan_id', $companyIds)
+                ->where('id', $id)
+                ->with('perusahaan')
                 ->firstOrFail();
 
             return response()->json([
@@ -128,18 +169,26 @@ class AdminLokerController extends Controller
     {
         try {
             $user = Auth::user();
-            $loker = Loker::where('id', $id)
-                ->where('user_id', $user->id)
+
+            // Ambil semua perusahaan milik user
+            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
+
+            $loker = Loker::whereIn('perusahaan_id', $companyIds)
+                ->where('id', $id)
                 ->firstOrFail();
 
             $validator = Validator::make($request->all(), [
+                'perusahaan_id' => 'sometimes|exists:perusahaan,id',
                 'judul' => 'sometimes|string|max:100',
                 'desc' => 'sometimes|string',
-                'durasi' => 'sometimes|in:Full Time,Part Time,Contract,Internship',
+                'durasi_bulan' => 'sometimes|integer|min:1',
+                'pengalaman' => 'sometimes|integer|min:0',
                 'lokasi' => 'sometimes|string|max:100',
-                'pengalaman' => 'sometimes|in:< 1 tahun,1-3 tahun,3-5 tahun,> 5 tahun',
-                'jenisIndustri' => 'sometimes|in:Pengelasan,Manufaktur,Konstruksi,Otomotif,Minyak & Gas,Industri Berat,Lainnya',
-                'gaji' => 'sometimes|in:< Rp5.000.000,Rp5.000.000 - Rp10.000.000,> Rp10.000.000,Negosiasi',
+                'provinsi' => 'sometimes|string|max:50',
+                'kota' => 'sometimes|string|max:50',
+                'jenisIndustri' => 'sometimes|array',
+                'jenisIndustri.*' => 'string',
+                'gaji' => 'sometimes|integer|min:0',
                 'tanggalMulai' => 'sometimes|date',
                 'tanggalSelesai' => 'sometimes|date|after_or_equal:tanggalMulai',
                 'kualifikasi' => 'sometimes|string',
@@ -155,16 +204,21 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
+            // Jika perusahaan_id diubah, pastikan perusahaan baru milik user yang sama
+            if ($request->has('perusahaan_id') && $request->perusahaan_id != $loker->perusahaan_id) {
+                $perusahaan = Perusahaan::where('id', $request->perusahaan_id)
+                    ->where('user_id', $user->id)
+                    ->firstOrFail();
+            }
+
             $data = $validator->validated();
             $data['updatedAt'] = now();
 
             // Handle upload gambar
             if ($request->hasFile('gambar')) {
-                // Hapus gambar lama jika ada
                 if ($loker->gambar) {
                     Storage::delete('public/loker/' . $loker->gambar);
                 }
-
                 $file = $request->file('gambar');
                 $fileName = time() . '_loker.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/loker', $fileName);
@@ -195,13 +249,25 @@ class AdminLokerController extends Controller
     {
         try {
             $user = Auth::user();
-            $loker = Loker::where('id', $id)
-                ->where('user_id', $user->id)
+
+            // Ambil semua perusahaan milik user
+            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
+
+            $loker = Loker::whereIn('perusahaan_id', $companyIds)
+                ->where('id', $id)
                 ->firstOrFail();
 
             // Hapus gambar jika ada
             if ($loker->gambar) {
                 Storage::delete('public/loker/' . $loker->gambar);
+            }
+
+            // Hapus CV dari semua pelamar
+            $applicants = LokerApplicant::where('loker_id', $id)->get();
+            foreach ($applicants as $applicant) {
+                if ($applicant->cv) {
+                    Storage::delete('public/cv/' . $applicant->cv);
+                }
             }
 
             $loker->delete();
@@ -220,20 +286,41 @@ class AdminLokerController extends Controller
     }
 
     /**
-     * Get applicants for a job listing
+     * Get applicants for a job listing with pagination and filtering
      * GET /admin/job-listings/{id}/applicants
      */
-    public function getApplicants($id)
+    public function getApplicants(Request $request, $id)
     {
         try {
             $user = Auth::user();
-            $loker = Loker::where('id', $id)
-                ->where('user_id', $user->id)
+
+            // Ambil semua perusahaan milik user
+            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
+
+            // Periksa apakah loker yang diminta ada dan milik user
+            $loker = Loker::whereIn('perusahaan_id', $companyIds)
+                ->where('id', $id)
                 ->firstOrFail();
 
-            $applicants = LokerApplicant::with('user')
-                ->where('loker_id', $id)
-                ->get();
+            $query = LokerApplicant::with('user')
+                ->where('loker_id', $id);
+
+            // Filter by status if provided
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // Sorting
+            $sortBy = $request->input('sort_by', 'created_at');
+            $sortDir = $request->input('sort_dir', 'desc');
+            $query->orderBy($sortBy, $sortDir);
+
+            $applicants = $query->paginate(10);
+
+            // Tambahkan umur untuk setiap pelamar
+            foreach ($applicants as $applicant) {
+                $applicant->umur = Carbon::parse($applicant->tanggalLahir)->age;
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -273,10 +360,14 @@ class AdminLokerController extends Controller
             }
 
             $applicant = LokerApplicant::findOrFail($id);
+            $user = Auth::user();
+
+            // Ambil semua perusahaan milik user
+            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
 
             // Verifikasi bahwa lowongan ini milik user yang sedang login
-            $loker = Loker::where('id', $applicant->loker_id)
-                ->where('user_id', Auth::id())
+            $loker = Loker::whereIn('perusahaan_id', $companyIds)
+                ->where('id', $applicant->loker_id)
                 ->firstOrFail();
 
             $applicant->update([
@@ -293,6 +384,51 @@ class AdminLokerController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal memperbarui status pelamar',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get statistics of applications
+     * GET /admin/job-listings/statistics
+     */
+    public function getStatistics()
+    {
+        try {
+            $user = Auth::user();
+
+            // Ambil semua perusahaan milik user
+            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
+
+            // Hitung total lowongan yang dimiliki user melalui perusahaannya
+            $totalLoker = Loker::whereIn('perusahaan_id', $companyIds)->count();
+
+            // Hitung total pelamar untuk semua lowongan user
+            $applicants = LokerApplicant::whereHas('loker', function($query) use ($companyIds) {
+                $query->whereIn('perusahaan_id', $companyIds);
+            });
+
+            $totalApplicants = $applicants->count();
+            $dilamarApplicants = (clone $applicants)->where('status', 'Dilamar')->count();
+            $diterimaApplicants = (clone $applicants)->where('status', 'Diterima')->count();
+            $ditolakApplicants = (clone $applicants)->where('status', 'Ditolak')->count();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Statistik berhasil diambil',
+                'data' => [
+                    'total_loker' => $totalLoker,
+                    'total_applicants' => $totalApplicants,
+                    'dilamar_applicants' => $dilamarApplicants,
+                    'diterima_applicants' => $diterimaApplicants,
+                    'ditolak_applicants' => $ditolakApplicants,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil statistik',
                 'error' => $e->getMessage()
             ], 500);
         }
