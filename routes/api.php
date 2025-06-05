@@ -49,13 +49,13 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/', [CertificationController::class, 'destroyAll']);
     });
 
-    // Koneksi routes - menggunakan nama resource connections untuk konsistensi
-    Route::prefix('connections')->group(function () {
-        Route::get('/', [ConnectionController::class, 'index']);
-        Route::get('/{id}', [ConnectionController::class, 'show']);
-        Route::post('/', [ConnectionController::class, 'store']);
-        Route::put('/{id}', [ConnectionController::class, 'update']);
-        Route::delete('/{id?}', [ConnectionController::class, 'destroy']);
+    Route::middleware('auth:api')->prefix('connection')->group(function () {
+        Route::post('ajukan', [ConnectionController::class, 'ajukanKoneksi']);      // Ajukan koneksi
+        Route::post('cancel', [ConnectionController::class, 'batalkanAjuanKoneksi']);      // Batalkan koneksi
+        Route::post('accept', [ConnectionController::class, 'setujuiKoneksi']);      // Terima koneksi
+        Route::post('reject', [ConnectionController::class, 'tolakKoneksi']);        // Tolak koneksi
+        Route::delete('delete', [ConnectionController::class, 'hapusKoneksi']);       // Hapus koneksi
+        Route::get('/', [ConnectionController::class, 'getKoneksi']);                // Get daftar koneksi
     });
 
     // Profile routes

@@ -57,10 +57,9 @@ class ProfileController extends Controller
                 'provinsi' => 'sometimes|string|max:50',
                 'kota' => 'sometimes|string|max:50',
                 'levelProfesional' => 'sometimes|array',
-                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
                 'keahlian' => 'sometimes|array',
-                'keahlian.*' => 'string|in:fillet,pelat,pipe',
                 'fotoProfil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'pekerjaan' => 'sometimes|array'
             ]);
 
             // Kumpulkan field yang akan diupdate
@@ -88,6 +87,11 @@ class ProfileController extends Controller
 
                 $updateData['fotoProfil'] = $fileName;
             }
+
+                    // Tambahkan pekerjaan
+        if ($request->filled('pekerjaan')) {
+            $user->pekerjaan = $request->pekerjaan;
+        }
 
             // Update user
             $user->update($updateData);
