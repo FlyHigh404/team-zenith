@@ -11,6 +11,7 @@ use App\Http\Controllers\ConnectionController;
 use App\Http\Controllers\LokerController;
 use App\Http\Controllers\Admin\AdminCertificationController;
 use App\Http\Controllers\Admin\AdminLokerController;
+use App\Http\Controllers\Admin\PerusahaanController;
 
 // Route untuk mendapatkan data user yang sedang login
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -77,8 +78,22 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('job-listings')->group(function () {
         Route::get('/', [LokerController::class, 'index']);
         Route::get('/{id}', [LokerController::class, 'show']);
-        Route::post('/{id}/apply', [LokerController::class, 'apply']);
-        Route::get('/my-applications', [LokerController::class, 'myApplications']);
+
+        // Routes yang membutuhkan autentikasi
+        Route::middleware('auth:api')->group(function() {
+            Route::post('/{id}/apply', [LokerController::class, 'apply']);
+            Route::get('/my-applications', [LokerController::class, 'myApplications']);
+        });
+    });
+
+    // Company reviews
+    Route::prefix('companies')->group(function () {
+        Route::get('/{id}/reviews', [LokerController::class, 'getCompanyReviews']);
+
+        // Route yang membutuhkan autentikasi
+        Route::middleware('auth:api')->group(function() {
+            Route::post('/{id}/review', [LokerController::class, 'reviewCompany']);
+        });
     });
 });
 
@@ -109,5 +124,17 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
         // Mengelola pelamar
         Route::get('/{id}/applicants', [AdminLokerController::class, 'getApplicants']);
         Route::put('/applicants/{id}', [AdminLokerController::class, 'updateApplicantStatus']);
+
+        // Statistik
+        Route::get('/statistics', [AdminLokerController::class, 'getStatistics']);
+    });
+
+    // Pengelolaan perusahaan
+    Route::prefix('companies')->group(function () {
+        Route::get('/', [PerusahaanController::class, 'index']);
+        Route::post('/', [PerusahaanController::class, 'store']);
+        Route::get('/{id}', [PerusahaanController::class, 'show']);
+        Route::put('/{id}', [PerusahaanController::class, 'update']);
+        Route::delete('/{id}', [PerusahaanController::class, 'destroy']);
     });
 });
