@@ -27,6 +27,7 @@ import UserLayout from './layout/UserLayout'
 import LokerApply from './pages/user/LokerApply'
 
 import ForumSertifikasi from './pages/forum/ForumSertifikasi'
+import SertifikasiApply from './pages/user/SertifikasiApply'
 
 function App() {
   const user = { role: "admin" }; // contoh, bisa dari context, api, redux
@@ -67,6 +68,7 @@ function App() {
 
           <Route element={<UserLayout />}>
             <Route path="/loker/apply/:id" element={<LokerApply />} />
+            <Route path="/sertifikasi/apply/:id" element={<SertifikasiApply />} />
           </Route>
 
         </Routes>
