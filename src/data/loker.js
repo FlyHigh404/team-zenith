@@ -8,7 +8,8 @@ const dataLoker = [
         category: 'Konstruksi',
         experience: '3-6 tahun',
         description: 'Inspeksi sambungan las di proyek migas darat & laut, memastikan standar AWS & ASME.',
-        time: '7 jam yang lalu'
+        time: '7 jam yang lalu',
+        gaji: 'Rp12.000.000'
     },
     {
         id: 2,
@@ -19,7 +20,8 @@ const dataLoker = [
         category: 'Konstruksi',
         experience: '3-6 tahun',
         description: 'Pengelasan struktur baja untuk jembatan dan tangki penyimpanan, dengan posisi vertical-up.',
-        time: '7 jam yang lalu'
+        time: '7 jam yang lalu',
+        gaji: 'Rp12.000.000'
     },
     {
         id: 3,
@@ -30,7 +32,8 @@ const dataLoker = [
         category: 'Konstruksi',
         experience: '3-6 tahun',
         description: 'Aplikasi coating tahan korosi untuk kapal tanker & pipa offshore, sesuai standar NACE.',
-        time: '7 jam yang lalu'
+        time: '7 jam yang lalu',
+        gaji: 'Rp12.000.000'
     }
 ];
 
