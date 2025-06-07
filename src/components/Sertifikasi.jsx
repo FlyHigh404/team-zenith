@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { FaAngleDown } from 'react-icons/fa'
-import FilterLoker from './FilterLoker'
-import DaftarLoker from './DaftarLoker'
+import FilterSertifikasi from './FilterSertifikasi'
+import DaftarSertifikasi from './DaftarSertifikasi';
 
-
-const Loker = () => {
+const Sertifikasi = () => {
     const [selected, setSelected] = useState('Terbaru');
     const [open, setOpen] = useState(false);
 
@@ -43,11 +42,11 @@ const Loker = () => {
                 </div>
             </div>
             <div className='flex my-5 '>
-                <div className='w-[27%]'><FilterLoker /></div>
-                <div className='w-[73%]'><DaftarLoker /></div>
+                <div className='w-[27%]'><FilterSertifikasi /></div>
+                <div className='w-full'><DaftarSertifikasi /></div>
             </div>
         </div>
     )
 }
 
-export default Loker
+export default Sertifikasi

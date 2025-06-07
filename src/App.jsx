@@ -26,6 +26,8 @@ import DetailLoker from './pages/forum/DetailLoker'
 import UserLayout from './layout/UserLayout'
 import LokerApply from './pages/user/LokerApply'
 
+import ForumSertifikasi from './pages/forum/ForumSertifikasi'
+
 function App() {
   const user = { role: "admin" }; // contoh, bisa dari context, api, redux
 
@@ -60,6 +62,7 @@ function App() {
 
           <Route element={<ForumLayout />}>
             <Route path="/forum/loker" element={<ForumLoker />} />
+            <Route path="/forum/sertifikasi" element={<ForumSertifikasi />} />
           </Route>
 
           <Route element={<UserLayout />}>
