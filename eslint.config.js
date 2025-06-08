@@ -1,7 +1,8 @@
 import js from '@eslint/js'
-import globals, { node } from 'globals'
+import pkg from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+const { node, browser } = pkg
 
 export default [
   { ignores: ['dist'] },
@@ -9,7 +10,10 @@ export default [
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...node,
+        ...browser,
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
@@ -26,6 +30,5 @@ export default [
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
-    node: true,
   },
 ]
