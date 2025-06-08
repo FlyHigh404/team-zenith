@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import AdminLayout from './layout/AdminLayout'
@@ -19,36 +18,40 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 
+import { AuthProvider } from './auth/AuthProvider'
+
 function App() {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
+
       <Router>
-        <Routes>
-          {/* Halaman auth tanpa layout */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+        <AuthProvider>
+          <Routes>
+            {/* Halaman auth tanpa layout */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Halaman dengan Navbar */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<LandingPage />} />
-          </Route>
+            {/* Halaman dengan Navbar */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<LandingPage />} />
+            </Route>
 
-          {/* Halaman Admin */}
-          <Route element={<AdminLayout />}>
-            <Route path="/dashboard-admin" element={<DashboardAdmin />} />
-            <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
-            <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
-            <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
-            <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
-          </Route>
+            {/* Halaman Admin */}
+            <Route element={<AdminLayout />}>
+              <Route path="/dashboard-admin" element={<DashboardAdmin />} />
+              <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
+              <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
+              <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
+              <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
+            </Route>
 
-          <Route element={<AdminLayout2 />}>
-            <Route path="/profil-admin" element={<ProfilAdmin />} />
-          </Route>
-            
-        </Routes>
+            <Route element={<AdminLayout2 />}>
+              <Route path="/profil-admin" element={<ProfilAdmin />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </Router>
     </>
   )
