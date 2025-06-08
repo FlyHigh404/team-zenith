@@ -1,0 +1,1931 @@
+{
+	"info": {
+		"_postman_id": "47a0b731-4fda-4ce5-87ee-f3fd83b08c90",
+		"name": "UNEDO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28883508"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"nap@gmail.com\",\r\n  \"username\": \"nap\",\r\n  \"password\": \"password123\",\r\n  \"nama\": \"Tes User\",\r\n  \"birthdate\": \"1995-04-13\",\r\n  \"provinsi\": \"Jawa Timur\",\r\n  \"kota\": \"Surabaya\",\r\n  \"notelp\": \"081234567890\",\r\n  \"levelProfesional\": [\"2G\"],\r\n  \"keahlian\": [\"pipe\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prod}}/api/auth/register",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"nap@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prod}}/api/auth/login",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"alfandwicahya@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{prod}}/api/auth/logout",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{prod}}/api/auth/refresh",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0NzM5ODExMCwiZXhwIjoxNzQ3NDAxNzE5LCJuYmYiOjE3NDczOTgxMTksImp0aSI6IlFQOEVIbTFLQjhZdThzSGMiLCJzdWIiOiIyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9._JGBjfBfjQ8rWSIQrrq8FVBal20Ch5Z7T0nKvA1_bXA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Profil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDMwODg5MTMsImV4cCI6MTc0MzA5MjUxMywibmJmIjoxNzQzMDg4OTEzLCJqdGkiOiJEY1N4dXpSaGdLOWpKTTcwIiwic3ViIjoiMTQiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.8KxEl_esj9d-6aKaURcMwG1ii909jbaWZMfABxBI7MA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "status",
+									"value": "available",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Saya seorang kapitan",
+									"type": "text"
+								},
+								{
+									"key": "fotoProfil",
+									"type": "file",
+									"src": "postman-cloud:///1efb5fb7-1d55-45c0-acf5-303d9810bc9f"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/profile/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"profile",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Foto Profil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVnaXN0ZXIiLCJpYXQiOjE3NDQ2MTQ1NDksImV4cCI6MTc0NDYxODE0OSwibmJmIjoxNzQ0NjE0NTQ5LCJqdGkiOiI3bkNneTloTFk5WDNGUGtNIiwic3ViIjoiMTQiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0._CTTFdasXQ6M26LadTy3T9VoB9P2QN1QkzaVQiY68F0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/profile/photo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"profile",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/auth/me",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Experiences",
+			"item": [
+				{
+					"name": "Upload User Pengalaman",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0Njg1Mzk1MCwiZXhwIjoxNzQ2ODU3NTYzLCJuYmYiOjE3NDY4NTM5NjMsImp0aSI6IkpjMWdlM0dpQlhvVk9ta3giLCJzdWIiOiI1IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxvZ2luX3RpbWUiOjE3NDY4NTM5NTAsInJhbmRvbV9pZCI6IjY4MWVlMDNlMjdlMWUiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy40My40In0.LdAcN4TLth5NcWAPuZMaQyW9V-MjCDUrBQwQ3nIX7QU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "namaPerusahaan",
+									"value": "PT Welder Sentosa Jaya Bahari",
+									"type": "text"
+								},
+								{
+									"key": "posisi",
+									"value": "Plate Welder",
+									"type": "text"
+								},
+								{
+									"key": "levelProfesional",
+									"value": "[\"1F\", \"SMAW\"]",
+									"type": "text"
+								},
+								{
+									"key": "kota",
+									"value": "Surabaya",
+									"type": "text"
+								},
+								{
+									"key": "provinsi",
+									"value": "Jawa Timur",
+									"type": "text"
+								},
+								{
+									"key": "tanggalMulai",
+									"value": "04-2025",
+									"type": "text"
+								},
+								{
+									"key": "tanggalSelesai",
+									"value": "05-2025",
+									"type": "text"
+								},
+								{
+									"key": "masihBekerja",
+									"value": "false",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/pengalaman/upload",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pengalaman",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updated User Pengalaman",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "namaPerusahaan",
+									"value": "CV Anugrah Indah",
+									"type": "text"
+								},
+								{
+									"key": "posisi",
+									"value": "Plate Welder",
+									"type": "text"
+								},
+								{
+									"key": "levelProfesional",
+									"value": "[\"1F\", \"SMAW\"]",
+									"type": "text"
+								},
+								{
+									"key": "kota",
+									"value": "Surabaya",
+									"type": "text"
+								},
+								{
+									"key": "provinsi",
+									"value": "Jawa Timur",
+									"type": "text"
+								},
+								{
+									"key": "tanggalMulai",
+									"value": "04-2025",
+									"type": "text"
+								},
+								{
+									"key": "tanggalSelesai",
+									"value": "05-2025",
+									"type": "text"
+								},
+								{
+									"key": "masihBekerja",
+									"value": "false",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/experiences/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"experiences",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User Pengalaman",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0Njg1Mzk1MCwiZXhwIjoxNzQ2ODU3NTYzLCJuYmYiOjE3NDY4NTM5NjMsImp0aSI6IkpjMWdlM0dpQlhvVk9ta3giLCJzdWIiOiI1IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxvZ2luX3RpbWUiOjE3NDY4NTM5NTAsInJhbmRvbV9pZCI6IjY4MWVlMDNlMjdlMWUiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy40My40In0.LdAcN4TLth5NcWAPuZMaQyW9V-MjCDUrBQwQ3nIX7QU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/pengalaman/delete/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pengalaman",
+								"delete",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pengalaman",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0Njg1Mzk1MCwiZXhwIjoxNzQ2ODU3NTYzLCJuYmYiOjE3NDY4NTM5NjMsImp0aSI6IkpjMWdlM0dpQlhvVk9ta3giLCJzdWIiOiI1IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxvZ2luX3RpbWUiOjE3NDY4NTM5NTAsInJhbmRvbV9pZCI6IjY4MWVlMDNlMjdlMWUiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy40My40In0.LdAcN4TLth5NcWAPuZMaQyW9V-MjCDUrBQwQ3nIX7QU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/pengalaman",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"pengalaman"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Certifications",
+			"item": [
+				{
+					"name": "Upload User Sertifikasi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "namaPerusahaan",
+									"value": "PT Welder Bakti",
+									"type": "text"
+								},
+								{
+									"key": "materiSertifikasi",
+									"value": "Materi Sertifikasi",
+									"type": "text"
+								},
+								{
+									"key": "tanggalMulai",
+									"value": "04-04-2025",
+									"type": "text"
+								},
+								{
+									"key": "tanggalBerakhir",
+									"value": "05-05-2028",
+									"type": "text"
+								},
+								{
+									"key": "media",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Bukti Surat .jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/certifications",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"certifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Sertifikasi",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "namaPerusahaan",
+									"value": "PT Welder Bakti Cahya",
+									"type": "text"
+								},
+								{
+									"key": "materiSertfikasi",
+									"value": "Materi Sertifikasi",
+									"type": "text"
+								},
+								{
+									"key": "tanggalMulai",
+									"value": "03-03-2025",
+									"type": "text"
+								},
+								{
+									"key": "tanggalBerakhir",
+									"value": "04-04-2027",
+									"type": "text"
+								},
+								{
+									"key": "media",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Bukti Surat .jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/certifications/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"certifications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User Serfikasi",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0Njg1Mzk1MCwiZXhwIjoxNzQ2ODU3NTYzLCJuYmYiOjE3NDY4NTM5NjMsImp0aSI6IkpjMWdlM0dpQlhvVk9ta3giLCJzdWIiOiI1IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxvZ2luX3RpbWUiOjE3NDY4NTM5NTAsInJhbmRvbV9pZCI6IjY4MWVlMDNlMjdlMWUiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy40My40In0.LdAcN4TLth5NcWAPuZMaQyW9V-MjCDUrBQwQ3nIX7QU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/sertifikat/delete/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"sertifikat",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sertifikasi",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0Njg1Mzk1MCwiZXhwIjoxNzQ2ODU3NTYzLCJuYmYiOjE3NDY4NTM5NjMsImp0aSI6IkpjMWdlM0dpQlhvVk9ta3giLCJzdWIiOiI1IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxvZ2luX3RpbWUiOjE3NDY4NTM5NTAsInJhbmRvbV9pZCI6IjY4MWVlMDNlMjdlMWUiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy40My40In0.LdAcN4TLth5NcWAPuZMaQyW9V-MjCDUrBQwQ3nIX7QU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/sertifikat",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"sertifikat"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Connections",
+			"item": [
+				{
+					"name": "Ajukan Koneksi",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDcyODkxNjYsImV4cCI6MTc0NzI5Mjc2NiwibmJmIjoxNzQ3Mjg5MTY2LCJqdGkiOiIzdXFsM3Qzd0h4UjdqejhJIiwic3ViIjoiMiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJsb2dpbl90aW1lIjoxNzQ3Mjg5MTY2LCJyYW5kb21faWQiOiI2ODI1ODQ0ZTlmODg4IiwidXNlcl9hZ2VudCI6IlBvc3RtYW5SdW50aW1lLzcuNDMuNCJ9.D2btDJI_USbDfN3ZWUTruZb7fCaDXw4TAXJIV2Nt4Rw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"koneksi_user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/koneksi/ajukan",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"koneksi",
+								"ajukan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Batalkan Ajuan Koneksi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"koneksi_user_id\": \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/connection/cancel",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"connection",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Terima Koneksi",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDYwOTQ3MjUsImV4cCI6MTc0NjA5ODMyNSwibmJmIjoxNzQ2MDk0NzI1LCJqdGkiOiI3TjY4cEhkcjd0aG1DRmdFIiwic3ViIjoiNCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJsb2dpbl90aW1lIjoxNzQ2MDk0NzI1LCJyYW5kb21faWQiOiI2ODEzNGE4NTI1NGNkIiwidXNlcl9hZ2VudCI6IlBvc3RtYW5SdW50aW1lLzcuNDMuNCJ9.lI0Y5LCTyrJ7gvO-wkDdPmcLzYzlBkpH74mwl_J-gLk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"koneksi_user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/koneksi/setujui",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"koneksi",
+								"setujui"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tolak Koneksi",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"koneksi_user_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/connection/reject",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"connection",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hapus Koneksi",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"koneksi_user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/connection/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"connection",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Koneksi",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDYwOTQ0OTcsImV4cCI6MTc0NjA5ODA5NywibmJmIjoxNzQ2MDk0NDk3LCJqdGkiOiJVWDdCOHViMk95dG1mM3RRIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJsb2dpbl90aW1lIjoxNzQ2MDk0NDk3LCJyYW5kb21faWQiOiI2ODEzNDlhMWU1ZDljIiwidXNlcl9hZ2VudCI6IlBvc3RtYW5SdW50aW1lLzcuNDMuNCJ9.Yesotd2FluPUoArwY-s3JDNw5IS1xk6Shqq_zMWFlt4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/koneksi",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"koneksi"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Postingan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "attachment_file",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Hasil Pompeii.jpg"
+								},
+								{
+									"key": "attachment_image",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Bukti Surat .jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjE3MzQsImV4cCI6MTc0ODI2NTMzNCwibmJmIjoxNzQ4MjYxNzM0LCJqdGkiOiJUenJRbFowNmQ3SEsyMnpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LPZ9mLHoNPbQK6_wtd8R7CKPtTvJW9J-5ozcxX8P6iY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "test1",
+									"type": "text"
+								},
+								{
+									"key": "attachment_file",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Bukti Surat .jpg"
+								},
+								{
+									"key": "attachment_image",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Hasil Pompeii.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hapus Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDc3MTI0NjksImV4cCI6MTc0NzcxNjA2OSwibmJmIjoxNzQ3NzEyNDY5LCJqdGkiOiJ5YjN5VzlKZkhtdkVCQU83Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.FlyYfFpnEEyQM0sDYhbAq2cMKcOGIDUM6vGIjq4SCeQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjE3MzQsImV4cCI6MTc0ODI2NTMzNCwibmJmIjoxNzQ4MjYxNzM0LCJqdGkiOiJUenJRbFowNmQ3SEsyMnpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LPZ9mLHoNPbQK6_wtd8R7CKPtTvJW9J-5ozcxX8P6iY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/1/like",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"1",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get View Count Postingan",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgwMDc0MjIsImV4cCI6MTc0ODAxMTAyMiwibmJmIjoxNzQ4MDA3NDIyLCJqdGkiOiJ6U2ExaTRiMXk1eHIzZUNYIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7S-6YQWu8vaK8SWMpiaLZO2eNAT4gpZgyrQdNHX4gkM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/3",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Postingan",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjUzOTcsImV4cCI6MTc0ODI2ODk5NywibmJmIjoxNzQ4MjY1Mzk3LCJqdGkiOiIzQUg5UVBxdDR3TVlqWWY1Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.C6hIlpjMXNMat17YXToM88oZs8iqo1-QkWnGyvGIKRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Comment Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjE3MzQsImV4cCI6MTc0ODI2NTMzNCwibmJmIjoxNzQ4MjYxNzM0LCJqdGkiOiJUenJRbFowNmQ3SEsyMnpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LPZ9mLHoNPbQK6_wtd8R7CKPtTvJW9J-5ozcxX8P6iY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comment",
+									"value": "test commentar",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/1/comment",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"1",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Comment Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjE3MzQsImV4cCI6MTc0ODI2NTMzNCwibmJmIjoxNzQ4MjYxNzM0LCJqdGkiOiJUenJRbFowNmQ3SEsyMnpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LPZ9mLHoNPbQK6_wtd8R7CKPtTvJW9J-5ozcxX8P6iY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"comment\": \"Komentar yang sudah diedit\"\r\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/comment/1/edit",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"comment",
+								"1",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Balas Comment Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjE3MzQsImV4cCI6MTc0ODI2NTMzNCwibmJmIjoxNzQ4MjYxNzM0LCJqdGkiOiJUenJRbFowNmQ3SEsyMnpvIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LPZ9mLHoNPbQK6_wtd8R7CKPtTvJW9J-5ozcxX8P6iY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"comment\": \"Ini adalah balasan komentar untuk komentar 2\"\r\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/comment/2/reply",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"comment",
+								"2",
+								"reply"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Comment Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDgyNjUzOTcsImV4cCI6MTc0ODI2ODk5NywibmJmIjoxNzQ4MjY1Mzk3LCJqdGkiOiIzQUg5UVBxdDR3TVlqWWY1Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.C6hIlpjMXNMat17YXToM88oZs8iqo1-QkWnGyvGIKRE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comment",
+									"value": "test test",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/comment/4/like",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"comment",
+								"4",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hapus Comment Postingan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDc3MTQ3MTIsImV4cCI6MTc0NzcxODMxMiwibmJmIjoxNzQ3NzE0NzEyLCJqdGkiOiJmYWs4NndGZGhjMzkwaEl2Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.viF9ba9mzGrvEEUp9CFz__tfEBRmJAe0U5O4OOriUNc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comment",
+									"value": "test test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/postingan/comment/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"postingan",
+								"comment",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin (Upload Sertifikasi)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcmVmcmVzaCIsImlhdCI6MTc0Njg1Mzk1MCwiZXhwIjoxNzQ2ODU3NTYzLCJuYmYiOjE3NDY4NTM5NjMsImp0aSI6IkpjMWdlM0dpQlhvVk9ta3giLCJzdWIiOiI1IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImxvZ2luX3RpbWUiOjE3NDY4NTM5NTAsInJhbmRvbV9pZCI6IjY4MWVlMDNlMjdlMWUiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy40My40In0.LdAcN4TLth5NcWAPuZMaQyW9V-MjCDUrBQwQ3nIX7QU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "namaPerusahaan",
+									"value": "PT Welder Bakti",
+									"type": "text"
+								},
+								{
+									"key": "materiSertifikasi",
+									"value": "Materi Sertifikasi",
+									"type": "text"
+								},
+								{
+									"key": "tanggalMulai",
+									"value": "04-2025",
+									"type": "text"
+								},
+								{
+									"key": "tanggalBerakhir",
+									"value": "05-2028",
+									"type": "text"
+								},
+								{
+									"key": "media",
+									"type": "file",
+									"src": "/C:/Users/Pongo/Pictures/Masalah DOOMSDAY/Bukti Surat .jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/sertifikat/upload",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"sertifikat",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/admin/certification-lists",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"admin",
+								"certification-lists"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3NDkyMjE1NjMsImV4cCI6MTc0OTIyNTE2MywibmJmIjoxNzQ5MjIxNTYzLCJqdGkiOiJwR1FjZjZVelJPdWJOdTU4Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.sPi8xSPW6wq6xBDl18L9sLvAj1AavlIZGKCSRAvd4y4",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "prod",
+			"value": "http://34.132.16.206",
+			"type": "string"
+		}
+	]
+}
