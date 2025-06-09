@@ -1,26 +1,52 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaRegBookmark, FaHardHat } from 'react-icons/fa'
-import { FaClock, FaToolbox } from "react-icons/fa6";
-import img from '../assets/img/sertifikasi.png'
+import { FaRegBookmark, FaBookmark, FaHardHat } from 'react-icons/fa';
+import { FaClock, FaToolbox } from 'react-icons/fa6';
+import img from '../assets/img/sertifikasi.png';
 import dataLoker from '../data/loker';
 
 const DaftarLoker = () => {
+    const [savedJobs, setSavedJobs] = useState([]);
+
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem('savedJobs')) || [];
+        setSavedJobs(saved);
+    }, []);
+
+    const isBookmarked = (id) => savedJobs.some(job => job.id === id);
+
+    const toggleBookmark = (job) => {
+        let updated;
+        if (isBookmarked(job.id)) {
+            updated = savedJobs.filter(j => j.id !== job.id);
+        } else {
+            updated = [...savedJobs, job];
+        }
+        setSavedJobs(updated);
+        localStorage.setItem('savedJobs', JSON.stringify(updated));
+    };
+
     return (
         <div className='grid grid-cols-3 gap-2'>
             {dataLoker.map((job) => (
-                <Link to={`/loker/${job.id}`} key={job.id}>
-                    <div className='bg-white p-4 rounded-xl hover:shadow-lg transition-all duration-200'>
-                        <div className='flex justify-between'>
-                            <div className='flex space-x-3'>
-                                <img src={img} className='h-12' alt='Company Logo' />
-                                <div>
-                                    <p className='text-sm font-semibold'>{job.company}</p>
-                                    <p className='text-xs font-light'>{job.location}</p>
-                                </div>
+                <div
+                    key={job.id}
+                    className='bg-white p-4 rounded-xl hover:shadow-lg transition-all duration-200 relative'
+                >
+                    <div className='flex justify-between'>
+                        <div className='flex space-x-3'>
+                            <img src={img} className='h-12' alt='Company Logo' />
+                            <div>
+                                <p className='text-sm font-semibold'>{job.company}</p>
+                                <p className='text-xs font-light'>{job.location}</p>
                             </div>
-                            <FaRegBookmark />
                         </div>
+                        <button onClick={() => toggleBookmark(job)}>
+                            {isBookmarked(job.id) ? <FaBookmark /> : <FaRegBookmark />}
+                        </button>
+                    </div>
+
+                    <Link to={`/loker/${job.id}`}>
                         <h1 className='font-semibold text-base my-4'>{job.position}</h1>
                         <div className="grid grid-cols-2 gap-y-3 text-sm text-gray-500 mb-4 w-full">
                             <div className="flex items-center gap-2">
@@ -40,11 +66,11 @@ const DaftarLoker = () => {
                             {job.description}
                         </p>
                         <p className="text-sm text-gray-400 text-end">{job.time}</p>
-                    </div>
-                </Link>
+                    </Link>
+                </div>
             ))}
         </div>
     );
 };
 
-export default DaftarLoker
+export default DaftarLoker;

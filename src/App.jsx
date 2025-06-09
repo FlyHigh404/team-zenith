@@ -28,6 +28,9 @@ import LokerApply from './pages/user/LokerApply'
 
 import ForumSertifikasi from './pages/forum/ForumSertifikasi'
 import SertifikasiApply from './pages/user/SertifikasiApply'
+import SimpanPostingan from './pages/user/SimpanPostingan'
+import SimpanPekerjaan from './pages/user/SimpanPekerjaan'
+import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 
 function App() {
   const user = { role: "admin" }; // contoh, bisa dari context, api, redux
@@ -69,6 +72,9 @@ function App() {
           <Route element={<UserLayout />}>
             <Route path="/loker/apply/:id" element={<LokerApply />} />
             <Route path="/sertifikasi/apply/:id" element={<SertifikasiApply />} />
+            <Route path="/simpan/postingan" element={<SimpanPostingan />} />
+            <Route path="/simpan/pekerjaan" element={<SimpanPekerjaan />} />
+            <Route path="/simpan/sertifikasi" element={<SimpanSertifikasi />} />
           </Route>
 
         </Routes>
