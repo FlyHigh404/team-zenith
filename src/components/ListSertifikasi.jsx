@@ -1,5 +1,6 @@
 import React from 'react'
 import img from '../assets/img/sertifikasi.png'
+import dataSertifikasi from '../data/sertifikasi'
 import { FaRegBookmark, FaClock, FaToolbox, FaCalendar, FaShare, FaLocationDot } from 'react-icons/fa6'
 import { useNavigate } from 'react-router-dom'
 
@@ -45,45 +46,8 @@ const ListSertifikasi = () => {
       </div>
 
       <div className="mt-5 space-y-4">
-        {[
-          {
-            title: 'Sertifikasi SMAW 3G Plate',
-            bidang: 'Welder',
-            keahlian: 'Plate',
-            tanggal: '12 Januari 2025',
-            waktu: '08:00 - 10:00 WIB',
-            lokasi: 'Jakarta',
-            metode: 'Online',
-          },
-          {
-            title: 'Sertifikasi TIG 6G Pipe',
-            bidang: 'Welder',
-            keahlian: 'Pipe',
-            tanggal: '28 Februari 2025',
-            waktu: '10:00 - 12:00 WIB',
-            lokasi: 'Surabaya',
-            metode: 'Offline',
-          },
-          {
-            title: 'Sertifikasi MIG 2G Structural',
-            bidang: 'Welder',
-            keahlian: 'Structural',
-            tanggal: '15 Maret 2025',
-            waktu: '13:00 - 15:00 WIB',
-            lokasi: 'Bandung',
-            metode: 'Online',
-          },
-          {
-            title: 'Sertifikasi Welding Inspector Level 1',
-            bidang: 'Inspector',
-            keahlian: 'Inspector',
-            tanggal: '22 Maret 2025',
-            waktu: '09:00 - 11:00 WIB',
-            lokasi: 'Jakarta',
-            metode: 'Offline',
-          },
-        ].map((item, index) => (
-          <div key={index} className="flex items-center justify-between bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
+        {dataSertifikasi.map((item) => (
+          <div key={item.id} className="flex items-center justify-between bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
             <div className="p-2">
               <img src={img} alt="" />
             </div>
@@ -109,13 +73,13 @@ const ListSertifikasi = () => {
             </div>
 
             <div className="p-2">
-              <button className="btn btn-outline outline-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white rounded-full px-10" onClick={() => document.getElementById(`detailModal-${index}`).showModal()}>
+              <button className="btn btn-outline outline-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white rounded-full px-10" onClick={() => document.getElementById(`detailModal-${item.id}`).showModal()}>
                 Lihat Detail
               </button>
             </div>
 
             {/* Detail Modal */}
-            <dialog id={`detailModal-${index}`} className="modal">
+            <dialog id={`detailModal-${item.id}`} className="modal">
               <div className="modal-box w-9/12 max-w-2xl">
                 <div className="flex justify-between">
                   <div className="flex gap-4">
@@ -155,7 +119,7 @@ const ListSertifikasi = () => {
                 </div>
 
                 <div className="modal-action flex justify-between">
-                  <button className="btn text-gray-400" type="button" onClick={() => document.getElementById(`editModal-${index}`).showModal()}>
+                  <button className="btn text-gray-400" type="button" onClick={() => document.getElementById(`editModal-${item.id}`).showModal()}>
                     Edit
                   </button>
                   <button className="btn text-[#86CEEB]" onClick={() => navigate('/pelamar-sertifikasi')}>
@@ -166,7 +130,7 @@ const ListSertifikasi = () => {
             </dialog>
 
             {/* Edit Modal */}
-            <dialog id={`editModal-${index}`} className="modal">
+            <dialog id={`editModal-${item.id}`} className="modal">
               <div className="modal-box">
                 <form method="dialog">
                   <div className="flex justify-between">
