@@ -5,7 +5,7 @@ import { FaClock, FaToolbox } from "react-icons/fa6";
 import img from '../assets/img/sertifikasi.png'
 import dataLoker from '../data/loker';
 
-const ListLoker = () => {
+const DaftarLoker = () => {
     return (
         <div className='grid grid-cols-3 gap-2'>
             {dataLoker.map((job) => (
@@ -47,4 +47,4 @@ const ListLoker = () => {
     );
 };
 
-export default ListLoker
+export default DaftarLoker
