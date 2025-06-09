@@ -44,7 +44,7 @@ function Navbar() {
 
             {/* Menu untuk Desktop */}
             <ul className="hidden lg:flex space-x-12 text-gray-700 font-medium">
-                <li className="hover:text-gray-900 cursor-pointer text-base"><a href="#beranda">Beranda</a></li>
+                <li className="hover:text-gray-900 cursor-pointer text-base"><a href="/beranda-admin">Beranda</a></li>
                 <li className="hover:text-gray-900 cursor-pointer text-base"><a href="#pesan">Pesan</a></li>
             </ul>
 
@@ -83,7 +83,7 @@ function Navbar() {
 
                             </div>
                             <ul className="p-2">
-                                <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                                <NavLink to="/profil-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                                     <FaUser /><span>Profil</span>
                                 </NavLink>
                                 <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">

@@ -6,6 +6,7 @@ import AdminLayout2 from './layout/AdminLayout2'
 import DashboardAdmin from './pages/admin/DashboardAdmin'
 import PekerjaanAdmin from './pages/admin/PekerjaanAdmin'
 import ProfilAdmin from './pages/admin/ProfilAdmin'
+import BerandaAdmin from './pages/admin/BerandaAdmin'
 import SertifikasiAdmin from './pages/admin/SertifikasiAdmin'
 import PelamarSertifikasi from './pages/admin/PelamarSertifikasi'
 import PelamarPekerjaan from './pages/admin/PelamarPekerjaan'
@@ -46,6 +47,7 @@ function App() {
 
           <Route element={<AdminLayout2 />}>
             <Route path="/profil-admin" element={<ProfilAdmin />} />
+            <Route path="/beranda-admin" element={<BerandaAdmin />} />
           </Route>
             
         </Routes>
