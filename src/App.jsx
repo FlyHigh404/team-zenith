@@ -34,7 +34,7 @@ import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 import { AuthProvider } from './auth/AuthProvider'
 
 function App() {
-  const user = { role: 'admin' } // contoh, bisa dari context, api, redux
+  // const user = { role: 'admin' } contoh, bisa dari context, api, redux
 
   return (
     <>
