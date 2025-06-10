@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RegisterFormStep1 from '../components/RegisterFormStep1'
 import RegisterFormStep2 from '../components/RegisterFormStep2'
 import img from '../assets/img/register.png'
-import Footer from '../components/Footer'
 
 const Register = () => {
   const [step, setStep] = useState(1)
@@ -31,10 +30,6 @@ const Register = () => {
       <div className="hidden lg:flex w-[45%] justify-end">
         <img src={img} className="sticky top-0 h-screen object-cover rounded-l-3xl" alt="" />
       </div>
-
-      {/* <div className="hidden md:block lg:hidden w-full">
-        <Footer />
-      </div> */}
     </div>
   )
 }
