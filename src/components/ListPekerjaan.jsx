@@ -1,5 +1,6 @@
 import React from 'react'
 import img from '../assets/img/sertifikasi.png'
+import dataLoker from '../data/loker';
 import { FaRegBookmark, FaClock, FaToolbox } from "react-icons/fa6";
 import { FaHardHat } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
@@ -63,66 +64,29 @@ const ListPekerjaan = () => {
             </div>
 
             <div className="mt-5 space-y-4">
-                {[
-                    {
-                        title: 'Welder - SMAW 3',
-                        perusahaan: 'PT Karya Baja',
-                        industri: 'Konstruksi',
-                        lokasi: 'Cilegon',
-                        waktu: 'Jangka Panjang',
-                        bidang: 'konstruksi',
-                        pengalaman: '3-6 tahun'
-                    },
-                    {
-                        title: 'Welding Inspector',
-                        perusahaan: 'PT Petro Weldindo',
-                        industri: 'Konstruksi',
-                        lokasi: 'Surabaya',
-                        waktu: 'Jangka Panjang',
-                        bidang: 'konstruksi',
-                        pengalaman: '3-6 tahun'
-                    },
-                    {
-                        title: 'Painter - Industrial Coating',
-                        perusahaan: 'PT Energi Maritim',
-                        industri: 'Konstruksi',
-                        lokasi: 'Batam',
-                        waktu: 'Jangka Panjang',
-                        bidang: 'konstruksi',
-                        pengalaman: '3-6 tahun'
-                    },
-                    {
-                        title: 'Welder - GTAW Stainless',
-                        perusahaan: 'PT Surya Teknik',
-                        industri: 'Konstruksi',
-                        lokasi: 'Jakarta Utara',
-                        waktu: 'Jangka Panjang',
-                        bidang: 'konstruksi',
-                        pengalaman: '3-6 tahun'
-                    }
-                ].map((item, index) => (
-                    <div key={index} className="flex items-center justify-between bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
+                {dataLoker.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
                         <div className='p-2'>
                             <img src={img} alt="" />
                         </div>
 
                         <div className="flex flex-col w-[200px]">
-                            <p className="font-medium text-base truncate">{item.title}</p>
+                            <p className="font-medium text-base truncate">{item.position}</p>
                             <p className="text-sm text-sky-400">Bidang Pekerjaan</p>
                         </div>
 
                         <div className="flex flex-col w-[200px]">
-                            <p className="font-medium text-base">{item.perusahaan}</p>
+                            <p className="font-medium text-base">{item.company}</p>
                             <p className="text-sm text-sky-400">Perusahaan</p>
                         </div>
 
                         <div className="flex flex-col w-[100px]">
-                            <p className="font-medium text-base">{item.industri}</p>
+                            <p className="font-medium text-base">{item.category}</p>
                             <p className="text-sm text-sky-400">Industri</p>
                         </div>
 
                         <div className="flex flex-col w-[150px]">
-                            <p className="font-medium text-base">{item.lokasi}</p>
+                            <p className="font-medium text-base">{item.location}</p>
                             <p className="text-sm text-sky-400">Lokasi</p>
                         </div>
 
@@ -143,29 +107,29 @@ const ListPekerjaan = () => {
                                     <div className="flex items-center gap-4">
                                         <img src={img} alt="Company Logo" className="w-12 h-12 rounded-md bg-gray-200" />
                                         <div>
-                                            <p className="font-semibold text-base">{item.perusahaan}</p>
-                                            <p className="text-sm text-gray-500">{item.lokasi}</p>
+                                            <p className="font-semibold text-base">{item.company}</p>
+                                            <p className="text-sm text-gray-500">{item.location}</p>
                                         </div>
                                     </div>
                                     <FaRegBookmark className="text-gray-400 text-lg mt-1" />
                                 </div>
 
                                 {/* Title */}
-                                <p className="text-lg font-medium text-gray-900 mb-2">{item.title}</p>
+                                <p className="text-lg font-medium text-gray-900 mb-2">{item.position}</p>
 
                                 {/* Info Grid */}
                                 <div className="grid grid-cols-2 gap-y-3 text-sm text-gray-500 mb-4">
                                     <div className="flex items-center gap-2">
                                         <FaClock className="text-gray-400" />
-                                        <span>{item.waktu}</span>
+                                        <span>{item.duration}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <FaHardHat className="text-gray-400" />
-                                        <span>{item.bidang}</span>
+                                        <span>{item.category}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <FaToolbox className="text-gray-400" />
-                                        <span>{item.pengalaman}</span>
+                                        <span>{item.experience}</span>
                                     </div>
                                 </div>
 
