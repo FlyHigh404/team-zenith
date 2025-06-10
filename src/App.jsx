@@ -1,4 +1,3 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import AdminLayout from './layout/AdminLayout'
@@ -32,52 +31,56 @@ import SimpanPostingan from './pages/user/SimpanPostingan'
 import SimpanPekerjaan from './pages/user/SimpanPekerjaan'
 import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 
+import { AuthProvider } from './auth/AuthProvider'
+
 function App() {
-  const user = { role: "admin" }; // contoh, bisa dari context, api, redux
+  // const user = { role: 'admin' } contoh, bisa dari context, api, redux
 
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
+
       <Router>
-        <Routes>
-          {/* Halaman auth tanpa layout */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+        <AuthProvider>
+          <Routes>
+            {/* Halaman auth tanpa layout */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Halaman dengan Navbar */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<LandingPage />} />
-          </Route>
+            {/* Halaman dengan Navbar */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<LandingPage />} />
+            </Route>
 
-          {/* Halaman Admin */}
-          <Route element={<AdminLayout />}>
-            <Route path="/dashboard-admin" element={<DashboardAdmin />} />
-            <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
-            <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
-            <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
-            <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
-          </Route>
+            {/* Halaman Admin */}
+            <Route element={<AdminLayout />}>
+              <Route path="/dashboard-admin" element={<DashboardAdmin />} />
+              <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
+              <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
+              <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
+              <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
+            </Route>
 
-          <Route element={<AdminLayout2 />}>
-            <Route path="/profil-admin" element={<ProfilAdmin />} />
-            <Route path="/loker/:id" element={<DetailLoker />} />
-          </Route>
+            <Route element={<AdminLayout2 />}>
+              <Route path="/profil-admin" element={<ProfilAdmin />} />
+              <Route path="/loker/:id" element={<DetailLoker />} />
+            </Route>
 
-          <Route element={<ForumLayout />}>
-            <Route path="/forum/loker" element={<ForumLoker />} />
-            <Route path="/forum/sertifikasi" element={<ForumSertifikasi />} />
-          </Route>
+            <Route element={<ForumLayout />}>
+              <Route path="/forum/loker" element={<ForumLoker />} />
+              <Route path="/forum/sertifikasi" element={<ForumSertifikasi />} />
+            </Route>
 
-          <Route element={<UserLayout />}>
-            <Route path="/loker/apply/:id" element={<LokerApply />} />
-            <Route path="/sertifikasi/apply/:id" element={<SertifikasiApply />} />
-            <Route path="/simpan/postingan" element={<SimpanPostingan />} />
-            <Route path="/simpan/pekerjaan" element={<SimpanPekerjaan />} />
-            <Route path="/simpan/sertifikasi" element={<SimpanSertifikasi />} />
-          </Route>
-
-        </Routes>
+            <Route element={<UserLayout />}>
+              <Route path="/loker/apply/:id" element={<LokerApply />} />
+              <Route path="/sertifikasi/apply/:id" element={<SertifikasiApply />} />
+              <Route path="/simpan/postingan" element={<SimpanPostingan />} />
+              <Route path="/simpan/pekerjaan" element={<SimpanPekerjaan />} />
+              <Route path="/simpan/sertifikasi" element={<SimpanSertifikasi />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </Router>
     </>
   )

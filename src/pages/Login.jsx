@@ -1,50 +1,35 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md'
-import axios from 'axios'
+import { login } from '../api/auth'
+import { useAuth } from '../auth/useAuth'
 import { toast } from 'react-hot-toast'
 import img from '../assets/img/register.png'
 
 const Login = () => {
   const navigate = useNavigate()
+  const { loginUser } = useAuth()
+
   const [showPassword, setShowPassword] = useState(false)
   const [rememberCheck, setRememberCheck] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState(() => {
-    // return location.state || JSON.parse(localStorage.getItem("formData")) || {
-    //     email: "",
-    //     password: "",
-    // };
-
     const saved = localStorage.getItem('rememberedUser')
     if (saved) {
       const parsed = JSON.parse(saved)
       const now = new Date().getTime()
-      const expiresAt = parsed.expiresAt
-
-      if (now < expiresAt) {
-        return {
-          email: parsed.email,
-          password: parsed.password,
-        }
+      if (now < parsed.expiresAt) {
+        return { email: parsed.email, password: parsed.password }
       } else {
         localStorage.removeItem('rememberedUser')
       }
     }
-    return {
-      email: '',
-      password: '',
-    }
+    return { email: '', password: '' }
   })
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
 
   const handleRegister = () => {
     navigate('/register')
@@ -56,44 +41,36 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (loading) return
+    setLoading(true)
     try {
-      const response = await axios.post('https://api.flyhigh.web.id/api/auth/login', {
+      const res = await login({
         email: formData.email,
         password: formData.password,
       })
 
-      localStorage.setItem('token', response.data.token) //Simpan token ke localStorage
+      console.log('[Login Success] response:', res)
 
-      //ingat untuk 14 hari
-      if (rememberCheck) {
-        const fourteenDays = 14 * 24 * 60 * 60 * 1000
-        const expiresAt = new Date().getTime() + fourteenDays
-
-        localStorage.setItem(
-          'rememberedUser',
-          JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-            expiresAt: expiresAt,
-          })
-        )
+      if (res.access_token) {
+        loginUser(res.access_token)
+        toast.success('Login berhasil!')
+        navigate('/dashboard-admin')
       } else {
-        localStorage.removeItem('rememberedUser')
+        console.warn('[Login Gagal] access_token tidak ditemukan dalam response.')
+        toast.error('Login gagal: token tidak ditemukan.')
       }
-
-      toast.success('Login successful!')
-      navigate('/')
     } catch (error) {
-      if (error.response && error.response.data.errors) {
-        Object.values(error.response.data.errors).forEach((err) => {
-          toast.error(err[0])
-        })
-      } else if (error.response && error.response.status === 401) {
-        toast.error('Incorrect email or password.')
+      console.error('[Login Error]', error)
+
+      if (error.response?.status === 401) {
+        toast.error('Email atau password salah.')
+      } else if (error.response?.data?.errors) {
+        Object.values(error.response.data.errors).forEach((err) => toast.error(err[0]))
       } else {
-        toast.error('Login failed! Please try again.')
+        toast.error('Terjadi kesalahan saat login.')
       }
     }
+    setLoading(false)
   }
 
   return (
@@ -111,7 +88,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Masukkan alamat email Anda"
-              className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               required
             />
           </div>
@@ -125,7 +102,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Buat kata sandi Anda"
-                className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 required
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 cursor-pointer text-gray-500 dark:text-slate-300">
@@ -146,9 +123,25 @@ const Login = () => {
             </span>
           </div>
 
-          <button type="submit" className="btn btn-primary bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]">
-            Masuk sekarang
-          </button>
+          {loading ? (
+            <button className="btn btn-primary border border-[#86CEEB] bg-[#659BB0] dark:bg-[#2F4852] w-full text-sm md:text-base lg:text-sm rounded-[10px] disabled">
+              <svg aria-hidden="true" className="inline w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+              Menunggu
+            </button>
+          ) : (
+            <button type="submit" className="btn btn-primary bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]">
+              Masuk sekarang
+            </button>
+          )}
         </form>
 
         <div className="divider my-4 font-semibold text-xs text-gray-400">atau</div>
