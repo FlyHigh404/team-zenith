@@ -27,7 +27,6 @@ class AuthController extends Controller
                     'required',
                     'email',
                     'unique:users,email',
-                    'regex:/^[a-zA-Z0-9._%+-]+@((gmail|yahoo|outlook|hotmail|icloud|aol|zoho|mail|protonmail|yandex|gmx)\.(com|id|edu|org|net))$/'
                 ],
                 'username' => 'required|string|min:3|max:20|unique:users,username',
                 'password' => 'required|string|min:6',
@@ -61,7 +60,6 @@ class AuthController extends Controller
                 'message' => 'Registrasi berhasil! Silahkan login.',
                 'data' => $user
             ], 201);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'status' => 'error',
@@ -116,7 +114,6 @@ class AuthController extends Controller
                 'expires_in' => config('jwt.ttl', 60) * 60,
                 'user' => $user
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -142,7 +139,6 @@ class AuthController extends Controller
                 'status' => 'success',
                 'message' => 'Logout berhasil'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -170,7 +166,6 @@ class AuthController extends Controller
                 'expires_in' => config('jwt.ttl', 60) * 60,
                 'user' => $user
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -193,7 +188,6 @@ class AuthController extends Controller
                 'message' => 'Data pengguna berhasil diambil',
                 'data' => $user
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
