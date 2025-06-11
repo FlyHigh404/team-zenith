@@ -93,13 +93,50 @@ class PostinganController extends Controller
     }
 
     // Like Postingan
-    public function like($id)
+public function like($id)
+{
+    // Cek apakah postingan dengan ID tersebut ada
+    $postingan = Postingan::find($id);
+
+    if (!$postingan) {
+        return response()->json([
+            'status' => 'not_found',
+            'message' => 'Postingan dengan ID tersebut tidak ditemukan.',
+        ], 404);
+    }
+
+    // Jika ada, buat like-nya
+    $like = PostinganLike::firstOrCreate([
+        'user_id' => Auth::id(),
+        'postingan_id' => $id,
+    ]);
+
+    return response()->json([
+        'status' => 'liked',
+        'data' => $like,
+    ]);
+}
+
+    // Unlike Postingan
+    public function unlike($id)
     {
-        $like = PostinganLike::firstOrCreate([
-            'user_id' => Auth::id(),
-            'postingan_id' => $id,
+        $like = PostinganLike::where('user_id', Auth::id())
+            ->where('postingan_id', $id)
+            ->first();
+
+        if (!$like) {
+            return response()->json([
+                'status' => 'not_found',
+                'message' => 'Like not found or not owned by user',
+            ], 404);
+        }
+
+        $like->delete();
+
+        return response()->json([
+            'status' => 'unliked',
+            'message' => 'Like successfully removed',
         ]);
-        return response()->json($like);
     }
 
     // Comment Postingan
@@ -177,14 +214,49 @@ class PostinganController extends Controller
     // Like Comment Postingan
     public function likeComment($id)
     {
+        // Cek apakah komentar dengan ID tersebut ada
+        $comment = PostinganComment::find($id);
+
+        if (!$comment) {
+            return response()->json([
+                'status' => 'not_found',
+                'message' => 'Komentar dengan ID tersebut tidak ditemukan.',
+            ], 404);
+        }
+
+        // Jika ada, baru lakukan like
         $like = PostinganCommentLike::firstOrCreate([
             'user_id' => Auth::id(),
             'postingan_comment_id' => $id,
         ]);
 
-        return response()->json($like);
+        return response()->json([
+            'status' => 'liked',
+            'data' => $like,
+        ]);
     }
 
+    // Unlike Comment Postingan
+    public function unlikeComment($id)
+    {
+        $like = PostinganCommentLike::where('user_id', Auth::id())
+            ->where('postingan_comment_id', $id)
+            ->first();
+
+        if (!$like) {
+            return response()->json([
+                'status' => 'not_found',
+                'message' => 'Like not found or not owned by user',
+            ], 404);
+        }
+
+        $like->delete();
+
+        return response()->json([
+            'status' => 'unliked',
+            'message' => 'Comment like successfully removed',
+        ]);
+    }
 
     // View Count Postingan
     public function show($id)

@@ -462,80 +462,68 @@ class ConnectionController extends Controller
     /**
      * Setujui permintaan koneksi.
      */
-    public function setujuiKoneksi(Request $request)
-    {
-        $request->validate([
-            'koneksi_user_id' => 'required|exists:users,id',
-        ]);
+public function setujuiKoneksi(Request $request)
+{
+    $request->validate([
+        'koneksi_user_id' => 'required|exists:users,id',
+    ]);
 
-        $user = Auth::user();
+    $user = Auth::user();
 
-        // Cari permintaan koneksi
-        $koneksi = Connection::where('user_id', $request->koneksi_user_id)
-            ->where('koneksi_user_id', $user->id)
-            ->where('status', 'diajukan')
-            ->first();
+    // Cari permintaan koneksi yang diajukan oleh user lain ke user yang login
+    $koneksi = Connection::where('user_id', $request->koneksi_user_id)
+        ->where('koneksi_user_id', $user->id)
+        ->where('status', 'diajukan')
+        ->first();
 
-        if (!$koneksi) {
-            return response()->json([
-                'message' => 'Permintaan koneksi tidak ditemukan.',
-            ], 404);
-        }
-
-        // Cek apakah permintaan koneksi sudah diterima (sudah saling koneksi)
-        $existingKoneksi = Connection::where('user_id', $user->id)
-            ->where('koneksi_user_id', $request->koneksi_user_id)
-            ->first();
-
-        if ($existingKoneksi) {
-            return response()->json([
-                'message' => 'Anda sudah saling koneksi.',
-            ], 400);
-        }
-
-        // Tambahkan koneksi balik untuk menyetujui permintaan
-        Connection::create([
-            'user_id' => $user->id,
-            'koneksi_user_id' => $request->koneksi_user_id,
-            'status' => 'diterima',
-            'tanggalKoneksi' => now(),
-        ]);
-
+    if (!$koneksi) {
         return response()->json([
-            'message' => 'Permintaan koneksi berhasil disetujui.',
-        ]);
+            'message' => 'Permintaan koneksi tidak ditemukan.',
+        ], 404);
     }
+
+    // Update status permintaan koneksi menjadi diterima
+    $koneksi->update([
+        'status' => 'diterima',
+        'tanggalKoneksi' => now(),
+    ]);
+
+    return response()->json([
+        'message' => 'Permintaan koneksi berhasil disetujui.',
+    ]);
+}
 
     /**
      * Tolak permintaan koneksi.
      */
-    public function tolakKoneksi(Request $request)
-    {
-        $request->validate([
-            'koneksi_user_id' => 'required|exists:users,id',
-        ]);
+public function tolakKoneksi(Request $request)
+{
+    $request->validate([
+        'koneksi_user_id' => 'required|exists:users,id',
+    ]);
 
-        $user = Auth::user();
+    $user = Auth::user();
 
-        // Cari permintaan koneksi
-        $koneksi = Connection::where('user_id', $request->koneksi_user_id)
-            ->where('koneksi_user_id', $user->id)
-            ->where('status', 'diajukan')
-            ->first();
+    // Cari permintaan koneksi yang diajukan ke user yang sedang login
+    $koneksi = Connection::where('user_id', $request->koneksi_user_id)
+        ->where('koneksi_user_id', $user->id)
+        ->where('status', 'diajukan')
+        ->first();
 
-        if (!$koneksi) {
-            return response()->json([
-                'message' => 'Permintaan koneksi tidak ditemukan.',
-            ], 404);
-        }
+    if (!$koneksi) {
+        return response()->json([
+            'message' => 'Permintaan koneksi tidak ditemukan.',
+        ], 404);
+    }
 
-        // Perbarui status koneksi menjadi "ditolak"
-    $koneksi->update(['status' => 'ditolak']);
+    // Hapus permintaan koneksi dari database
+    $koneksi->delete();
 
     return response()->json([
-        'message' => 'Permintaan koneksi berhasil ditolak.',
+        'message' => 'Permintaan koneksi berhasil ditolak dan dihapus.',
     ]);
-    }
+}
+
 
         /**
      * Hapus koneksi yang sudah saling terhubung.
