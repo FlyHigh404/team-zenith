@@ -60,4 +60,9 @@ class AdminCertification extends Model
     {
         return $this->jumlahPendaftar() < $this->kuota;
     }
+    
+    public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class, 'bookmarkable');
+    }
 }

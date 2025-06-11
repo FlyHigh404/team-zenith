@@ -77,6 +77,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Connection::class, 'koneksi_user_id');
     }
 
+    // Relasi bookmark
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+
     // Relasi dengan authentication
     public function authentication()
     {

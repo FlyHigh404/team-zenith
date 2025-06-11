@@ -61,6 +61,31 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('delete', [Controllers\ConnectionController::class, 'hapusKoneksi']);
     });
 
+    // Postingan routes
+    Route::middleware('auth')->group(function () {
+        Route::post('/postingan', [Controllers\PostinganController::class, 'store']);
+        Route::post('/postingan/{id}', [Controllers\PostinganController::class, 'update']);
+        Route::delete('/postingan/{id}', [Controllers\PostinganController::class, 'destroy']);
+        Route::post('/postingan/{id}/like', [Controllers\PostinganController::class, 'like']);
+        Route::delete('/postingan/{id}/unlike', [Controllers\PostinganController::class, 'unlike']);
+        Route::post('/postingan/{id}/comment', [Controllers\PostinganController::class, 'comment']);
+        Route::delete('/postingan/comment/{id}', [Controllers\PostinganController::class, 'destroyComment']);
+        Route::put('/postingan/comment/{id}/edit', [Controllers\PostinganController::class, 'updateComment']);
+        Route::post('/postingan/comment/{id}/reply', [Controllers\PostinganController::class, 'replyComment']);
+        Route::post('/postingan/comment/{id}/like', [Controllers\PostinganController::class, 'likeComment']);
+        Route::delete('/postingan/comment/{id}/unlike', [Controllers\PostinganController::class, 'unlikeComment']);
+        Route::get('/postingan/{id}', [Controllers\PostinganController::class, 'show']);
+        Route::get('/postingan', [Controllers\PostinganController::class, 'index']);
+    });
+
+    // Bookmark routes
+    Route::prefix('bookmarks')->group(function () {
+        Route::post('/', [Controllers\BookmarkController::class, 'storeBookmark']);
+        Route::delete('/', [Controllers\BookmarkController::class, 'destroy']);
+        Route::get('/', [Controllers\BookmarkController::class, 'index']);
+    });
+
+
     // Lowongan kerja routes
     Route::prefix('job-listings')->group(function () {
         Route::get('/', [Controllers\LokerController::class, 'index']);

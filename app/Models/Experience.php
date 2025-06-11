@@ -36,4 +36,9 @@ class Experience extends Model
     {
         return $this->belongsTo(User::class, 'users_id');
     }
+
+        public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class, 'bookmarkable');
+    }
 }
