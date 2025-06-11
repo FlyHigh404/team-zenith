@@ -23,4 +23,9 @@ class Postingan extends Model
                     'user',
                     'likes'               // Tambahkan ini
                 ]);}
+    
+    public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class, 'bookmarkable');
+    }
 }

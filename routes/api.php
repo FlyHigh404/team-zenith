@@ -78,6 +78,12 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/postingan', [Controllers\PostinganController::class, 'index']);
     });
 
+    // Bookmark routes
+    Route::prefix('bookmarks')->group(function () {
+        Route::post('/', [Controllers\BookmarkController::class, 'storeBookmark']);
+        Route::delete('/', [Controllers\BookmarkController::class, 'destroy']);
+        Route::get('/', [Controllers\BookmarkController::class, 'index']);
+    });
 
 
     // Lowongan kerja routes
