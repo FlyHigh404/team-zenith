@@ -66,16 +66,24 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...raw } = formData
 
-    const payload = {
+    console.log('Form Data:', formData)
+
+    let payload = {
       ...raw,
       levelProfesional: Array.isArray(raw.levelProfesional) ? raw.levelProfesional : [raw.levelProfesional],
       keahlian: Array.isArray(raw.keahlian) ? raw.keahlian : [raw.keahlian],
     }
 
+    payload.levelProfesional = kelasSorting.filter((item) => payload.levelProfesional.includes(item))
+
+    Object.keys(payload).forEach((key) => (payload[key] == null || payload[key] === '') && delete payload[key])
+
     try {
-      const res = await register(payload)
+      await register(payload)
       toast.success('Registration successful!')
       localStorage.removeItem('formData')
       navigate('/')
@@ -84,6 +92,7 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
         const errorMessage = Object.values(error.response.data.errors)
           .map((err) => err[0])
           .join('\n')
+        console.error('Registration error:', payload)
         toast.error(errorMessage || 'Registration failed!')
       } else {
         toast.error('Registration failed!')
@@ -97,9 +106,12 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
     { value: '3G', label: 'Kelas 3 (3G)' },
   ]
 
+  const kelasSorting = ['1G', '2G', '3G']
+
   const keahlianOptions = [
     { value: 'plate', label: 'Spesialis Pelat' },
     { value: 'pipe', label: 'Spesialis Pipa' },
+    { value: 'fillet', label: 'Spesialis Fillet' },
   ]
 
   return (
