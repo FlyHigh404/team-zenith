@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - dev-frontend
+  push:
+    branches:
+      - dev-frontend
 
 jobs:
   test:
