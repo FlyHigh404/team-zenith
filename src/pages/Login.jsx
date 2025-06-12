@@ -138,7 +138,10 @@ const Login = () => {
               Menunggu
             </button>
           ) : (
-            <button type="submit" className="btn btn-primary bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]">
+            <button
+              type="submit"
+              className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]"
+            >
               Masuk sekarang
             </button>
           )}
