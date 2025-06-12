@@ -1,88 +1,106 @@
-import { useState, useEffect, useCallback } from 'react'
-import { FaArrowLeftLong } from 'react-icons/fa6'
-import { toast } from 'react-hot-toast'
-import { register } from '../api/auth'
+import { useState, useEffect, useCallback } from 'react';
+import { FaArrowLeftLong } from 'react-icons/fa6';
+import { toast } from 'react-hot-toast';
+import { register } from '../api/auth';
+import Select from 'react-select';
 
 const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
+
   const handleChange = useCallback(
     (e) => {
-      const { name, type, value, options } = e.target
+      if (!e || !e.target) return;
+
+      const { name, type, value, options } = e.target;
 
       const finalValue =
         type === 'select-multiple'
           ? Array.from(options)
-              .filter((opt) => opt.selected)
-              .map((opt) => opt.value)
-          : value
+            .filter((opt) => opt.selected)
+            .map((opt) => opt.value)
+          : value;
 
       setFormData((prev) => ({
         ...prev,
         [name]: finalValue,
-      }))
+      }));
 
       if (name === 'notelp') {
-        const phoneRegex = /^\+?\d{10,15}$/
-        const cleanValue = finalValue.replace(/[^+\d]/g, '')
+        const phoneRegex = /^\+?\d{10,15}$/;
+        const cleanValue = finalValue.replace(/[^+\d]/g, '');
         setErrors((prev) => ({
           ...prev,
           notelp: phoneRegex.test(cleanValue) ? '' : 'Invalid phone number',
-        }))
+        }));
       }
     },
     [setFormData, setErrors]
-  )
+  );
+
+  const handleMultiSelectChange = (name, selectedOptions) => {
+    const values = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
+    setFormData((prev) => ({
+      ...prev,
+      [name]: values,
+    }));
+  };
 
   useEffect(() => {
-    const phoneRegex = /^\+?\d{10,15}$/
-    let newErrors = {}
+    const phoneRegex = /^\+?\d{10,15}$/;
+    let newErrors = {};
 
     if (formData.notelp && !phoneRegex.test(formData.notelp)) {
-      newErrors.notelp = 'Phone number must be 10-15 digits and may start with +'
+      newErrors.notelp = 'Phone number must be 10-15 digits and may start with +';
     }
 
-    setErrors(newErrors)
+    setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      localStorage.setItem('formData', JSON.stringify(formData))
+      localStorage.setItem('formData', JSON.stringify(formData));
     }
-  }, [formData])
+  }, [formData]);
 
   const handleBack = () => {
-    setStep(1)
-  }
+    setStep(1);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log('[Register Form Data]', formData)
-
-    // eslint-disable-next-line no-unused-vars
-    const { confirmPassword, ...raw } = formData
+    e.preventDefault();
+    const { confirmPassword, ...raw } = formData;
 
     const payload = {
       ...raw,
       levelProfesional: Array.isArray(raw.levelProfesional) ? raw.levelProfesional : [raw.levelProfesional],
       keahlian: Array.isArray(raw.keahlian) ? raw.keahlian : [raw.keahlian],
-    }
+    };
 
     try {
-      const res = await register(payload)
-      console.log('[Register Success]', res)
-      toast.success('Registration successful!')
-      localStorage.removeItem('formData')
-      navigate('/')
+      const res = await register(payload);
+      toast.success('Registration successful!');
+      localStorage.removeItem('formData');
+      navigate('/');
     } catch (error) {
       if (error.response && error.response.data.errors) {
         const errorMessage = Object.values(error.response.data.errors)
           .map((err) => err[0])
-          .join('\n')
-        toast.error(errorMessage || 'Registration failed!')
-        console.error('Registration errors:', errorMessage)
+          .join('\n');
+        toast.error(errorMessage || 'Registration failed!');
       } else {
-        toast.error('Registration failed!')
+        toast.error('Registration failed!');
       }
     }
-  }
+  };
+
+  const kelasOptions = [
+    { value: '1G', label: 'Kelas 1 (1G)' },
+    { value: '2G', label: 'Kelas 2 (2G)' },
+    { value: '3G', label: 'Kelas 3 (3G)' },
+  ];
+
+  const keahlianOptions = [
+    { value: 'plate', label: 'Spesialis Pelat' },
+    { value: 'pipe', label: 'Spesialis Pipa' },
+  ];
 
   return (
     <div className="py-3 md:py-10 lg:py-5">
@@ -92,7 +110,9 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
         </button>
         <h2 className="text-3xl font-semibold pl-10">Lengkapi Profil Anda</h2>
       </div>
-      <p className="dark:text-slate-300 text-sm md:text-base mt-2 font-medium">Silahkan isi informasi pribadi Anda</p>
+      <p className="dark:text-slate-300 text-sm md:text-base mt-2 font-medium">
+        Silahkan isi informasi pribadi Anda
+      </p>
 
       <form className="mt-5 md:mt-10 lg:mt-5" onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -102,7 +122,7 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
             name="birthdate"
             value={formData.birthdate}
             onChange={handleChange}
-            className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required
           />
         </div>
@@ -114,9 +134,9 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
             name="notelp"
             value={formData.notelp}
             onChange={handleChange}
-            className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             onInput={(e) => (e.target.value = e.target.value.replace(/[^+\d]/g, ''))}
-            placeholder="Masukkan nomor telepon yang valid (10-15 digit, dapat dimulai dengan +))"
+            placeholder="Masukkan nomor telepon yang valid (10-15 digit, dapat dimulai dengan +)"
+            className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required
           />
           {errors.notelp && <p className="text-red-500 text-xs mt-1">{errors.notelp}</p>}
@@ -151,28 +171,33 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
           </select>
         </div>
 
-        <MultiSelect
-          label="Kelas"
-          name="levelProfesional"
-          options={[
-            { value: '1G', label: 'Kelas 1 (1G)' },
-            { value: '2G', label: 'Kelas 2 (2G)' },
-            { value: '3G', label: 'Kelas 3 (3G)' },
-          ]}
-          value={formData.levelProfesional}
-          onChange={handleChange}
-        />
+        <div className="mb-4">
+          <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Kelas</label>
+          <Select
+            isMulti
+            name="levelProfesional"
+            options={kelasOptions}
+            value={kelasOptions.filter((opt) => formData.levelProfesional?.includes(opt.value))}
+            onChange={(selected) => handleMultiSelectChange('levelProfesional', selected)}
+            className="basic-multi-select text-sm"
+            classNamePrefix="select"
+            placeholder="Pilih kelas"
+          />
+        </div>
 
-        <MultiSelect
-          label="Keahlian"
-          name="keahlian"
-          options={[
-            { value: 'plate', label: 'Spesialis Pelat' },
-            { value: 'pipe', label: 'Spesialis Pipa' },
-          ]}
-          value={formData.keahlian}
-          onChange={handleChange}
-        />
+        <div className="mb-4">
+          <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Keahlian</label>
+          <Select
+            isMulti
+            name="keahlian"
+            options={keahlianOptions}
+            value={keahlianOptions.filter((opt) => formData.keahlian?.includes(opt.value))}
+            onChange={(selected) => handleMultiSelectChange('keahlian', selected)}
+            className="basic-multi-select text-sm"
+            classNamePrefix="select"
+            placeholder="Pilih keahlian"
+          />
+        </div>
 
         <div className="my-5 flex items-center">
           <input type="checkbox" className="mr-2" name="terms" required />
@@ -181,37 +206,15 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
           </p>
         </div>
 
-        <button type="submit" className="btn btn-primary bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm rounded-[10px]">
+        <button
+          type="submit"
+          className="btn btn-primary bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm rounded-[10px]"
+        >
           Daftar Akun
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-const MultiSelect = ({ label, name, options, value, onChange }) => (
-  <div className="mb-4">
-    <label htmlFor={name} className="block text-sm md:text-base font-medium mb-1">
-      {label}
-    </label>
-    <select
-      id={name}
-      name={name}
-      multiple
-      value={value}
-      onChange={onChange}
-      className="select bg-gray-50 dark:bg-[#1D232A] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-slate-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-    >
-      <option disabled value="">
-        {`- Pilih ${label} -`}
-      </option>
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
-  </div>
-)
-
-export default RegisterFormStep2
+export default RegisterFormStep2;
