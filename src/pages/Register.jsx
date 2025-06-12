@@ -13,11 +13,9 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     birthdate: '',
-    lokasi: '',
     notelp: '',
     levelProfesional: '',
     keahlian: '',
-    fotoProfile: null,
   })
   const navigate = useNavigate()
 
