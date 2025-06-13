@@ -6,6 +6,7 @@ import Select from 'react-select'
 
 const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
 
   const handleChange = useCallback(
     (e) => {
@@ -66,6 +67,7 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
 
     // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...raw } = formData
@@ -86,7 +88,7 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
       await register(payload)
       toast.success('Registration successful!')
       localStorage.removeItem('formData')
-      navigate('/')
+      navigate('/login')
     } catch (error) {
       if (error.response && error.response.data.errors) {
         const errorMessage = Object.values(error.response.data.errors)
@@ -98,6 +100,8 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
         toast.error('Registration failed!')
       }
     }
+
+    setLoading(false)
   }
 
   const kelasOptions = [
@@ -216,9 +220,15 @@ const RegisterFormStep2 = ({ formData, setFormData, setStep, navigate }) => {
           </p>
         </div>
 
-        <button type="submit" className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm rounded-[10px]">
-          Daftar Akun
-        </button>
+        {loading ? (
+          <button type="button" className="btn btn-primary w-full text-sm rounded-[10px]" disabled>
+            <span className="loader"></span> Memproses...
+          </button>
+        ) : (
+          <button type="submit" className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm rounded-[10px]">
+            Daftar Akun
+          </button>
+        )}
       </form>
     </div>
   )

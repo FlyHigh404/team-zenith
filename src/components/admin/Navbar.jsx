@@ -3,6 +3,7 @@ import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown,
 import logo from '../../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
+import { getUserData } from '../../utils/token'
 
 const Navbar = ({ title }) => {
   const { logoutUser } = useAuth()
@@ -11,6 +12,14 @@ const Navbar = ({ title }) => {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen)
   }
+
+  const handleLogout = () => {
+    if (window.confirm('Apakah Anda yakin ingin keluar?')) {
+      logoutUser()
+    }
+  }
+
+  const userData = getUserData()
 
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-white sticky top-0 z-30 shadow-sm ml-64">
@@ -42,7 +51,7 @@ const Navbar = ({ title }) => {
         <div className="relative">
           <div onClick={toggleDropdown} className="flex items-center gap-2 cursor-pointer select-none">
             <FaUserCircle className="text-blue-600 text-4xl" />
-            <span className="text-base font-semibold text-black">Admin UNEDO</span>
+            <span className="text-base font-semibold text-black">{userData.nama}</span>
             <FaAngleDown />
           </div>
 
@@ -53,8 +62,8 @@ const Navbar = ({ title }) => {
                   <img src={logo} alt="" />
                 </div>
                 <div className="ml-3">
-                  <div className="text-black font-semibold">Admin UNEDO</div>
-                  <div className="text-sm text-black font-light">@admin</div>
+                  <div className="text-black font-semibold">{userData.nama}</div>
+                  <div className="text-sm text-black font-light">{userData.email}</div>
                 </div>
               </div>
               <ul className="p-2">
@@ -71,11 +80,9 @@ const Navbar = ({ title }) => {
                   <span>Pengaturan</span>
                 </NavLink>
               </ul>
-              <div className="border-t-2 border-gray-300 px-5 py-3 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl">
+              <div className="border-t-2 border-gray-300 px-5 py-3 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl" onClick={handleLogout} tabIndex={0} role="button">
                 <FaSignOutAlt />
-                <button type="button" onClick={logoutUser} className="ml-2">
-                  Keluar
-                </button>
+                <span className="ml-2">Keluar</span>
               </div>
             </div>
           )}

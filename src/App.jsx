@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './auth/ProtectedRoute'
 
 import AdminLayout from './layout/AdminLayout'
 import AdminLayout2 from './layout/AdminLayout2'
@@ -55,7 +56,13 @@ function App() {
             </Route>
 
             {/* Halaman Admin */}
-            <Route element={<AdminLayout />}>
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
               <Route path="/dashboard-admin" element={<DashboardAdmin />} />
               <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
               <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />

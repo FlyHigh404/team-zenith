@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md'
 import { login } from '../api/auth'
+import { setUserData } from '../utils/token'
 import { useAuth } from '../auth/useAuth'
 import { toast } from 'react-hot-toast'
 import img from '../assets/img/register.png'
@@ -49,9 +50,9 @@ const Login = () => {
         password: formData.password,
       })
 
-      console.log('[Login Success] response:', res)
-
       if (res.access_token) {
+        console.log(res)
+        setUserData(res.user)
         loginUser(res.access_token)
         toast.success('Login berhasil!')
         navigate('/dashboard-admin')
