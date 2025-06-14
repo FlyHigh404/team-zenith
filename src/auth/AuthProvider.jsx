@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
 
   const logoutUser = () => {
     removeToken()
+    removeUserData()
     setUser(null)
     navigate('/login')
     return toast.success('Logout berhasil!')
