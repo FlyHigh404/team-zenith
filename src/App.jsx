@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ProtectedRoute from './auth/ProtectedRoute'
+import GuestRoute from './auth/GuestRoute'
 
 import AdminLayout from './layout/AdminLayout'
 import AdminLayout2 from './layout/AdminLayout2'
@@ -20,7 +21,6 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 
-// import ProtectedLayout from './components/ProtectedLayout';
 import ForumLayout from './layout/ForumLayout'
 import ForumLoker from './pages/forum/ForumLoker'
 import DetailLoker from './pages/forum/DetailLoker'
@@ -36,8 +36,6 @@ import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 import { AuthProvider } from './auth/AuthProvider'
 
 function App() {
-  // const user = { role: 'admin' } contoh, bisa dari context, api, redux
-
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -46,9 +44,30 @@ function App() {
         <AuthProvider>
           <Routes>
             {/* Halaman auth tanpa layout */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/login"
+              element={
+                <GuestRoute>
+                  <Login />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <GuestRoute>
+                  <Register />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <GuestRoute>
+                  <ForgotPassword />
+                </GuestRoute>
+              }
+            />
 
             {/* Halaman dengan Navbar */}
             <Route element={<Layout />}>
@@ -58,7 +77,7 @@ function App() {
             {/* Halaman Admin */}
             <Route
               element={
-                <ProtectedRoute>
+                <ProtectedRoute role="admin">
                   <AdminLayout />
                 </ProtectedRoute>
               }
@@ -68,12 +87,6 @@ function App() {
               <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
               <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
               <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
-            </Route>
-
-            <Route element={<AdminLayout2 />}>
-              <Route path="/profil-admin" element={<ProfilAdmin />} />
-              <Route path="/beranda-admin" element={<BerandaAdmin />} />
-              <Route path="/loker/:id" element={<DetailLoker />} />
             </Route>
 
             <Route element={<ForumLayout />}>
@@ -87,6 +100,19 @@ function App() {
               <Route path="/simpan/postingan" element={<SimpanPostingan />} />
               <Route path="/simpan/pekerjaan" element={<SimpanPekerjaan />} />
               <Route path="/simpan/sertifikasi" element={<SimpanSertifikasi />} />
+            </Route>
+
+            {/* Halaman User dan Admin */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AdminLayout2 />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/beranda-admin" element={<BerandaAdmin />} />
+              <Route path="/profil-admin" element={<ProfilAdmin />} />
+              <Route path="/loker/:id" element={<DetailLoker />} />
             </Route>
           </Routes>
         </AuthProvider>

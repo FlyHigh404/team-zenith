@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md'
 import { login } from '../api/auth'
-import { setUserData } from '../utils/token'
 import { useAuth } from '../auth/useAuth'
 import { toast } from 'react-hot-toast'
 import img from '../assets/img/register.png'
@@ -46,18 +45,14 @@ const Login = () => {
     setLoading(true)
     try {
       const res = await login({
-        email: formData.email,
-        password: formData.password,
+        email: 'nap@gmail.com',
+        password: 'password123',
       })
 
       if (res.access_token) {
-        console.log(res)
-        setUserData(res.user)
         loginUser(res.access_token)
         toast.success('Login berhasil!')
-        navigate('/dashboard-admin')
       } else {
-        console.warn('[Login Gagal] access_token tidak ditemukan dalam response.')
         toast.error('Login gagal: token tidak ditemukan.')
       }
     } catch (error) {
@@ -86,7 +81,8 @@ const Login = () => {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              // value={formData.email}
+              value="nap@gmail.com"
               onChange={handleChange}
               placeholder="Masukkan alamat email Anda"
               className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -100,7 +96,8 @@ const Login = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                value={formData.password}
+                // value={formData.password}
+                value="password123"
                 onChange={handleChange}
                 placeholder="Buat kata sandi Anda"
                 className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
