@@ -36,9 +36,9 @@ class AuthController extends Controller
                 'kota' => 'required|string|max:50',
                 'notelp' => 'required|string|max:25',
                 'levelProfesional' => 'required|array|min:1',
-                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,1G pipa,2G pipa,5G,6G,SMAW,GMAW,FCAW,GTAW',
+                'levelProfesional.*' => 'string|in:1F,2F,3F,4F,1G,2G,3G,4G,5G,6G,SMAW,GMAW,FCAW,GTAW',
                 'keahlian' => 'required|array|min:1',
-                'keahlian.*' => 'string|in:fillet,pelat,pipe',
+                'keahlian.*' => 'string|in:fillet,plate,pipe',
             ]);
 
             $user = User::create([
