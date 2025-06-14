@@ -3,7 +3,12 @@ name: Laravel CI
 on:
   pull_request:
     branches:
-      - dev-backend # sesuaikan jika branch utamamu berbeda
+      - dev-backend
+  
+  push:
+    branches:
+      - dev-backend
+  
 
 jobs:
   laravel-tests:
