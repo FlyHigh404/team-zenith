@@ -23,3 +23,9 @@ Backend Development `dev-backend`
 ```
 git clone -b dev-backend https://github.com/FlyHigh404/team-zenith.git
 ```
+
+## Dev Testing
+
+```
+http://34.132.16.206
+```
