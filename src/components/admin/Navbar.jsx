@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaUser, FaChartPie, FaCog, FaSignOutAlt } from 'react-icons/fa'
 import logo from '../../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
@@ -67,11 +67,11 @@ const Navbar = ({ title }) => {
                 </div>
               </div>
               <ul className="p-2">
-                <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                <NavLink to="/profil-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaUser />
                   <span>Profil</span>
                 </NavLink>
-                <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                <NavLink to="/dashboard-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaChartPie />
                   <span>Dashboard</span>
                 </NavLink>

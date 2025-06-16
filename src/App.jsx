@@ -33,6 +33,8 @@ import SimpanPostingan from './pages/user/SimpanPostingan'
 import SimpanPekerjaan from './pages/user/SimpanPekerjaan'
 import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 
+import NotFound from './pages/NotFound'
+
 import { AuthProvider } from './auth/AuthProvider'
 
 function App() {
@@ -114,6 +116,8 @@ function App() {
               <Route path="/profil-admin" element={<ProfilAdmin />} />
               <Route path="/loker/:id" element={<DetailLoker />} />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </Router>

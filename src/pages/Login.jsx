@@ -45,7 +45,67 @@ const Login = () => {
     setLoading(true)
     try {
       const res = await login({
+        email: formData.email,
+        password: formData.password,
+      })
+
+      if (res.access_token) {
+        loginUser(res.access_token)
+        toast.success('Login berhasil!')
+      } else {
+        toast.error('Login gagal: token tidak ditemukan.')
+      }
+    } catch (error) {
+      console.error('[Login Error]', error)
+
+      if (error.response?.status === 401) {
+        toast.error('Email atau password salah.')
+      } else if (error.response?.data?.errors) {
+        Object.values(error.response.data.errors).forEach((err) => toast.error(err[0]))
+      } else {
+        toast.error('Terjadi kesalahan saat login.')
+      }
+    }
+    setLoading(false)
+  }
+
+  const handleFakeAdmin = async (e) => {
+    e.preventDefault()
+    if (loading) return
+    setLoading(true)
+    try {
+      const res = await login({
         email: 'nap@gmail.com',
+        password: 'password123',
+      })
+
+      if (res.access_token) {
+        loginUser(res.access_token)
+        toast.success('Login berhasil!')
+      } else {
+        toast.error('Login gagal: token tidak ditemukan.')
+      }
+    } catch (error) {
+      console.error('[Login Error]', error)
+
+      if (error.response?.status === 401) {
+        toast.error('Email atau password salah.')
+      } else if (error.response?.data?.errors) {
+        Object.values(error.response.data.errors).forEach((err) => toast.error(err[0]))
+      } else {
+        toast.error('Terjadi kesalahan saat login.')
+      }
+    }
+    setLoading(false)
+  }
+
+  const handleFakeUser = async (e) => {
+    e.preventDefault()
+    if (loading) return
+    setLoading(true)
+    try {
+      const res = await login({
+        email: 'prinaf.dev@gmail.com',
         password: 'password123',
       })
 
@@ -81,12 +141,11 @@ const Login = () => {
             <input
               type="email"
               name="email"
-              // value={formData.email}
-              value="nap@gmail.com"
+              value={formData.email}
               onChange={handleChange}
               placeholder="Masukkan alamat email Anda"
               className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              required
+              // required
             />
           </div>
 
@@ -96,12 +155,11 @@ const Login = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                // value={formData.password}
-                value="password123"
+                value={formData.password}
                 onChange={handleChange}
                 placeholder="Buat kata sandi Anda"
                 className="bg-gray-50 dark:bg-[#1D232A] border border-gray-300 text-gray-900 dark:text-slate-300 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                required
+                // required
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 cursor-pointer text-gray-500 dark:text-slate-300">
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -136,12 +194,28 @@ const Login = () => {
               Menunggu
             </button>
           ) : (
-            <button
-              type="submit"
-              className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]"
-            >
-              Masuk sekarang
-            </button>
+            <>
+              <button
+                type="submit"
+                className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] w-full text-sm md:text-base lg:text-sm rounded-[10px]"
+              >
+                Masuk sekarang
+              </button>
+              <div className="flex justify-center gap-3 mt-4">
+                <button
+                  onClick={handleFakeUser}
+                  className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] text-sm md:text-base lg:text-sm rounded-[10px]"
+                >
+                  Login User
+                </button>
+                <button
+                  onClick={handleFakeAdmin}
+                  className="btn btn-[#659BB0] text-white bg-[#86CEEB] dark:bg-[#659BB0] border border-[#86CEEB] hover:bg-[#659BB0] dark:hover:bg-[#2F4852] hover:border-[#659BB0] text-sm md:text-base lg:text-sm rounded-[10px]"
+                >
+                  Login Admin
+                </button>
+              </div>
+            </>
           )}
         </form>
 
