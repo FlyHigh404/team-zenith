@@ -85,7 +85,6 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [Controllers\BookmarkController::class, 'index']);
     });
 
-
     // Lowongan kerja routes
     Route::prefix('job-listings')->group(function () {
         Route::get('/', [Controllers\LokerController::class, 'index']);
@@ -103,6 +102,12 @@ Route::middleware('auth:api')->group(function () {
 
 // Admin routes - dengan middleware admin
 Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
+    
+    // Admin dashboard
+    Route::prefix('user-list')->group(function () {
+        Route::get('/all-users', [Admin\UserController::class, 'index']);
+    });
+
     // Sertifikasi admin
     Route::prefix('certification-lists')->group(function () {
         Route::get('/', [Admin\AdminCertificationController::class, 'index']);
