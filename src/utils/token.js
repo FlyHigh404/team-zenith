@@ -8,8 +8,10 @@ export const setToken = (token) => {
 }
 
 export const setUserData = (userData) => {
+  const jakartaDate = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' })
   if (userData) {
     localStorage.setItem('user', JSON.stringify(userData))
+    localStorage.setItem('lastLogin', jakartaDate)
   }
 }
 export const getUserData = () => {
@@ -17,5 +19,10 @@ export const getUserData = () => {
   return data ? JSON.parse(data) : null
 }
 
+export const getLastLogin = () => localStorage.getItem('lastLogin')
+
 export const removeUserData = () => localStorage.removeItem('user')
-export const removeToken = () => localStorage.removeItem('token')
+export const removeToken = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('lastLogin')
+}

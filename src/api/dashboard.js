@@ -1,21 +1,13 @@
 import axios from 'axios'
+import { getToken } from '../utils/token'
 
-const API_URL = `${import.meta.env.VITE_BASE_URL}/auth`
+const API_URL = `${import.meta.env.VITE_BASE_URL}/admin`
 
-export const login = async (credentials) => {
-  const response = await axios.post(`${API_URL}/login`, credentials)
-  return response.data
-}
-
-export const register = async (data) => {
-  const response = await axios.post(`${API_URL}/register`, data)
-  return response.data
-}
-
-export const getRedirectPath = (role) => (role === 'admin' ? '/dashboard-admin' : '/beranda-admin')
-export const fetchUser = async (token) => {
-  const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/auth/me`, {
-    headers: { Authorization: `Bearer ${token}` },
+export const allUserList = async (page = 1) => {
+  const response = await axios.get(`${API_URL}/user-list/all-users?page=${page}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
   })
-  return res.data.data
+  return response.data
 }

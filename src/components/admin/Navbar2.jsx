@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaUser, FaChartPie, FaCog, FaSignOutAlt } from 'react-icons/fa'
-import logo from '../../assets/img/logo.png'
+import { FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaAngleUp, FaUser, FaChartPie, FaCog, FaSignOutAlt } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
@@ -76,18 +75,16 @@ function Navbar() {
             <div onClick={toggleDropdown} className="flex items-center gap-2 cursor-pointer select-none">
               <FaUserCircle className="text-blue-600 text-3xl" />
               <span className="text-base font-semibold text-black">{userData.nama}</span>
-              <FaAngleDown />
+              {dropdownOpen ? <FaAngleUp /> : <FaAngleDown />}
             </div>
 
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border-gray-500">
                 <div className="p-4 border-b-2 border-gray-300 flex">
-                  <div>
-                    <img src={logo} alt="" />
-                  </div>
+                  <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
                   <div className="ml-3">
                     <div className="text-black font-semibold">{userData.nama}</div>
-                    <div className="text-sm text-black font-light">{userData.username}</div>
+                    <div className="text-sm text-black font-light">@{userData.username}</div>
                   </div>
                 </div>
                 <ul className="p-2">

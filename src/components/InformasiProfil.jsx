@@ -28,7 +28,7 @@ const InformasiProfil = () => {
         <div className="flex flex-col col-span-2 p-4">
           <div className="flex flex-row gap-1 items-center">
             <h2 className="font-semibold text-xl">{userData.nama}</h2>
-            <img src={badgeAdmin} alt="Badge Admin" className="w-6" />
+            {userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" className="w-6" />}
           </div>
           <p className="mt-1">{userData.deskripsi ? userData.deskripsi : 'Belum ada deskripsi'}</p>
           <p className="mt-1">

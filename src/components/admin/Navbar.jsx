@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaUser, FaChartPie, FaCog, FaSignOutAlt } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaUser, FaChartPie, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'
 import logo from '../../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
@@ -37,7 +37,9 @@ const Navbar = ({ title }) => {
         {/* Ikon */}
         <div className="flex gap-4">
           <div className="p-3 bg-[#F5F5F5] rounded-xl">
-            <FaExternalLinkAlt className="text-[#575757] hover:text-blue-500 cursor-pointer text-lg" />
+            <a href="/beranda-admin">
+              <FaExternalLinkAlt className="text-[#575757] hover:text-blue-500 cursor-pointer text-lg" />
+            </a>
           </div>
           <div className="p-3 bg-[#F5F5F5] rounded-xl">
             <FaMoon className="text-[#575757] hover:text-blue-500 cursor-pointer text-lg" />
@@ -74,6 +76,10 @@ const Navbar = ({ title }) => {
                 <NavLink to="/dashboard-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaChartPie />
                   <span>Dashboard</span>
+                </NavLink>
+                <NavLink to="/beranda-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                  <FaHome />
+                  <span>Beranda</span>
                 </NavLink>
                 <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaCog />
