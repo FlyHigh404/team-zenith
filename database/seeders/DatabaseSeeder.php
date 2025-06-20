@@ -13,9 +13,20 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            AdminUserSeeder::class,
+            PerusahaanSeeder::class,
             LokerSeeder::class,
-            // Add other seeders here as needed
+            LokerApplicantSeeder::class,
+            PerusahaanUlasanSeeder::class,
+            PostinganSeeder::class,
+            PostinganLikeSeeder::class,
+            PostinganCommentSeeder::class,
+            PostinganCommentLikeSeeder::class,
+            ConnectionSeeder::class,
+            BookmarkSeeder::class,
+            ExperienceSeeder::class,
+            CertificationSeeder::class,
+            AdminCertificationSeeder::class,
+            CertificationRegistrationSeeder::class,
         ]);
     }
 }
