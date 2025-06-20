@@ -299,4 +299,84 @@ class AdminCertificationController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get statistics of certification programs
+     * GET /admin/certification-lists/statistics
+     */
+    public function getStatistics()
+    {
+        try {
+            // Hitung total program sertifikasi
+            $totalPrograms = AdminCertification::count();
+
+            // Hitung total pendaftar untuk semua program
+            $registrations = CertificationRegistration::query();
+
+            $totalRegistrations = $registrations->count();
+            $menungguRegistrations = (clone $registrations)->where('status', 'Menunggu')->count();
+            $diterimaRegistrations = (clone $registrations)->where('status', 'Diterima')->count();
+            $ditolakRegistrations = (clone $registrations)->where('status', 'Ditolak')->count();
+
+            // Statistik per bidang
+            $pengelasanPrograms = AdminCertification::where('bidang', 'Pengelasan')->count();
+            $fabrikasiPrograms = AdminCertification::where('bidang', 'Fabrikasi')->count();
+            $inspeksiPrograms = AdminCertification::where('bidang', 'Inspeksi')->count();
+            $lainnyaPrograms = AdminCertification::where('bidang', 'Lainnya')->count();
+
+            // Program yang akan datang vs yang sudah lewat
+            $upcomingPrograms = AdminCertification::where('tanggalMulai', '>=', now())->count();
+            $pastPrograms = AdminCertification::where('tanggalSelesai', '<', now())->count();
+            $ongoingPrograms = AdminCertification::where('tanggalMulai', '<=', now())
+                ->where('tanggalSelesai', '>=', now())
+                ->count();
+
+            // Top 5 program paling banyak pendaftarnya
+            $topPrograms = AdminCertification::withCount('pendaftaran')
+                ->orderBy('pendaftaran_count', 'desc')
+                ->limit(5)
+                ->get()
+                ->map(function($program) {
+                    return [
+                        'id' => $program->id,
+                        'judul' => $program->judul,
+                        'bidang' => $program->bidang,
+                        'pendaftar' => $program->pendaftaran_count,
+                        'kuota' => $program->kuota,
+                        'persentase' => $program->kuota > 0 ?
+                            round(($program->pendaftaran_count / $program->kuota) * 100, 1) : 0
+                    ];
+                });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Statistik sertifikasi berhasil diambil',
+                'data' => [
+                    'total_programs' => $totalPrograms,
+                    'total_registrations' => $totalRegistrations,
+                    'menunggu_registrations' => $menungguRegistrations,
+                    'diterima_registrations' => $diterimaRegistrations,
+                    'ditolak_registrations' => $ditolakRegistrations,
+                    'by_category' => [
+                        'pengelasan' => $pengelasanPrograms,
+                        'fabrikasi' => $fabrikasiPrograms,
+                        'inspeksi' => $inspeksiPrograms,
+                        'lainnya' => $lainnyaPrograms
+                    ],
+                    'by_schedule' => [
+                        'upcoming' => $upcomingPrograms,
+                        'ongoing' => $ongoingPrograms,
+                        'past' => $pastPrograms
+                    ],
+                    'top_programs' => $topPrograms
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil statistik sertifikasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

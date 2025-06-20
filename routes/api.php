@@ -105,6 +105,9 @@ Route::middleware('auth:api')->group(function () {
 Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
     // Sertifikasi admin
     Route::prefix('certification-lists')->group(function () {
+        // Statistik
+        Route::get('/statistics', [Admin\AdminCertificationController::class, 'getStatistics']);
+
         Route::get('/', [Admin\AdminCertificationController::class, 'index']);
         Route::get(
             '/{id}',
