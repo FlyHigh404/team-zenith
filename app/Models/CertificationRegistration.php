@@ -25,7 +25,7 @@ class CertificationRegistration extends Model
     }
 
     // Relasi dengan sertifikasi admin
-    public function sertifikasi()
+    public function adminCertification()
     {
         return $this->belongsTo(AdminCertification::class, 'sertifikasi_id');
     }
