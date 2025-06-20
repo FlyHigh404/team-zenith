@@ -9,25 +9,26 @@ class Certification extends Model
 {
     use HasFactory;
 
-    protected $table = 'user_sertifikat';
+    protected $table = 'sertifikasi';
 
     protected $fillable = [
-        'user_id',
-        'namaPerusahaan',
-        'materiSertifikasi',
-        'tanggalMulai',
-        'tanggalBerakhir',
-        'media'
+        'users_id',
+        'nama',
+        'tanggalisu',
+        'tanggalExpired',
+        'levelSertifikasi',
+        'jenisSertifikat',
+        'media',
     ];
 
     protected $casts = [
-        'tanggalMulai' => 'date',
-        'tanggalBerakhir' => 'date'
+        'tanggalisu' => 'date',
+        'tanggalExpired' => 'date',
     ];
 
     // Relasi dengan user
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'users_id');
     }
 }

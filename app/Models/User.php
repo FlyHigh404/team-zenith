@@ -60,9 +60,21 @@ class User extends Authenticatable implements JWTSubject
     }
 
     // Relasi dengan sertifikat
-    public function sertifikat()
+    public function certifications()
     {
-        return $this->hasMany(Certification::class, 'user_id');
+        return $this->hasMany(Certification::class, 'users_id');
+    }
+
+    // Relasi dengan user sertifikat
+    public function userCertificates()
+    {
+        return $this->hasMany(UserCertificate::class);
+    }
+
+    // Relasi dengan pendaftaran sertifikasi
+    public function certificationRegistrations()
+    {
+        return $this->hasMany(CertificationRegistration::class);
     }
 
     // Relasi koneksi yang dikirim oleh user
@@ -88,12 +100,6 @@ class User extends Authenticatable implements JWTSubject
     public function authentication()
     {
         return $this->hasOne(Authentication::class);
-    }
-
-    // Tambahkan relasi dengan pendaftaran sertifikasi
-    public function sertifikasiPendaftaran()
-    {
-        return $this->hasMany(CertificationRegistration::class, 'user_id');
     }
 
     // Relasi dengan lowongan yang dibuat user
