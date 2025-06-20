@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaUser, FaChartPie, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaAngleUp, FaUser, FaChartPie, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'
 import logo from '../../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
@@ -52,9 +52,9 @@ const Navbar = ({ title }) => {
         {/* Profil + Dropdown */}
         <div className="relative">
           <div onClick={toggleDropdown} className="flex items-center gap-2 cursor-pointer select-none">
-            <FaUserCircle className="text-blue-600 text-4xl" />
+            <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
             <span className="text-base font-semibold text-black">{userData.nama}</span>
-            <FaAngleDown />
+            {dropdownOpen ? <FaAngleUp /> : <FaAngleDown />}
           </div>
 
           {dropdownOpen && (
@@ -73,14 +73,15 @@ const Navbar = ({ title }) => {
                   <FaUser />
                   <span>Profil</span>
                 </NavLink>
-                <NavLink to="/dashboard-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
-                  <FaChartPie />
-                  <span>Dashboard</span>
-                </NavLink>
                 <NavLink to="/beranda-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaHome />
                   <span>Beranda</span>
                 </NavLink>
+                <NavLink to="/dashboard-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                  <FaChartPie />
+                  <span>Dashboard</span>
+                </NavLink>
+
                 <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaCog />
                   <span>Pengaturan</span>

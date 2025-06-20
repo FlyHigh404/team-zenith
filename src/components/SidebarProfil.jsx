@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { FaBagShopping, FaCertificate } from 'react-icons/fa6'
+import { FaBagShopping, FaCertificate, FaBookmark } from 'react-icons/fa6'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { getUserData } from '../utils/token'
 
@@ -24,15 +24,21 @@ const SidebarProfil = () => {
 
       <ul className="space-y-1">
         <li>
-          <NavLink to="#sertifikat" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
+          <NavLink to="/list-sertifikasi" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
             <FaCertificate className="text-xl" />
             <span className="ml-3 text-sm">Sertifikasi</span>
           </NavLink>
         </li>
         <li>
-          <NavLink to="#pekerjaan" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
+          <NavLink to="/list-loker" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
             <FaBagShopping className="text-xl" />
             <span className="ml-3 text-sm">Pekerjaan</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/simpan-postingan" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
+            <FaBookmark className="text-xl" />
+            <span className="ml-3 text-sm">Tersimpan</span>
           </NavLink>
         </li>
       </ul>

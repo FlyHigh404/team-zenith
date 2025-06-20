@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaAngleUp, FaUser, FaChartPie, FaCog, FaSignOutAlt } from 'react-icons/fa'
+import { FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaAngleUp, FaUser, FaChartPie, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
@@ -50,18 +50,23 @@ function Navbar() {
         </div>
 
         {/* Menu untuk Desktop */}
-        <ul className="hidden lg:flex space-x-12 text-gray-700 font-medium">
+        {/* <ul className="hidden lg:flex space-x-12 text-gray-700 font-medium">
           <li className="hover:text-gray-900 cursor-pointer text-base">
             <a href="/beranda-admin">Beranda</a>
           </li>
           <li className="hover:text-gray-900 cursor-pointer text-base">
             <a href="#pesan">Pesan</a>
           </li>
-        </ul>
+        </ul> */}
 
         <div className="flex items-center gap-3 relative">
           {/* Ikon */}
           <div className="flex gap-4">
+            <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
+              <a href="/beranda-admin">
+                <FaHome className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
+              </a>
+            </div>
             <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
               <FaMoon className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>

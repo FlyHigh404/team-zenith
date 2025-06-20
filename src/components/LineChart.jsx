@@ -7,6 +7,7 @@ const Chart = () => {
     <div className="mt-5 mx-5 flex gap-4">
       <div className="w-[70%] bg-white p-5 rounded-xl ">
         <p className="font-semibold">Total Pekerjaan</p>
+        <p>Chart BAR Pekerjaan</p>
       </div>
       <div className="w-[30%] bg-white p-5 rounded-xl ">
         <p className="font-semibold mb-3">Riwayat Aktivitas</p>

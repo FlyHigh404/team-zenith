@@ -91,17 +91,31 @@ function App() {
               <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
             </Route>
 
-            <Route element={<ForumLayout />}>
-              <Route path="/forum/loker" element={<ForumLoker />} />
-              <Route path="/forum/sertifikasi" element={<ForumSertifikasi />} />
+            {/* Halaman Cari Pekerjaan dan Sertifikasi */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <ForumLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/list-loker" element={<ForumLoker />} />
+              <Route path="/list-sertifikasi" element={<ForumSertifikasi />} />
             </Route>
 
-            <Route element={<UserLayout />}>
+            {/* Halaman Simpan */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <UserLayout />
+                </ProtectedRoute>
+              }
+            >
               <Route path="/loker/apply/:id" element={<LokerApply />} />
               <Route path="/sertifikasi/apply/:id" element={<SertifikasiApply />} />
-              <Route path="/simpan/postingan" element={<SimpanPostingan />} />
-              <Route path="/simpan/pekerjaan" element={<SimpanPekerjaan />} />
-              <Route path="/simpan/sertifikasi" element={<SimpanSertifikasi />} />
+              <Route path="/simpan-postingan" element={<SimpanPostingan />} />
+              <Route path="/simpan-pekerjaan" element={<SimpanPekerjaan />} />
+              <Route path="/simpan-sertifikasi" element={<SimpanSertifikasi />} />
             </Route>
 
             {/* Halaman User dan Admin */}

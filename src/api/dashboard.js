@@ -11,3 +11,12 @@ export const allUserList = async (page = 1) => {
   })
   return response.data
 }
+
+export const allCompanyList = async () => {
+  const response = await axios.get(`${API_URL}/companies`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return response.data
+}
