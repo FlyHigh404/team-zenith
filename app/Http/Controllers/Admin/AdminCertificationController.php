@@ -6,35 +6,45 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminCertification;
 use App\Models\CertificationRegistration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AdminCertificationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the certifications
+     * GET /admin/certification-lists
      */
     public function index()
     {
         try {
+            // Get all certifications, no restrictions by user
             $certifications = AdminCertification::all();
+
+            // Add registration count for each certification
+            foreach ($certifications as $certification) {
+                $certification->pendaftar = $certification->jumlahPendaftar();
+                $certification->tersedia = $certification->kuota - $certification->pendaftar;
+            }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Data sertifikasi berhasil diambil',
+                'message' => 'Daftar sertifikasi berhasil diambil',
                 'data' => $certifications
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal mengambil data sertifikasi',
+                'message' => 'Gagal mengambil daftar sertifikasi',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created certification
+     * POST /admin/certification-lists
      */
     public function store(Request $request)
     {
@@ -95,35 +105,36 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified certification
+     * GET /admin/certification-lists/{id}
      */
     public function show($id)
     {
         try {
             $certification = AdminCertification::findOrFail($id);
 
-            // Hitung jumlah pendaftar
+            // Tambahkan informasi jumlah pendaftar dan ketersediaan kuota
             $pendaftar = $certification->jumlahPendaftar();
-
             $certification->pendaftar = $pendaftar;
             $certification->tersedia = $certification->kuota - $pendaftar;
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Data sertifikasi berhasil diambil',
+                'message' => 'Detail sertifikasi berhasil diambil',
                 'data' => $certification
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal mengambil data sertifikasi',
+                'message' => 'Gagal mengambil detail sertifikasi',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified certification
+     * PUT /admin/certification-lists/{id}
      */
     public function update(Request $request, $id)
     {
@@ -191,7 +202,8 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified certification
+     * DELETE /admin/certification-lists/{id}
      */
     public function destroy($id)
     {
@@ -219,15 +231,15 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Get applicants for a certification.
+     * Get applicants for a certification
+     * GET /admin/certification-lists/{id}/applicants
      */
     public function getApplicants($id)
     {
         try {
             $certification = AdminCertification::findOrFail($id);
-
-            $pendaftaran = CertificationRegistration::where('sertifikasi_id', $id)
-                ->with('user')
+            $applicants = CertificationRegistration::with('user')
+                ->where('sertifikasi_id', $id)
                 ->get();
 
             return response()->json([
@@ -235,7 +247,7 @@ class AdminCertificationController extends Controller
                 'message' => 'Data pendaftar berhasil diambil',
                 'data' => [
                     'sertifikasi' => $certification,
-                    'pendaftar' => $pendaftaran
+                    'pendaftar' => $applicants
                 ]
             ]);
         } catch (\Exception $e) {
@@ -248,7 +260,8 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Update application status.
+     * Update applicant status
+     * PUT /admin/certification-lists/applicants/{id}
      */
     public function updateApplicantStatus(Request $request, $id)
     {

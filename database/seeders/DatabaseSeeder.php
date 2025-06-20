@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             CertificationSeeder::class,
             AdminCertificationSeeder::class,
             CertificationRegistrationSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

@@ -21,13 +21,8 @@ class AdminLokerController extends Controller
     public function index(Request $request)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companies = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Query untuk semua loker dari perusahaan yang dimiliki user
-            $query = Loker::whereIn('perusahaan_id', $companies);
+            // Ambil semua perusahaan (tidak dibatasi per user)
+            $query = Loker::query();
 
             // Filter berdasarkan perusahaan jika disediakan
             if ($request->has('perusahaan_id')) {
@@ -97,11 +92,8 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
-            // Periksa apakah perusahaan ini milik user yang login
-            $user = Auth::user();
-            $perusahaan = Perusahaan::where('id', $request->perusahaan_id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            // Verifikasi perusahaan ada (tanpa perlu memeriksa user_id)
+            $perusahaan = Perusahaan::findOrFail($request->perusahaan_id);
 
             $data = $validator->validated();
             $data['createdAt'] = now();
@@ -137,15 +129,8 @@ class AdminLokerController extends Controller
     public function show($id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->with('perusahaan')
-                ->firstOrFail();
+            // Ambil loker tanpa filter user_id
+            $loker = Loker::with('perusahaan')->findOrFail($id);
 
             return response()->json([
                 'status' => 'success',
@@ -168,14 +153,8 @@ class AdminLokerController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->firstOrFail();
+            // Ambil loker tanpa filter user_id
+            $loker = Loker::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
                 'perusahaan_id' => 'sometimes|exists:perusahaan,id',
@@ -202,13 +181,6 @@ class AdminLokerController extends Controller
                     'message' => 'Validasi gagal',
                     'errors' => $validator->errors()
                 ], 422);
-            }
-
-            // Jika perusahaan_id diubah, pastikan perusahaan baru milik user yang sama
-            if ($request->has('perusahaan_id') && $request->perusahaan_id != $loker->perusahaan_id) {
-                $perusahaan = Perusahaan::where('id', $request->perusahaan_id)
-                    ->where('user_id', $user->id)
-                    ->firstOrFail();
             }
 
             $data = $validator->validated();
@@ -248,14 +220,8 @@ class AdminLokerController extends Controller
     public function destroy($id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->firstOrFail();
+            // Ambil loker tanpa filter user_id
+            $loker = Loker::findOrFail($id);
 
             // Hapus gambar jika ada
             if ($loker->gambar) {
@@ -292,15 +258,8 @@ class AdminLokerController extends Controller
     public function getApplicants(Request $request, $id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Periksa apakah loker yang diminta ada dan milik user
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->firstOrFail();
+            // Verifikasi loker ada (tanpa filter user_id)
+            $loker = Loker::findOrFail($id);
 
             $query = LokerApplicant::with('user')
                 ->where('loker_id', $id);
@@ -360,15 +319,6 @@ class AdminLokerController extends Controller
             }
 
             $applicant = LokerApplicant::findOrFail($id);
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Verifikasi bahwa lowongan ini milik user yang sedang login
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $applicant->loker_id)
-                ->firstOrFail();
 
             $applicant->update([
                 'status' => $request->status,
@@ -396,18 +346,11 @@ class AdminLokerController extends Controller
     public function getStatistics()
     {
         try {
-            $user = Auth::user();
+            // Hitung total lowongan (semua, tidak dibatasi oleh user)
+            $totalLoker = Loker::count();
 
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Hitung total lowongan yang dimiliki user melalui perusahaannya
-            $totalLoker = Loker::whereIn('perusahaan_id', $companyIds)->count();
-
-            // Hitung total pelamar untuk semua lowongan user
-            $applicants = LokerApplicant::whereHas('loker', function($query) use ($companyIds) {
-                $query->whereIn('perusahaan_id', $companyIds);
-            });
+            // Hitung total pelamar untuk semua lowongan
+            $applicants = LokerApplicant::query();
 
             $totalApplicants = $applicants->count();
             $dilamarApplicants = (clone $applicants)->where('status', 'Dilamar')->count();
