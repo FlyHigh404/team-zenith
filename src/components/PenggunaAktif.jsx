@@ -3,18 +3,6 @@ import { FaRegSquarePlus, FaRegSquareCheck } from 'react-icons/fa6'
 import { NavLink } from 'react-router-dom'
 
 const PenggunaAktif = () => {
-  // const [userData, setUserData] = useState([])
-
-  // useEffect(() => {
-  //     axios.get("https://api")
-  //         .then(res => {
-  //             setUserData(res.data)
-  //         })
-  //         .catch(err => {
-  //             console.error("Gagal mengambil data")
-  //         })
-  // }, [])
-
   const [userData, setUserData] = useState([
     {
       id: 1,

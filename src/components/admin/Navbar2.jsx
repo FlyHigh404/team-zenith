@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaAngleUp, FaUser, FaChartPie, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'
+import { FaBagShopping, FaCertificate, FaBookmark } from 'react-icons/fa6'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
@@ -62,15 +63,15 @@ function Navbar() {
         <div className="flex items-center gap-3 relative">
           {/* Ikon */}
           <div className="flex gap-4">
-            <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
+            <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
               <a href="/beranda-admin">
                 <FaHome className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
               </a>
             </div>
-            <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
+            <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
               <FaMoon className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>
-            <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
+            <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
               <FaBell className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>
           </div>
@@ -79,7 +80,7 @@ function Navbar() {
           <div className="relative">
             <div onClick={toggleDropdown} className="flex items-center gap-2 cursor-pointer select-none">
               <FaUserCircle className="text-blue-600 text-3xl" />
-              <span className="text-base font-semibold text-black">{userData.nama}</span>
+              <span className="text-base font-semibold text-black hidden md:block">{userData.nama}</span>
               {dropdownOpen ? <FaAngleUp /> : <FaAngleDown />}
             </div>
 
@@ -103,6 +104,18 @@ function Navbar() {
                       <span>Dashboard</span>
                     </NavLink>
                   )}
+                  <NavLink to="#" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                    <FaBagShopping />
+                    <span>Pekerjaan</span>
+                  </NavLink>
+                  <NavLink to="#" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                    <FaCertificate />
+                    <span>Sertifikasi</span>
+                  </NavLink>
+                  <NavLink to="#" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                    <FaBookmark />
+                    <span>Tersimpan</span>
+                  </NavLink>
                   <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                     <FaCog />
                     <span>Pengaturan</span>
