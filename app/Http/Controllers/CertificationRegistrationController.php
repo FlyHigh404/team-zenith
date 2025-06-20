@@ -205,7 +205,7 @@ class CertificationRegistrationController extends Controller
             $user = Auth::user();
 
             $pendaftaran = CertificationRegistration::where('user_id', $user->id)
-                ->with('sertifikasi')
+                ->with('adminCertification')
                 ->get();
 
             return response()->json([
