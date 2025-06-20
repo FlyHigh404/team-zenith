@@ -95,6 +95,9 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            // Set user sebagai aktif
+            $user->update(['is_active' => true]);
+
             // Generate token
             $token = JWTAuth::fromUser($user);
 
@@ -122,13 +125,19 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
     /**
      * Remove the authentication token (Logout).
      */
     public function destroy()
     {
         try {
+            $user = Auth::user();
+
+            if ($user) {
+                // Set user sebagai tidak aktif
+                $user->update(['is_active' => false]);
+            }
+
             $token = JWTAuth::getToken();
 
             if ($token) {
