@@ -26,6 +26,7 @@ return new class extends Migration
             $table->json('levelProfesional');
             $table->json('keahlian');
             $table->string('pekerjaan', 255)->nullable();
+            $table->boolean('is_active')->default(false); // default: tidak aktif
             $table->dateTime('createdAt');
         });
     }

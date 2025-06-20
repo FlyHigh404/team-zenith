@@ -23,6 +23,11 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/change-password', [Controllers\ProfileController::class, 'updatePassword']);
     });
 
+    // Get Active User routes
+    Route::prefix('get-active-userlist')->group(function () {
+        Route::get('/', [Controllers\ActiveUserController::class, 'index']);
+    });
+
     // Experience routes
     Route::prefix('experience')->group(function () {
         Route::get('/', [Controllers\ExperienceController::class, 'index']);
