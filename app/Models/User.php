@@ -29,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'pekerjaan',
         'createdAt',
         'role', // Menambahkan kolom role
+        'is_active', // Menambahkan kolom is_active
     ];
 
     protected $hidden = [
@@ -41,6 +42,7 @@ class User extends Authenticatable implements JWTSubject
         'pekerjaan' => 'array',
         'birthdate' => 'date',
         'createdAt' => 'datetime',
+        'is_active' => 'boolean', // Menambahkan cast untuk is_active
     ];
 
     public function getJWTIdentifier()
