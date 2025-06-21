@@ -122,8 +122,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'providers' => [
-        // ...
-        App\Providers\ErrorHandlingServiceProvider::class,
-    ],
+    // 'providers' => [
+    //     // ...
+    //     App\Providers\ErrorHandlingServiceProvider::class,
+    // ],
 ];
