@@ -15,7 +15,6 @@ const BarChart = () => {
       try {
         const res = await allUserList(currentPage)
         const company = await allCompanyList()
-        console.log(company)
         setCompanys(company.data)
         setUsers(res.data.data)
         setTotalPage(res.data.last_page)
@@ -48,7 +47,7 @@ const BarChart = () => {
               <tbody>
                 {users.map((user, i) => (
                   <tr key={user.id} className="text-center">
-                    <th>{(currentPage - 1) * 20 + i + 1}</th>
+                    <th>{(currentPage - 1) * 10 + i + 1}</th>
                     <td>{user.nama}</td>
                     <td>
                       {user.kota}, {user.provinsi}

@@ -4,6 +4,7 @@ import { FaBagShopping, FaCertificate, FaBookmark } from 'react-icons/fa6'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
+import badgeAdmin from '../../assets/img/badgeAdmin.png'
 
 function Navbar() {
   const { logoutUser } = useAuth()
@@ -89,7 +90,9 @@ function Navbar() {
                 <div className="p-4 border-b-2 border-gray-300 flex">
                   <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
                   <div className="ml-3">
-                    <div className="text-black font-semibold">{userData.nama}</div>
+                    <div className="text-black flex font-semibold">
+                      {userData.nama} <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
+                    </div>
                     <div className="text-sm text-black font-light">@{userData.username}</div>
                   </div>
                 </div>
