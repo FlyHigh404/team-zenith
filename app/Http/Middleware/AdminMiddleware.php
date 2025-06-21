@@ -17,13 +17,31 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
-        }
+        try {
+            // Check if user is logged in
+            if (!Auth::check()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized. Please login first.'
+                ], 401);
+            }
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Unauthorized. Admin access required.'
-        ], 403);
+            // Check if user has admin role
+            if (Auth::user()->role !== 'admin') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Forbidden. Admin access required.'
+                ], 403);
+            }
+
+            return $next($request);
+        } catch (\Exception $e) {
+            \Log::error('Error in AdminMiddleware: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Authentication error',
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
+            ], 500);
+        }
     }
 }

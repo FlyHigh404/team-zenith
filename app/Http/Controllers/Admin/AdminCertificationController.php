@@ -6,35 +6,45 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminCertification;
 use App\Models\CertificationRegistration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AdminCertificationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the certifications
+     * GET /admin/certification-lists
      */
     public function index()
     {
         try {
+            // Get all certifications, no restrictions by user
             $certifications = AdminCertification::all();
+
+            // Add registration count for each certification
+            foreach ($certifications as $certification) {
+                $certification->pendaftar = $certification->jumlahPendaftar();
+                $certification->tersedia = $certification->kuota - $certification->pendaftar;
+            }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Data sertifikasi berhasil diambil',
+                'message' => 'Daftar sertifikasi berhasil diambil',
                 'data' => $certifications
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal mengambil data sertifikasi',
+                'message' => 'Gagal mengambil daftar sertifikasi',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created certification
+     * POST /admin/certification-lists
      */
     public function store(Request $request)
     {
@@ -43,7 +53,7 @@ class AdminCertificationController extends Controller
                 'judul' => 'required|string|max:100',
                 'bidang' => 'required|in:Pengelasan,Fabrikasi,Inspeksi,Lainnya',
                 'jenisSertifikat' => 'required|string|max:50',
-                'tanggalMulai' => 'required|date',
+                'tanggalMulai' => 'required|date|after_or_equal:today',
                 'tanggalSelesai' => 'required|date|after_or_equal:tanggalMulai',
                 'jamMulai' => 'required|date_format:H:i',
                 'jamSelesai' => 'required|date_format:H:i|after:jamMulai',
@@ -85,45 +95,62 @@ class AdminCertificationController extends Controller
                 'message' => 'Sertifikasi berhasil dibuat',
                 'data' => $certification
             ], 201);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when creating certification program: ' . $e->getMessage());
+
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Program sertifikasi dengan judul yang sama sudah ada'
+                ], 409);
+            }
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal membuat sertifikasi',
-                'error' => $e->getMessage()
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Error when creating certification program: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal membuat program sertifikasi',
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified certification
+     * GET /admin/certification-lists/{id}
      */
     public function show($id)
     {
         try {
             $certification = AdminCertification::findOrFail($id);
 
-            // Hitung jumlah pendaftar
+            // Tambahkan informasi jumlah pendaftar dan ketersediaan kuota
             $pendaftar = $certification->jumlahPendaftar();
-
             $certification->pendaftar = $pendaftar;
             $certification->tersedia = $certification->kuota - $pendaftar;
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Data sertifikasi berhasil diambil',
+                'message' => 'Detail sertifikasi berhasil diambil',
                 'data' => $certification
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal mengambil data sertifikasi',
+                'message' => 'Gagal mengambil detail sertifikasi',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified certification
+     * PUT /admin/certification-lists/{id}
      */
     public function update(Request $request, $id)
     {
@@ -191,7 +218,8 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified certification
+     * DELETE /admin/certification-lists/{id}
      */
     public function destroy($id)
     {
@@ -219,15 +247,15 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Get applicants for a certification.
+     * Get applicants for a certification
+     * GET /admin/certification-lists/{id}/applicants
      */
     public function getApplicants($id)
     {
         try {
             $certification = AdminCertification::findOrFail($id);
-
-            $pendaftaran = CertificationRegistration::where('sertifikasi_id', $id)
-                ->with('user')
+            $applicants = CertificationRegistration::with('user')
+                ->where('sertifikasi_id', $id)
                 ->get();
 
             return response()->json([
@@ -235,7 +263,7 @@ class AdminCertificationController extends Controller
                 'message' => 'Data pendaftar berhasil diambil',
                 'data' => [
                     'sertifikasi' => $certification,
-                    'pendaftar' => $pendaftaran
+                    'pendaftar' => $applicants
                 ]
             ]);
         } catch (\Exception $e) {
@@ -248,7 +276,8 @@ class AdminCertificationController extends Controller
     }
 
     /**
-     * Update application status.
+     * Update applicant status
+     * PUT /admin/certification-lists/applicants/{id}
      */
     public function updateApplicantStatus(Request $request, $id)
     {
@@ -266,7 +295,22 @@ class AdminCertificationController extends Controller
                 ], 422);
             }
 
-            $pendaftaran = CertificationRegistration::findOrFail($id);
+            $pendaftaran = CertificationRegistration::find($id);
+
+            if (!$pendaftaran) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data pendaftaran tidak ditemukan'
+                ], 404);
+            }
+
+            if ($pendaftaran->status !== 'Menunggu') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Status pendaftaran sudah diproses sebelumnya',
+                    'current_status' => $pendaftaran->status
+                ], 400);
+            }
 
             $pendaftaran->update([
                 'status' => $request->status,
@@ -279,9 +323,90 @@ class AdminCertificationController extends Controller
                 'data' => $pendaftaran
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error updating certification applicant status: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal memperbarui status pendaftaran',
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get statistics of certification programs
+     * GET /admin/certification-lists/statistics
+     */
+    public function getStatistics()
+    {
+        try {
+            // Hitung total program sertifikasi
+            $totalPrograms = AdminCertification::count();
+
+            // Hitung total pendaftar untuk semua program
+            $registrations = CertificationRegistration::query();
+
+            $totalRegistrations = $registrations->count();
+            $menungguRegistrations = (clone $registrations)->where('status', 'Menunggu')->count();
+            $diterimaRegistrations = (clone $registrations)->where('status', 'Diterima')->count();
+            $ditolakRegistrations = (clone $registrations)->where('status', 'Ditolak')->count();
+
+            // Statistik per bidang
+            $pengelasanPrograms = AdminCertification::where('bidang', 'Pengelasan')->count();
+            $fabrikasiPrograms = AdminCertification::where('bidang', 'Fabrikasi')->count();
+            $inspeksiPrograms = AdminCertification::where('bidang', 'Inspeksi')->count();
+            $lainnyaPrograms = AdminCertification::where('bidang', 'Lainnya')->count();
+
+            // Program yang akan datang vs yang sudah lewat
+            $upcomingPrograms = AdminCertification::where('tanggalMulai', '>=', now())->count();
+            $pastPrograms = AdminCertification::where('tanggalSelesai', '<', now())->count();
+            $ongoingPrograms = AdminCertification::where('tanggalMulai', '<=', now())
+                ->where('tanggalSelesai', '>=', now())
+                ->count();
+
+            // Top 5 program paling banyak pendaftarnya
+            $topPrograms = AdminCertification::withCount('pendaftaran')
+                ->orderBy('pendaftaran_count', 'desc')
+                ->limit(5)
+                ->get()
+                ->map(function($program) {
+                    return [
+                        'id' => $program->id,
+                        'judul' => $program->judul,
+                        'bidang' => $program->bidang,
+                        'pendaftar' => $program->pendaftaran_count,
+                        'kuota' => $program->kuota,
+                        'persentase' => $program->kuota > 0 ?
+                            round(($program->pendaftaran_count / $program->kuota) * 100, 1) : 0
+                    ];
+                });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Statistik sertifikasi berhasil diambil',
+                'data' => [
+                    'total_programs' => $totalPrograms,
+                    'total_registrations' => $totalRegistrations,
+                    'menunggu_registrations' => $menungguRegistrations,
+                    'diterima_registrations' => $diterimaRegistrations,
+                    'ditolak_registrations' => $ditolakRegistrations,
+                    'by_category' => [
+                        'pengelasan' => $pengelasanPrograms,
+                        'fabrikasi' => $fabrikasiPrograms,
+                        'inspeksi' => $inspeksiPrograms,
+                        'lainnya' => $lainnyaPrograms
+                    ],
+                    'by_schedule' => [
+                        'upcoming' => $upcomingPrograms,
+                        'ongoing' => $ongoingPrograms,
+                        'past' => $pastPrograms
+                    ],
+                    'top_programs' => $topPrograms
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil statistik sertifikasi',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -48,6 +48,14 @@ class Perusahaan extends Model
         return $this->hasMany(Loker::class, 'perusahaan_id');
     }
 
+    /**
+     * Get all lokers for this company (no user restriction)
+     */
+    public function lokers()
+    {
+        return $this->hasMany(Loker::class);
+    }
+
     // Relasi dengan ulasan perusahaan
     public function ulasan()
     {

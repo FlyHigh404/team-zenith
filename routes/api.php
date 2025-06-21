@@ -115,6 +115,9 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 
     // Sertifikasi admin
     Route::prefix('certification-lists')->group(function () {
+        // Statistik
+        Route::get('/statistics', [Admin\AdminCertificationController::class, 'getStatistics']);
+
         Route::get('/', [Admin\AdminCertificationController::class, 'index']);
         Route::get(
             '/{id}',
@@ -131,6 +134,9 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
 
     // Admin job listings
     Route::prefix('job-listings')->group(function () {
+        // Statistik
+        Route::get('/statistics', [Admin\AdminLokerController::class, 'getStatistics']);
+
         Route::get('/', [Admin\AdminLokerController::class, 'index']);
         Route::get('/{id}', [Admin\AdminLokerController::class, 'show']);
         Route::post('/', [Admin\AdminLokerController::class, 'store']);
@@ -141,8 +147,6 @@ Route::middleware(['auth:api', 'admin'])->prefix('admin')->group(function () {
         Route::get('/{id}/applicants', [Admin\AdminLokerController::class, 'getApplicants']);
         Route::put('/applicants/{id}', [Admin\AdminLokerController::class, 'updateApplicantStatus']);
 
-        // Statistik
-        Route::get('/statistics', [Admin\AdminLokerController::class, 'getStatistics']);
     });
 
     // Pengelolaan perusahaan

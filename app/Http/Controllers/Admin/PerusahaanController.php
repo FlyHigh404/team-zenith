@@ -13,14 +13,14 @@ use Illuminate\Support\Facades\Validator;
 class PerusahaanController extends Controller
 {
     /**
-     * Display a listing of companies owned by the user
+     * Display a listing of all companies (not just owned by current user)
      * GET /admin/companies
      */
     public function index()
     {
         try {
-            $user = Auth::user();
-            $companies = Perusahaan::where('user_id', $user->id)->get();
+            // Get all companies, not just those owned by current user
+            $companies = Perusahaan::all();
 
             return response()->json([
                 'status' => 'success',
@@ -64,7 +64,7 @@ class PerusahaanController extends Controller
             }
 
             $data = $validator->validated();
-            $data['user_id'] = Auth::id();
+            $data['user_id'] = Auth::id(); // Keep track of which admin created it
             $data['createdAt'] = now();
 
             // Handle upload logo
@@ -98,10 +98,8 @@ class PerusahaanController extends Controller
     public function show($id)
     {
         try {
-            $user = Auth::user();
-            $company = Perusahaan::where('id', $id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            // Access any company, not just owned by current user
+            $company = Perusahaan::findOrFail($id);
 
             return response()->json([
                 'status' => 'success',
@@ -124,10 +122,8 @@ class PerusahaanController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = Auth::user();
-            $company = Perusahaan::where('id', $id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            // Access any company, not just owned by current user
+            $company = Perusahaan::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
                 'nama' => 'sometimes|string|max:100',
@@ -186,10 +182,8 @@ class PerusahaanController extends Controller
     public function destroy($id)
     {
         try {
-            $user = Auth::user();
-            $company = Perusahaan::where('id', $id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            // Access any company, not just owned by current user
+            $company = Perusahaan::findOrFail($id);
 
             // Hapus logo jika ada
             if ($company->logo) {

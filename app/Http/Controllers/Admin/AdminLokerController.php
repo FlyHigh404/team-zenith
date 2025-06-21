@@ -21,13 +21,8 @@ class AdminLokerController extends Controller
     public function index(Request $request)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companies = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Query untuk semua loker dari perusahaan yang dimiliki user
-            $query = Loker::whereIn('perusahaan_id', $companies);
+            // Ambil semua perusahaan (tidak dibatasi per user)
+            $query = Loker::query();
 
             // Filter berdasarkan perusahaan jika disediakan
             if ($request->has('perusahaan_id')) {
@@ -82,7 +77,7 @@ class AdminLokerController extends Controller
                 'jenisIndustri' => 'required|array',
                 'jenisIndustri.*' => 'string',
                 'gaji' => 'required|integer|min:0',
-                'tanggalMulai' => 'required|date',
+                'tanggalMulai' => 'required|date|after_or_equal:today',
                 'tanggalSelesai' => 'required|date|after_or_equal:tanggalMulai',
                 'kualifikasi' => 'required|string',
                 'detail' => 'nullable|array',
@@ -97,21 +92,44 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
-            // Periksa apakah perusahaan ini milik user yang login
-            $user = Auth::user();
-            $perusahaan = Perusahaan::where('id', $request->perusahaan_id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            // Verifikasi perusahaan ada
+            $perusahaan = Perusahaan::find($request->perusahaan_id);
+
+            if (!$perusahaan) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Perusahaan tidak ditemukan'
+                ], 404);
+            }
 
             $data = $validator->validated();
             $data['createdAt'] = now();
 
+            // Encode JSON fields
+            if (isset($data['jenisIndustri']) && is_array($data['jenisIndustri'])) {
+                $data['jenisIndustri'] = json_encode($data['jenisIndustri']);
+            }
+
+            if (isset($data['detail']) && is_array($data['detail'])) {
+                $data['detail'] = json_encode($data['detail']);
+            }
+
             // Handle upload gambar
+            $fileName = null;
             if ($request->hasFile('gambar')) {
-                $file = $request->file('gambar');
-                $fileName = time() . '_loker.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/loker', $fileName);
-                $data['gambar'] = $fileName;
+                try {
+                    $file = $request->file('gambar');
+                    $fileName = time() . '_loker.' . $file->getClientOriginalExtension();
+                    $file->storeAs('public/loker', $fileName);
+                    $data['gambar'] = $fileName;
+                } catch (\Exception $e) {
+                    \Log::error('Failed to upload job listing image: ' . $e->getMessage());
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengunggah gambar',
+                        'error' => 'File upload failed'
+                    ], 500);
+                }
             }
 
             $loker = Loker::create($data);
@@ -121,11 +139,31 @@ class AdminLokerController extends Controller
                 'message' => 'Lowongan berhasil dibuat',
                 'data' => $loker
             ], 201);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when creating job listing: ' . $e->getMessage());
+
+            // Clean up uploaded image if exists
+            if (isset($fileName)) {
+                Storage::delete('public/loker/' . $fileName);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when creating job listing: ' . $e->getMessage());
+
+            // Clean up uploaded image if exists
+            if (isset($fileName)) {
+                Storage::delete('public/loker/' . $fileName);
+            }
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal membuat lowongan',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
@@ -137,15 +175,8 @@ class AdminLokerController extends Controller
     public function show($id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->with('perusahaan')
-                ->firstOrFail();
+            // Ambil loker tanpa filter user_id
+            $loker = Loker::with('perusahaan')->findOrFail($id);
 
             return response()->json([
                 'status' => 'success',
@@ -168,14 +199,8 @@ class AdminLokerController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->firstOrFail();
+            // Ambil loker tanpa filter user_id
+            $loker = Loker::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
                 'perusahaan_id' => 'sometimes|exists:perusahaan,id',
@@ -202,13 +227,6 @@ class AdminLokerController extends Controller
                     'message' => 'Validasi gagal',
                     'errors' => $validator->errors()
                 ], 422);
-            }
-
-            // Jika perusahaan_id diubah, pastikan perusahaan baru milik user yang sama
-            if ($request->has('perusahaan_id') && $request->perusahaan_id != $loker->perusahaan_id) {
-                $perusahaan = Perusahaan::where('id', $request->perusahaan_id)
-                    ->where('user_id', $user->id)
-                    ->firstOrFail();
             }
 
             $data = $validator->validated();
@@ -248,14 +266,8 @@ class AdminLokerController extends Controller
     public function destroy($id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->firstOrFail();
+            // Ambil loker tanpa filter user_id
+            $loker = Loker::findOrFail($id);
 
             // Hapus gambar jika ada
             if ($loker->gambar) {
@@ -292,15 +304,8 @@ class AdminLokerController extends Controller
     public function getApplicants(Request $request, $id)
     {
         try {
-            $user = Auth::user();
-
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Periksa apakah loker yang diminta ada dan milik user
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $id)
-                ->firstOrFail();
+            // Verifikasi loker ada (tanpa filter user_id)
+            $loker = Loker::findOrFail($id);
 
             $query = LokerApplicant::with('user')
                 ->where('loker_id', $id);
@@ -359,16 +364,22 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
-            $applicant = LokerApplicant::findOrFail($id);
-            $user = Auth::user();
+            $applicant = LokerApplicant::find($id);
 
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
+            if (!$applicant) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data pelamar tidak ditemukan'
+                ], 404);
+            }
 
-            // Verifikasi bahwa lowongan ini milik user yang sedang login
-            $loker = Loker::whereIn('perusahaan_id', $companyIds)
-                ->where('id', $applicant->loker_id)
-                ->firstOrFail();
+            if ($applicant->status !== 'Dilamar') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Status pelamar sudah diproses sebelumnya',
+                    'current_status' => $applicant->status
+                ], 400);
+            }
 
             $applicant->update([
                 'status' => $request->status,
@@ -380,11 +391,19 @@ class AdminLokerController extends Controller
                 'message' => 'Status pelamar berhasil diperbarui',
                 'data' => $applicant
             ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when updating applicant status: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when updating applicant status: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal memperbarui status pelamar',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
@@ -396,18 +415,11 @@ class AdminLokerController extends Controller
     public function getStatistics()
     {
         try {
-            $user = Auth::user();
+            // Hitung total lowongan (semua, tidak dibatasi oleh user)
+            $totalLoker = Loker::count();
 
-            // Ambil semua perusahaan milik user
-            $companyIds = Perusahaan::where('user_id', $user->id)->pluck('id');
-
-            // Hitung total lowongan yang dimiliki user melalui perusahaannya
-            $totalLoker = Loker::whereIn('perusahaan_id', $companyIds)->count();
-
-            // Hitung total pelamar untuk semua lowongan user
-            $applicants = LokerApplicant::whereHas('loker', function($query) use ($companyIds) {
-                $query->whereIn('perusahaan_id', $companyIds);
-            });
+            // Hitung total pelamar untuk semua lowongan
+            $applicants = LokerApplicant::query();
 
             $totalApplicants = $applicants->count();
             $dilamarApplicants = (clone $applicants)->where('status', 'Dilamar')->count();
