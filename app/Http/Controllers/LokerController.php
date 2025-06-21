@@ -155,7 +155,30 @@ class LokerController extends Controller
     {
         try {
             $user = Auth::user();
-            $loker = Loker::findOrFail($id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized. Silakan login terlebih dahulu'
+                ], 401);
+            }
+
+            $loker = Loker::find($id);
+
+            if (!$loker) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Lowongan kerja tidak ditemukan'
+                ], 404);
+            }
+
+            // Cek apakah lowongan masih aktif
+            if ($loker->tanggalSelesai < now()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Lowongan kerja sudah tidak aktif'
+                ], 400);
+            }
 
             // Cek apakah sudah pernah mendaftar
             $existing = LokerApplicant::where('loker_id', $id)
@@ -173,7 +196,7 @@ class LokerController extends Controller
             // Validasi input lamaran
             $validator = Validator::make($request->all(), [
                 'nama' => 'required|string|max:100',
-                'tanggalLahir' => 'required|date',
+                'tanggalLahir' => 'required|date|before:today',
                 'notelp' => 'required|string|max:25',
                 'email' => 'required|email|max:100',
                 'alamat' => 'required|string',
@@ -192,9 +215,18 @@ class LokerController extends Controller
             }
 
             // Upload CV
-            $cvFile = $request->file('cv');
-            $cvFileName = time() . '_' . $user->id . '_cv.' . $cvFile->getClientOriginalExtension();
-            $cvFile->storeAs('public/cv', $cvFileName);
+            try {
+                $cvFile = $request->file('cv');
+                $cvFileName = time() . '_' . $user->id . '_cv.' . $cvFile->getClientOriginalExtension();
+                $cvFile->storeAs('public/cv', $cvFileName);
+            } catch (\Exception $e) {
+                \Log::error('Failed to upload CV: ' . $e->getMessage());
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal mengunggah CV',
+                    'error' => 'File upload failed'
+                ], 500);
+            }
 
             // Buat lamaran baru
             $application = LokerApplicant::create([
@@ -217,11 +249,31 @@ class LokerController extends Controller
                 'message' => 'Berhasil mendaftar ke lowongan',
                 'data' => $application
             ], 201);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when applying for job: ' . $e->getMessage());
+
+            // Clean up CV file if it was uploaded
+            if (isset($cvFileName)) {
+                Storage::delete('public/cv/' . $cvFileName);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when applying for job: ' . $e->getMessage());
+
+            // Clean up CV file if it was uploaded
+            if (isset($cvFileName)) {
+                Storage::delete('public/cv/' . $cvFileName);
+            }
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal mendaftar ke lowongan',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }

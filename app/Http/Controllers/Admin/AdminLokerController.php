@@ -77,7 +77,7 @@ class AdminLokerController extends Controller
                 'jenisIndustri' => 'required|array',
                 'jenisIndustri.*' => 'string',
                 'gaji' => 'required|integer|min:0',
-                'tanggalMulai' => 'required|date',
+                'tanggalMulai' => 'required|date|after_or_equal:today',
                 'tanggalSelesai' => 'required|date|after_or_equal:tanggalMulai',
                 'kualifikasi' => 'required|string',
                 'detail' => 'nullable|array',
@@ -92,18 +92,44 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
-            // Verifikasi perusahaan ada (tanpa perlu memeriksa user_id)
-            $perusahaan = Perusahaan::findOrFail($request->perusahaan_id);
+            // Verifikasi perusahaan ada
+            $perusahaan = Perusahaan::find($request->perusahaan_id);
+
+            if (!$perusahaan) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Perusahaan tidak ditemukan'
+                ], 404);
+            }
 
             $data = $validator->validated();
             $data['createdAt'] = now();
 
+            // Encode JSON fields
+            if (isset($data['jenisIndustri']) && is_array($data['jenisIndustri'])) {
+                $data['jenisIndustri'] = json_encode($data['jenisIndustri']);
+            }
+
+            if (isset($data['detail']) && is_array($data['detail'])) {
+                $data['detail'] = json_encode($data['detail']);
+            }
+
             // Handle upload gambar
+            $fileName = null;
             if ($request->hasFile('gambar')) {
-                $file = $request->file('gambar');
-                $fileName = time() . '_loker.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/loker', $fileName);
-                $data['gambar'] = $fileName;
+                try {
+                    $file = $request->file('gambar');
+                    $fileName = time() . '_loker.' . $file->getClientOriginalExtension();
+                    $file->storeAs('public/loker', $fileName);
+                    $data['gambar'] = $fileName;
+                } catch (\Exception $e) {
+                    \Log::error('Failed to upload job listing image: ' . $e->getMessage());
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengunggah gambar',
+                        'error' => 'File upload failed'
+                    ], 500);
+                }
             }
 
             $loker = Loker::create($data);
@@ -113,11 +139,31 @@ class AdminLokerController extends Controller
                 'message' => 'Lowongan berhasil dibuat',
                 'data' => $loker
             ], 201);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when creating job listing: ' . $e->getMessage());
+
+            // Clean up uploaded image if exists
+            if (isset($fileName)) {
+                Storage::delete('public/loker/' . $fileName);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when creating job listing: ' . $e->getMessage());
+
+            // Clean up uploaded image if exists
+            if (isset($fileName)) {
+                Storage::delete('public/loker/' . $fileName);
+            }
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal membuat lowongan',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
@@ -318,7 +364,22 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
-            $applicant = LokerApplicant::findOrFail($id);
+            $applicant = LokerApplicant::find($id);
+
+            if (!$applicant) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data pelamar tidak ditemukan'
+                ], 404);
+            }
+
+            if ($applicant->status !== 'Dilamar') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Status pelamar sudah diproses sebelumnya',
+                    'current_status' => $applicant->status
+                ], 400);
+            }
 
             $applicant->update([
                 'status' => $request->status,
@@ -330,11 +391,19 @@ class AdminLokerController extends Controller
                 'message' => 'Status pelamar berhasil diperbarui',
                 'data' => $applicant
             ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when updating applicant status: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when updating applicant status: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal memperbarui status pelamar',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
