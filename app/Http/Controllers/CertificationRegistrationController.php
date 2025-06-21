@@ -102,7 +102,23 @@ class CertificationRegistrationController extends Controller
     {
         try {
             $user = Auth::user();
-            $certification = AdminCertification::findOrFail($id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized. Silakan login terlebih dahulu'
+                ], 401);
+            }
+
+            // Verify certification program exists
+            $certification = AdminCertification::find($id);
+
+            if (!$certification) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Program sertifikasi tidak ditemukan'
+                ], 404);
+            }
 
             // Check if certification is still open
             if ($certification->tanggalSelesai < now()) {
@@ -145,11 +161,19 @@ class CertificationRegistrationController extends Controller
                 'message' => 'Pendaftaran sertifikasi berhasil',
                 'data' => $pendaftaran
             ], 201);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when applying for certification: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when applying for certification: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal mendaftar sertifikasi',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }

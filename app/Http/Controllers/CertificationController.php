@@ -79,11 +79,12 @@ class CertificationController extends Controller
     {
         try {
             $request->validate([
-                'namaPerusahaan' => 'required|string|max:50',
-                'materiSertifikasi' => 'required|string|max:50',
-                'tanggalMulai' => 'required|date',
-                'tanggalBerakhir' => 'nullable|date|after_or_equal:tanggalMulai',
-                'media' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'nama' => 'required|string|max:100',
+                'tanggalisu' => 'required|date',
+                'tanggalExpired' => 'required|date|after_or_equal:tanggalisu',
+                'levelSertifikasi' => 'required|string|max:50',
+                'jenisSertifikat' => 'required|string|max:50',
+                'media' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             ]);
 
             $user = Auth::user();
@@ -91,10 +92,11 @@ class CertificationController extends Controller
             // Prepare data
             $sertifikasiData = [
                 'user_id' => $user->id,
-                'namaPerusahaan' => $request->namaPerusahaan,
-                'materiSertifikasi' => $request->materiSertifikasi,
-                'tanggalMulai' => $request->tanggalMulai,
-                'tanggalBerakhir' => $request->tanggalBerakhir,
+                'namaPerusahaan' => $request->nama,
+                'materiSertifikasi' => $request->jenisSertifikat,
+                'tanggalMulai' => $request->tanggalisu,
+                'tanggalBerakhir' => $request->tanggalExpired,
+                'levelSertifikasi' => $request->levelSertifikasi,
             ];
 
             // Handle file upload
@@ -119,11 +121,19 @@ class CertificationController extends Controller
                 'message' => 'Validasi gagal',
                 'errors' => $e->errors()
             ], 422);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when creating certification: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
         } catch (\Exception $e) {
+            \Log::error('Error when creating certification: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal menambahkan sertifikasi',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }

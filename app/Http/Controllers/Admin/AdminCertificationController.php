@@ -53,7 +53,7 @@ class AdminCertificationController extends Controller
                 'judul' => 'required|string|max:100',
                 'bidang' => 'required|in:Pengelasan,Fabrikasi,Inspeksi,Lainnya',
                 'jenisSertifikat' => 'required|string|max:50',
-                'tanggalMulai' => 'required|date',
+                'tanggalMulai' => 'required|date|after_or_equal:today',
                 'tanggalSelesai' => 'required|date|after_or_equal:tanggalMulai',
                 'jamMulai' => 'required|date_format:H:i',
                 'jamSelesai' => 'required|date_format:H:i|after:jamMulai',
@@ -95,11 +95,27 @@ class AdminCertificationController extends Controller
                 'message' => 'Sertifikasi berhasil dibuat',
                 'data' => $certification
             ], 201);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when creating certification program: ' . $e->getMessage());
+
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Program sertifikasi dengan judul yang sama sudah ada'
+                ], 409);
+            }
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal membuat sertifikasi',
-                'error' => $e->getMessage()
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Error when creating certification program: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal membuat program sertifikasi',
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
@@ -279,7 +295,22 @@ class AdminCertificationController extends Controller
                 ], 422);
             }
 
-            $pendaftaran = CertificationRegistration::findOrFail($id);
+            $pendaftaran = CertificationRegistration::find($id);
+
+            if (!$pendaftaran) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data pendaftaran tidak ditemukan'
+                ], 404);
+            }
+
+            if ($pendaftaran->status !== 'Menunggu') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Status pendaftaran sudah diproses sebelumnya',
+                    'current_status' => $pendaftaran->status
+                ], 400);
+            }
 
             $pendaftaran->update([
                 'status' => $request->status,
@@ -292,10 +323,11 @@ class AdminCertificationController extends Controller
                 'data' => $pendaftaran
             ]);
         } catch (\Exception $e) {
+            \Log::error('Error updating certification applicant status: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal memperbarui status pendaftaran',
-                'error' => $e->getMessage()
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
