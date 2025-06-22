@@ -30,7 +30,7 @@ const Data = () => {
         <h1 className="flex text-3xl font-semibold">{users.total ? users.total : '-'}</h1>
       </div>
       <div className="bg-[#D9EBFF] py-4 px-6 rounded-xl space-y-3">
-        <p className="text-base font-medium">Pengguna Aktif</p>
+        <p className="text-base font-medium">Total Mitra</p>
         <h1 className="flex text-3xl font-semibold">Belom</h1>
       </div>
     </div>
