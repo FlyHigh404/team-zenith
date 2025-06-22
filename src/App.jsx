@@ -32,11 +32,12 @@ import SertifikasiApply from './pages/user/SertifikasiApply'
 import SimpanPostingan from './pages/user/SimpanPostingan'
 import SimpanPekerjaan from './pages/user/SimpanPekerjaan'
 import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
+import SemuaLamaran from './pages/lamaran/SemuaLamaran'
 
 import NotFound from './pages/NotFound'
 
 import { AuthProvider } from './auth/AuthProvider'
-import SemuaLamaran from './pages/lamaran/SemuaLamaran'
+
 
 function App() {
   return (
