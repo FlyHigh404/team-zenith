@@ -17,7 +17,7 @@ class ActiveUserController extends Controller
 
         $users = User::where('is_active', true)
             ->where('id', '!=', $currentUserId)       // Kecualikan user login
-            ->select('id', 'nama', 'username', 'pekerjaan', 'levelProfesional')
+            ->select('id', 'fotoProfil', 'nama', 'username', 'pekerjaan', 'levelProfesional')
             ->paginate(10);
 
         return response()->json([
