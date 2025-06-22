@@ -12,6 +12,15 @@ export const allUserList = async (page = 1) => {
   return response.data
 }
 
+export const activeUserList = async (page = 1) => {
+  const response = await axios.get(`${API_URL}/get-active-userlist?page=${page}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return response.data
+}
+
 export const allCompanyList = async () => {
   const response = await axios.get(`${API_URL}/companies`, {
     headers: {
@@ -32,6 +41,15 @@ export const allJobList = async () => {
 
 export const allCertificateList = async () => {
   const response = await axios.get(`${API_URL}/certification-lists/statistics`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return response.data
+}
+
+export const allJobs = async () => {
+  const response = await axios.get(`${API_URL}/job-listings`, {
     headers: {
       Authorization: `Bearer ${getToken()}`,
     },

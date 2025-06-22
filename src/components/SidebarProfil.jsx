@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { FaBagShopping, FaCertificate, FaBookmark } from 'react-icons/fa6'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { getUserData } from '../utils/token'
+import { FaUserCircle } from 'react-icons/fa'
 
 const SidebarProfil = () => {
   const userData = getUserData()
@@ -12,7 +13,11 @@ const SidebarProfil = () => {
   return (
     <div className="flex flex-col border-gray-300 w-full border rounded-2xl bg-white p-4 gap-4 font-sans">
       <div className="flex flex-row gap-3 items-center">
-        <div className="bg-blue-700 w-8 h-8 rounded-full"></div>
+        {userData.fotoProfil ? (
+          <img src={userData.fotoProfil} alt="Foto Profil" className="w-12 h-12 rounded-full shrink-0 object-cover" />
+        ) : (
+          <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
+        )}
         <NavLink to="/profil-admin" className="flex flex-col">
           <div className="flex flex-row gap-1 items-center">
             <p className="font-semibold text-base">{userData.nama}</p>

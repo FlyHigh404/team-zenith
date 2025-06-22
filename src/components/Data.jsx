@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { allUserList, allJobList, allCertificateList } from '../api/dashboard'
 
 const Data = () => {
-  const [users, setUsers] = useState([])
+  const [, setUsers] = useState([])
   const [jobs, setJobs] = useState([])
   const [certificates, setCertificates] = useState([])
 
@@ -42,11 +42,11 @@ const Data = () => {
       </div>
       <div className="bg-[#DDDFFF] py-4 px-6 rounded-xl space-y-3">
         <p className="text-base font-medium">Total Pengguna</p>
-        <h1 className="flex text-3xl font-semibold">{users ? userTotal : '-'}</h1>
+        <h1 className="flex text-3xl font-semibold">{userTotal ? userTotal : '-'}</h1>
       </div>
       <div className="bg-[#D9EBFF] py-4 px-6 rounded-xl space-y-3">
         <p className="text-base font-medium">Pengguna Aktif</p>
-        <h1 className="flex text-3xl font-semibold">{users ? userActive : '-'}</h1>
+        <h1 className="flex text-3xl font-semibold">{userActive ? userActive : '-'}</h1>
       </div>
     </div>
   )

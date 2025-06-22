@@ -27,7 +27,7 @@ const TambahPostingan = () => {
   }
 
   return (
-    <div className="bg-white p-4 rounded-2xl border border-gray-300 font-sans">
+    <div className="bg-white p-4 rounded-t-2xl border border-gray-300 font-sans">
       <div className="flex flex-row gap-3">
         <div className="bg-blue-700 w-9 h-9 rounded-full shrink-0"></div>
         <textarea ref={textareaRef} onInput={handleInput} placeholder="Apa yang sedang kamu pikirkan?" className="w-full outline-none resize-none text-sm max-h-[300px]" />

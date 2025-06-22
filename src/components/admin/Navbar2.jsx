@@ -90,8 +90,8 @@ function Navbar() {
                 <div className="p-4 border-b-2 border-gray-300 flex">
                   <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
                   <div className="ml-3">
-                    <div className="text-black flex font-semibold">
-                      {userData.nama} <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
+                    <div className="text-black flex items-center gap-1 font-semibold">
+                      <span>{userData.nama}</span> <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
                     </div>
                     <div className="text-sm text-black font-light">@{userData.username}</div>
                   </div>
@@ -124,7 +124,15 @@ function Navbar() {
                     <span>Pengaturan</span>
                   </NavLink>
                 </ul>
-                <div className="border-t-2 border-gray-300 px-5 py-3 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl" onClick={handleLogout} tabIndex={0} role="button">
+                <a href="#" className="md:hidden border-t-2 border-gray-300 px-5 py-2.5 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl" tabIndex={0}>
+                  <FaMoon />
+                  <span className="ml-2">Mode</span>
+                </a>
+                <a href="#" className="md:hidden px-5 py-2.5 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-xl" tabIndex={0}>
+                  <FaBell />
+                  <span className="ml-2">Notification</span>
+                </a>
+                <div className="border-t-2 border-gray-300 px-5 py-2.5 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl" onClick={handleLogout} tabIndex={0} role="button">
                   <FaSignOutAlt />
                   <span className="ml-2">Keluar</span>
                 </div>

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { FaExternalLinkAlt, FaMoon, FaBell, FaSearch, FaUserCircle, FaAngleDown, FaAngleUp, FaUser, FaChartPie, FaCog, FaSignOutAlt, FaHome } from 'react-icons/fa'
-import logo from '../../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
@@ -61,12 +60,10 @@ const Navbar = ({ title }) => {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border-gray-500">
               <div className="p-4 border-b-2 border-gray-300 flex">
-                <div>
-                  <img src={logo} alt="logo" />
-                </div>
+                <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
                 <div className="ml-3">
-                  <div className="text-black flex items-center font-semibold">
-                    {userData.nama} <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
+                  <div className="text-black flex items-center gap-1 font-semibold">
+                    <span>{userData.nama}</span> <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
                   </div>
                   <div className="text-sm text-black font-light">{userData.email}</div>
                 </div>

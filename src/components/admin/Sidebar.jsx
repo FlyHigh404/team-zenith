@@ -1,7 +1,6 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { FaHouse, FaBagShopping, FaCertificate } from 'react-icons/fa6'
-import logo from '../../assets/img/logo.png'
+// import logo from '../../assets/img/logo.png'
 
 const Sidebar = () => {
   const navItemClass = ({ isActive }) => `flex items-center p-2 rounded-lg group text-lg font-medium ${isActive ? 'border-l-4 border-[#86CEEB] text-[#86CEEB]' : 'text-gray-600 hover:bg-gray-100'}`
@@ -10,10 +9,10 @@ const Sidebar = () => {
     <aside className="fixed top-0 left-0 z-40 w-64 h-screen bg-white shadow-lg shadow-r-xl shadow-gray-400">
       <div className="h-full px-4 py-5 overflow-y-auto">
         {/* Logo */}
-        <div className="flex items-center gap-2 mb-8">
-          <img src={logo} alt="Logo" className="h-8" />
+        <a href="/beranda-admin" className="flex items-center gap-2 mb-8">
+          {/* <img src={logo} alt="Logo" className="h-8" /> */}
           <span className="text-xl font-bold text-[#86CEEB]">UNEDO</span>
-        </div>
+        </a>
 
         {/* Menu */}
         <ul className="space-y-4">
