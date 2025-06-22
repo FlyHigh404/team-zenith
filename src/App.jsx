@@ -36,6 +36,7 @@ import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 import NotFound from './pages/NotFound'
 
 import { AuthProvider } from './auth/AuthProvider'
+import SemuaLamaran from './pages/lamaran/SemuaLamaran'
 
 function App() {
   return (
@@ -129,6 +130,7 @@ function App() {
               <Route path="/beranda-admin" element={<BerandaAdmin />} />
               <Route path="/profil-admin" element={<ProfilAdmin />} />
               <Route path="/loker/:id" element={<DetailLoker />} />
+              <Route path="/lamaran" element={<SemuaLamaran />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
