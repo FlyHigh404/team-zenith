@@ -27,7 +27,7 @@ const ListPekerjaan = () => {
                 <button onClick={openTambahModal} className="btn bg-sky-400 hover:bg-sky-500 text-white font-light rounded-xl px-8">+ Tambah</button>
 
                 <dialog id="tambahModal" className="modal">
-                    <div className="modal-box">
+                    <div className="modal-box h-135">
                         <form method="dialog">
                             <div className='flex justify-between'>
                                 <h3 className="font-bold text-lg">Tambah Lowongan</h3>
@@ -38,19 +38,19 @@ const ListPekerjaan = () => {
 
                         <div className='my-2 space-y-2'>
                             {[
-                                "Bidang Pekerjaan",
-                                "Nama Perusahaan",
-                                "Lokasi Kerja",
-                                "Status Pekerjaan",
-                                "Durasi Pekerjaan",
-                                "Pengalaman",
-                                "Bidang Pekerjaan",
-                                "Deskripsi Pekerjaan",
-                                "Pendidikan Terakhir"
-                            ].map((label, i) => (
+                                { label: "Bidang Pekerjaan", name: "jenisIndustri[]" }, // array
+                                { label: "Nama Perusahaan", name: "perusahaan_id" }, // harus cocok dengan ID di tabel perusahaan
+                                { label: "Lokasi Kerja", name: "lokasi" },
+                                { label: "Status Pekerjaan", name: "status" }, // TAMBAHAN: butuh validasi nanti
+                                { label: "Durasi Pekerjaan", name: "durasi_bulan" },
+                                { label: "Pengalaman", name: "pengalaman" },
+                                { label: "Bidang Pekerjaan", name: "jenisIndustri[]" }, // lagi karena multiple
+                                { label: "Deskripsi Pekerjaan", name: "desc" },
+                                { label: "Pendidikan Terakhir", name: "kualifikasi" }
+                            ].map((field, i) => (
                                 <div key={i}>
-                                    <label className='font-medium text-md'>{label}</label>
-                                    <input className="input input-bordered w-full mt-1.5" placeholder={label} />
+                                    <label className='font-medium text-md'>{field.label}</label>
+                                    <input name={field.name} className="input input-bordered w-full mt-1.5" placeholder={field.label} />
                                 </div>
                             ))}
                         </div>

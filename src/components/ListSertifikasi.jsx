@@ -20,7 +20,7 @@ const ListSertifikasi = () => {
         </button>
 
         <dialog id="tambahModal" className="modal">
-          <div className="modal-box">
+          <div className="modal-box h-135">
             <form method="dialog">
               <div className="flex justify-between">
                 <h3 className="font-bold text-lg">Tambah Sertifikasi</h3>
@@ -30,10 +30,33 @@ const ListSertifikasi = () => {
             <hr className="my-3 text-gray-200" />
 
             <div className="my-2 space-y-2">
-              {['Nama Sertifikasi', 'Bidang Sertifikasi', 'Keahlian', 'Tanggal Pelaksanaan', 'Waktu Pelaksanaan', 'Lokasi Pelaksanaan', 'Status Pelaksanaan', 'Deskripsi Sertifikasi'].map((label, i) => (
+              {[
+                { label: 'Nama Sertifikasi', name: 'nama_sertifikasi' },
+                { label: 'Bidang Sertifikasi', name: 'bidang_sertifikasi' },
+                { label: 'Keahlian', name: 'keahlian' },
+                { label: 'Tanggal Pelaksanaan', name: 'tanggal_pelaksanaan', type: 'date' },
+                { label: 'Waktu Pelaksanaan', name: 'waktu_pelaksanaan', type: 'time' },
+                { label: 'Lokasi Pelaksanaan', name: 'lokasi_pelaksanaan' },
+                { label: 'Status Pelaksanaan', name: 'status_pelaksanaan' },
+                { label: 'Deskripsi Sertifikasi', name: 'deskripsi', type: 'textarea' },
+              ].map((field, i) => (
                 <div key={i}>
-                  <label className="font-medium text-md">{label}</label>
-                  <input className="input input-bordered w-full mt-1.5" placeholder={label} />
+                  <label className="font-medium text-md">{field.label}</label>
+
+                  {field.type === 'textarea' ? (
+                    <textarea
+                      name={field.name}
+                      className="textarea textarea-bordered w-full mt-1.5"
+                      placeholder={field.label}
+                    ></textarea>
+                  ) : (
+                    <input
+                      type={field.type || 'text'}
+                      name={field.name}
+                      className="input input-bordered w-full mt-1.5"
+                      placeholder={field.label}
+                    />
+                  )}
                 </div>
               ))}
             </div>
