@@ -4,6 +4,7 @@ import logo from '../../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
+import badgeAdmin from '../../assets/img/badgeAdmin.png'
 
 const Navbar = ({ title }) => {
   const { logoutUser } = useAuth()
@@ -61,10 +62,12 @@ const Navbar = ({ title }) => {
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border-gray-500">
               <div className="p-4 border-b-2 border-gray-300 flex">
                 <div>
-                  <img src={logo} alt="" />
+                  <img src={logo} alt="logo" />
                 </div>
                 <div className="ml-3">
-                  <div className="text-black font-semibold">{userData.nama}</div>
+                  <div className="text-black flex items-center font-semibold">
+                    {userData.nama} <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
+                  </div>
                   <div className="text-sm text-black font-light">{userData.email}</div>
                 </div>
               </div>

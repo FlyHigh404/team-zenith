@@ -20,3 +20,21 @@ export const allCompanyList = async () => {
   })
   return response.data
 }
+
+export const allJobList = async () => {
+  const response = await axios.get(`${API_URL}/job-listings/statistics`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return response.data
+}
+
+export const allCertificateList = async () => {
+  const response = await axios.get(`${API_URL}/certification-lists/statistics`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return response.data
+}
