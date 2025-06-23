@@ -7,7 +7,7 @@ const ListKoneksi = () => {
   return (
     <div className="border-gray-300 w-full border rounded-2xl bg-white p-4 flex-1 px-6 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold mb-6">1 Koneksi</h1>
+        <h1 className="text-xl font-semibold">1 Koneksi</h1>
         <div className="relative">
           <input
             type="text"
