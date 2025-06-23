@@ -11,3 +11,17 @@ export const fetchSertifikasi = async () => {
   })
   return res.data.data
 }
+
+export const fetchSertifikasiById = async (id) => {
+  const res = await axios.get(`${API_URL}/certification-programs/${id}`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  })
+  return res.data.data
+}
+
+export const applySertifikasi = async (id, body = {}) => {
+  const res = await axios.post(`${API_URL}/certification-programs/${id}/apply`, body, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  })
+  return res.data
+}

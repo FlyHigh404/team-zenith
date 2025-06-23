@@ -1,62 +1,79 @@
-import React from 'react'
+import { useState } from 'react'
+import { applySertifikasi } from '../api/forum'
+import { getUserData } from '../utils/token'
 
-const SertifikasiForm = () => {
-    return (
-        <div className="w-2/3 bg-white p-4 rounded-lg mt-10 shadow-md">
-            <h1 className="text-xl font-bold mb-4">Daftar Sertifikasi</h1>
-            <form className="mt-5 md:mt-10 lg:mt-5">
-                <div className="flex gap-4">
-                    <div className="mb-4 md:mb-7 lg:mb-4 w-full">
-                        <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Nama Lengkap</label>
-                        <input type="text" name="nama" placeholder="Masukkan nama Anda" className="dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                    </div>
-                </div>
+const SertifikasiForm = ({ selected }) => {
+  const user = getUserData()
+  const [loading, setLoading] = useState(false)
+  const [sukses, setSukses] = useState(null)
+  const [error, setError] = useState(null)
 
-                <div className="flex gap-4">
-                    <div className="mb-4 md:mb-7 lg:mb-4 w-full">
-                        <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Nomor Telepon</label>
-                        <input type="number" name="nomor" placeholder="Masukkan nomor Anda" className="dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                    </div>
-                </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setSukses(null)
+    setError(null)
+    try {
+      await applySertifikasi(selected.id)
+      setSukses('Pendaftaran berhasil!')
+    } catch (error) {
+      setError('Gagal mendaftar sertifikasi. Sudah pernah daftar atau ada kendala lain.')
+      console.error('Error applying for certification:', error)
+    }
+    setLoading(false)
+  }
 
-                <div className="flex gap-4">
-                    <div className="mb-4 md:mb-7 lg:mb-4 w-full">
-                        <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Email</label>
-                        <input type="text" name="birthDate" placeholder="Masukkan email Anda" className="dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                    </div>
-                </div>
-
-                <div className="mb-4 md:mb-7 lg:mb-4">
-                    <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Alamat</label>
-                    <textarea type="text" name="addres" placeholder="Masukkan alamat Anda" className="textarea dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                </div>
-
-                <div className="flex gap-4">
-                    <div className="w-[50%]">
-                        <div className="mb-4 md:mb-7 lg:mb-4">
-                            <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Kota</label>
-                            <input type="text" name="kota" placeholder="Masukkan nomor Anda" className="dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                        </div>
-                    </div>
-                    <div className="w-[50%]">
-                        <div className="mb-4 md:mb-7 lg:mb-4">
-                            <label className="block text-sm md:text-base lg:text-sm font-medium mb-1">Provinsi</label>
-                            <input type="text" name="provinsi" placeholder="Masukkan email Anda" className="dark:bg-[#1D232A] border border-gray-300 text-gray-900 text-sm placeholder:text-sm dark:placeholder:text-[#A5A5A5] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex justify-end gap-4 mt-6">
-                    <button className="bg-gray-300 text-gray-700 px-14 py-2 rounded-md hover:bg-gray-400 text-sm">
-                        Batal
-                    </button>
-                    <button type="submit" className="bg-sky-400 hover:bg-sky-500 text-white py-2 px-16 rounded-lg text-sm">
-                        Submit
-                    </button>
-                </div>
-            </form>
+  return (
+    <div className="w-2/3 bg-white p-4 rounded-lg mt-10 shadow-md">
+      <h1 className="text-xl font-bold mb-4">Daftar Sertifikasi</h1>
+      <form className="mt-5 md:mt-10 lg:mt-5" onSubmit={handleSubmit}>
+        <div className="flex gap-4">
+          <div className="mb-4 md:mb-7 lg:mb-4 w-full">
+            <label className="block text-sm font-medium mb-1">Nama Lengkap</label>
+            <p className="border border-gray-300 rounded-lg block w-full p-2.5">{user?.nama || '-'}</p>
+          </div>
         </div>
-    )
+        <div className="flex gap-4">
+          <div className="mb-4 w-full">
+            <label className="block text-sm font-medium mb-1">Nomor Telepon</label>
+            <p className="border border-gray-300 rounded-lg block w-full p-2.5">{user?.notelp || '-'}</p>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="mb-4 w-full">
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <p className="border border-gray-300 rounded-lg block w-full p-2.5">{user?.email || '-'}</p>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="w-[50%]">
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Kota</label>
+              <p className="border border-gray-300 rounded-lg block w-full p-2.5">{user?.kota || '-'}</p>
+            </div>
+          </div>
+          <div className="w-[50%]">
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Provinsi</label>
+              <p className="border border-gray-300 rounded-lg block w-full p-2.5">{user?.provinsi || '-'}</p>
+            </div>
+          </div>
+        </div>
+
+        {error && <div className="text-red-600 mb-3">{error}</div>}
+        {sukses && <div className="text-green-600 mb-3">{sukses}</div>}
+
+        <div className="flex justify-end gap-4 mt-6">
+          <button type="button" className="bg-gray-300 text-gray-700 px-14 py-2 rounded-md hover:bg-gray-400 text-sm" onClick={() => window.history.back()}>
+            Batal
+          </button>
+          <button type="submit" className={`bg-sky-400 hover:bg-sky-500 text-white py-2 px-16 rounded-lg text-sm ${loading ? 'opacity-60' : ''}`} disabled={loading}>
+            {loading ? 'Mendaftar...' : 'Submit'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
 }
 
 export default SertifikasiForm
