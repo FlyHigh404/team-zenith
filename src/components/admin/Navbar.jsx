@@ -77,10 +77,6 @@ const Navbar = ({ title }) => {
                   <FaHome />
                   <span>Beranda</span>
                 </NavLink>
-                <NavLink to="/dashboard-admin" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
-                  <FaChartPie />
-                  <span>Dashboard</span>
-                </NavLink>
 
                 <NavLink to="#" className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                   <FaCog />

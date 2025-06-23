@@ -1,26 +1,79 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import dataSertifikasi from '../data/sertifikasi'
+import { fetchSertifikasi } from '../api/forum'
+import { getUserData } from '../utils/token'
 import { FaClock, FaToolbox, FaCalendar, FaLocationDot, FaRegBookmark, FaBookmark, FaShare } from 'react-icons/fa6'
-import img from '../assets/img/sertifikasi.png'
 
-const DaftarSertifikasi = () => {
-  const [selected, setSelected] = useState(dataSertifikasi[0])
-  const [refresh, setRefresh] = useState(false) // untuk trigger re-render
+const DaftarSertifikasi = ({ filter }) => {
+  const [dataSertifikasi, setDataSertifikasi] = useState([])
+  const [selected, setSelected] = useState(null)
+  const [refresh, setRefresh] = useState(false)
 
-  const user = { role: 'user' } // ganti ke "admin" jika perlu
-  const isAdmin = user.role === 'admin'
+  const user = getUserData()
+  const isAdmin = user?.role === 'admin'
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchSertifikasi()
+        const mapped = data.map((item) => ({
+          ...item,
+          tanggal: `${new Date(item.tanggalMulai).toLocaleDateString()} - ${new Date(item.tanggalSelesai).toLocaleDateString()}`,
+          waktu: `${new Date(item.jamMulai).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(item.jamSelesai).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+          title: item.judul,
+          keahlian: item.jenisSertifikat,
+          sertifikat: [item.sertifikatDidapat],
+          syarat: item.syaratPeserta
+            .split('\n')
+            .map((s) => s.replace(/^- /, ''))
+            .filter(Boolean),
+          fasilitas: item.fasilitas
+            .split('\n')
+            .map((f) => f.replace(/^- /, ''))
+            .filter(Boolean),
+        }))
+        setDataSertifikasi(mapped)
+        setSelected(mapped[0])
+      } catch (error) {
+        setDataSertifikasi([])
+        console.error('Gagal mengambil data sertifikasi:', error)
+      }
+    }
+    fetchData()
+  }, [refresh])
+
+  const filteredData = dataSertifikasi.filter((item) => {
+    if (filter.jenis.length > 0 && !filter.jenis.some((jenis) => (item.keahlian || '').toLowerCase().includes(jenis.toLowerCase()))) {
+      return false
+    }
+
+    if (filter.bidang.length > 0 && !filter.bidang.includes(item.bidang)) {
+      return false
+    }
+
+    if (filter.lokasi.length > 0) {
+      const metode = (item.metode || '').toLowerCase()
+      if (filter.lokasi.includes('Online') && metode === 'online') return true
+      if (filter.lokasi.includes('On-site') && metode !== 'online') return true
+      return false
+    }
+    return true
+  })
+
+  if (!selected) {
+    return <div className="p-6">Memuat data sertifikasi...</div>
+  }
 
   return (
     <div className="flex flex-col md:flex-row gap-4 px-4 items-stretch h-full">
-      {/* Kiri: Daftar Sertifikasi */}
       <div className="w-full md:w-1/2 space-y-2 h-full">
-        {dataSertifikasi.map((item) => {
+        {filteredData.length === 0 && <div className="text-center text-gray-400 py-8">Tidak ada data sertifikasi yang sesuai filter</div>}
+        {filteredData.map((item) => {
           const saved = JSON.parse(localStorage.getItem('savedItems')) || []
           const isBookmarked = saved.some((i) => i.id === item.id)
 
           const handleToggleBookmark = (e) => {
-            e.stopPropagation() // agar tidak trigger setSelected
+            e.stopPropagation()
             let updated
 
             if (isBookmarked) {
@@ -30,15 +83,12 @@ const DaftarSertifikasi = () => {
             }
 
             localStorage.setItem('savedItems', JSON.stringify(updated))
-            setRefresh(!refresh) // trigger re-render
+            setRefresh((r) => !r)
           }
 
           return (
             <div key={item.id} onClick={() => setSelected(item)} className={`px-6 py-4 rounded-xl cursor-pointer shadow-sm ${selected.id === item.id ? 'bg-blue-100' : 'bg-white'}`}>
               <div className="flex gap-3 mb-2 items-start">
-                <div className="flex items-center">
-                  <img src={img} alt="" className="w-10 h-10 object-contain" />
-                </div>
                 <div>
                   <h2 className="font-semibold text-base">{item.title}</h2>
                   <p className="text-sm text-gray-500">
@@ -74,12 +124,8 @@ const DaftarSertifikasi = () => {
         })}
       </div>
 
-      {/* Kanan: Detail Sertifikasi */}
       <div className="w-full md:w-1/2 border-sky-100 p-4 rounded-lg shadow-sm bg-white h-full">
         <div className="flex gap-3 mb-2">
-          <div className="flex items-center">
-            <img src={img} alt="" className="w-14 h-14 object-contain" />
-          </div>
           <div>
             <h2 className="text-xl font-bold">{selected.title}</h2>
             <p className="text-sm text-gray-600 mb-2">
@@ -133,6 +179,12 @@ const DaftarSertifikasi = () => {
         <div className="mt-4 text-sm">
           <p>
             <strong>Kuota Minimal:</strong> {selected.kuota}
+          </p>
+          <p>
+            <strong>Kuota Pendaftar:</strong> {selected.pendaftar}
+          </p>
+          <p>
+            <strong>Kuota Tersisa:</strong> {selected.tersedia}
           </p>
           <p>
             <strong>Catatan:</strong> {selected.catatan}
