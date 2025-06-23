@@ -1,43 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import dataLoker from '../../data/loker'
+import { fetchLokerById } from '../../api/forum'
 import LokerInfo from '../../components/LokerInfo'
 import LokerForm from '../../components/LokerForm'
+import { getUserData } from '../../utils/token'
 
 const LokerApply = () => {
-    const { id } = useParams();
-    const job = dataLoker.find((item) => item.id === parseInt(id));
+  const { id } = useParams()
+  const [job, setJob] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const user = getUserData()
 
-    // const [formData, setFormData] = useState({
-    //     nama: ''
-    // });
+  useEffect(() => {
+    fetchLokerById(id)
+      .then((data) => setJob(data))
+      .finally(() => setLoading(false))
+  }, [id])
 
-    // const handleChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         [name]: value
-    //     }));
-    // };
+  if (loading) return <p>Memuat data loker...</p>
+  if (!job) return <p>Loker tidak ditemukan.</p>
 
-    // const handleNext = (e) => {
-    //     e.preventDefault();
-    //     console.log('Form data:', formData);
-    //     // Lanjut ke step berikutnya atau submit ke API di sini
-    // };
-
-    if (!job) return <p>Loker tidak ditemukan.</p>;
-
-    return (
-        <div className="flex gap-10 px-10 py-8 bg-[#F5F5F5] min-h-screen">
-            {/* KIRI – Sidebar */}
-            <LokerInfo />
-
-            {/* KANAN – Konten Form */}
-            <LokerForm />
-        </div>
-    )
+  return (
+    <div className="flex gap-10 px-10 py-8 bg-[#F5F5F5] min-h-screen">
+      <LokerInfo job={job} />
+      <LokerForm job={job} user={user} />
+    </div>
+  )
 }
-
 
 export default LokerApply
