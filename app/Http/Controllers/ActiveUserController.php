@@ -17,7 +17,7 @@ class ActiveUserController extends Controller
 
         $users = User::where('is_active', true)
             ->where('id', '!=', $currentUserId)       // Kecualikan user login
-            ->select('id', 'fotoProfil', 'nama', 'username', 'pekerjaan', 'levelProfesional')
+            ->select('nama', 'username', 'pekerjaan', 'levelProfesional')
             ->paginate(10);
 
         return response()->json([
@@ -25,5 +25,34 @@ class ActiveUserController extends Controller
             'message' => 'Daftar pengguna aktif berhasil diambil',
             'data' => $users
         ]);
+    }
+
+    /**
+     * Get user by ID.
+     */
+    public function getUserById($id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User tidak ditemukan'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data user berhasil diambil',
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -28,6 +28,11 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [Controllers\ActiveUserController::class, 'index']);
     });
 
+    // Get User by id
+    Route::prefix('user')->group(function () {
+        Route::get('/{id}', [Controllers\ActiveUserController::class, 'getUserById']);
+    });
+
     // Experience routes
     Route::prefix('experience')->group(function () {
         Route::get('/', [Controllers\ExperienceController::class, 'index']);
