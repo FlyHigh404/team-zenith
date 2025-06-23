@@ -26,4 +26,33 @@ class ActiveUserController extends Controller
             'data' => $users
         ]);
     }
+
+    /**
+     * Get user by ID.
+     */
+    public function getUserById($id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User tidak ditemukan'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data user berhasil diambil',
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
