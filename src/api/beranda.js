@@ -33,3 +33,12 @@ export const ajukanKoneksi = async (koneksi_user_id) => {
   )
   return response.data
 }
+
+export const listKoneksi = async () => {
+  const response = await axios.get(`${API_URL}/connections`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  return response.data
+}

@@ -1,13 +1,31 @@
 import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
-import { activeUserList, ajukanKoneksi } from '../api/beranda'
+import { activeUserList, ajukanKoneksi, listKoneksi } from '../api/beranda'
 import { FaRegSquarePlus, FaRegSquareCheck } from 'react-icons/fa6'
 import { FaUserCircle } from 'react-icons/fa'
+import { getUserData } from '../utils/token'
 
 const PenggunaAktif = () => {
   const [allUser, setAllUser] = useState([])
   const [nextUrl, setNextUrl] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [koneksiData, setKoneksiData] = useState([])
+
+  const userData = getUserData()
+  const myUserId = userData?.id
+
+  useEffect(() => {
+    const fetchKoneksi = async () => {
+      try {
+        const res = await listKoneksi()
+        setKoneksiData(res.data || [])
+      } catch (error) {
+        console.error('Gagal mengambil daftar koneksi:', error)
+        setKoneksiData([])
+      }
+    }
+    fetchKoneksi()
+  }, [])
 
   useEffect(() => {
     fetchUser(1)
@@ -41,11 +59,11 @@ const PenggunaAktif = () => {
   }
 
   const toogleConnect = async (id) => {
-    setAllUser((prev) => prev.map((user) => (user.id === id ? { ...user, isConnect: !user.isConnect } : user)))
     try {
       await ajukanKoneksi(id)
+      const res = await listKoneksi()
+      setKoneksiData(res.data || [])
     } catch (error) {
-      setAllUser((prev) => prev.map((user) => (user.id === id ? { ...user, isConnect: !user.isConnect } : user)))
       console.error('Gagal mengajukan koneksi:', error)
     }
   }
@@ -57,25 +75,34 @@ const PenggunaAktif = () => {
       </div>
 
       <div className="flex flex-col border-gray-300 border border-t-0 bg-white px-4 py-3 gap-3">
-        {allUser.map((user) => (
-          <div key={user.id} className="flex flex-row items-center justify-between gap-4 w-full">
-            <NavLink to="#profil-user" className="flex flex-row gap-3 items-start">
-              {user.fotoProfil ? <img src={user.fotoProfil} alt="Foto Profil" className="w-8 h-8 rounded-full shrink-0 object-cover" /> : <FaUserCircle className="w-8 h-8 text-blue-600 shrink-0" style={{ width: 32, height: 32 }} />}
-              <div className="overflow-hidden">
-                <p className="font-semibold text-sm">{user.nama}</p>
-                <p className="text-xs line-clamp-2">
-                  {user.pekerjaan && user.pekerjaan.length > 0 ? user.pekerjaan.join(', ') : '-'}
-                  <br />
-                  <span className="italic text-gray-400">{user.username}</span>
-                  {user.levelProfesional && user.levelProfesional.length > 0 && <span> • Level: {user.levelProfesional.join(', ')}</span>}
-                </p>
-              </div>
-            </NavLink>
-            <button type="button" onClick={() => toogleConnect(user.id)} className="text-lg">
-              {user.isConnect ? <FaRegSquareCheck className="text-[#659BB0]" /> : <FaRegSquarePlus />}
-            </button>
-          </div>
-        ))}
+        {allUser.map((user) => {
+          const isConnectedOrRequested = koneksiData.some(
+            (conn) => (conn.status === 'diajukan' || conn.status === 'diterima') && ((conn.user_id === myUserId && conn.koneksi_user_id === user.id) || (conn.user_id === user.id && conn.koneksi_user_id === myUserId))
+          )
+          return (
+            <div key={user.id} className="flex flex-row items-center justify-between gap-4 w-full">
+              <NavLink to="#profil-user" className="flex flex-row gap-3 items-start">
+                {user.fotoProfil ? <img src={user.fotoProfil} alt="Foto Profil" className="w-8 h-8 rounded-full shrink-0 object-cover" /> : <FaUserCircle className="w-8 h-8 text-blue-600 shrink-0" />}
+                <div className="overflow-hidden">
+                  <p className="font-semibold text-sm">{user.nama}</p>
+                  <p className="text-xs line-clamp-2">
+                    {user.pekerjaan && user.pekerjaan.length > 0 ? user.pekerjaan.join(', ') : '-'}
+                    <br />
+                    <span className="italic text-gray-400">{user.username}</span>
+                    {user.levelProfesional && user.levelProfesional.length > 0 && <span> • Level: {user.levelProfesional.join(', ')}</span>}
+                  </p>
+                </div>
+              </NavLink>
+              {isConnectedOrRequested ? (
+                <FaRegSquareCheck className="text-[#659BB0] text-lg" title="Sudah atau sedang diajukan" />
+              ) : (
+                <button type="button" onClick={() => toogleConnect(user.id)} className="text-lg">
+                  <FaRegSquarePlus />
+                </button>
+              )}
+            </div>
+          )
+        })}
 
         {nextUrl && (
           <button className="mt-4 px-4 py-2 rounded-lg bg-[#86CEEB] text-white font-semibold hover:bg-sky-500" onClick={handleLoadMore} disabled={loading}>

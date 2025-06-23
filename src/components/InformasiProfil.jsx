@@ -1,14 +1,31 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { FaUser, FaPenToSquare } from 'react-icons/fa6'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { getUserData } from '../utils/token'
+import { listKoneksi } from '../api/beranda'
 
 const InformasiProfil = () => {
+  const userData = getUserData()
+  const myUserId = userData?.id
+  const [totalKoneksi, setTotalKoneksi] = useState(0)
   const openModalProfil = () => {
     document.getElementById('modalProfil').showModal()
   }
 
-  const userData = getUserData()
+  useEffect(() => {
+    const fetchKoneksi = async () => {
+      try {
+        const res = await listKoneksi()
+        const diterima = (res.data || []).filter((conn) => conn.status === 'diterima' && (conn.user_id === myUserId || conn.koneksi_user_id === myUserId))
+        console.log('Daftar koneksi diterima:', diterima)
+        setTotalKoneksi(diterima.length)
+      } catch (error) {
+        setTotalKoneksi(0)
+        console.error('Gagal mengambil daftar koneksi:', error)
+      }
+    }
+    if (myUserId) fetchKoneksi()
+  }, [myUserId])
 
   if (!userData) {
     return <p>Loading...</p>
@@ -34,7 +51,7 @@ const InformasiProfil = () => {
           <p className="mt-1">
             {userData.kota}, {userData.provinsi}
           </p>
-          <p className="mt-1 text-sky-500">0 Koneksi</p>
+          <p className="mt-1 text-sky-500">{totalKoneksi} Koneksi</p>
           <div className="hidden lg:flex justify-between mt-3">
             <button onClick={openModalProfil} className="flex flex-row gap-2 items-center px-4 py-1 bg-[#86CEEB] dark:bg-[#659BB0] text-white rounded-full hover:bg-sky-500">
               <FaPenToSquare className="text-sm" />

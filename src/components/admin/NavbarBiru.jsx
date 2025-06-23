@@ -91,8 +91,8 @@ function NavbarBiru() {
                 <div className="p-4 border-b-2 border-gray-300 flex">
                   <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
                   <div className="ml-3">
-                    <div className="text-black flex font-semibold">
-                      {userData.nama} <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
+                    <div className="text-black flex items-center gap-1 font-semibold">
+                      <span>{userData.nama}</span> <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
                     </div>
                     <div className="text-sm text-black font-light">@{userData.username}</div>
                   </div>
