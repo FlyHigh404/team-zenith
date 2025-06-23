@@ -19,8 +19,9 @@ const LokerInfo = () => {
 
   if (loading) return <p>Memuat info loker...</p>
   if (!job) return <p>Loker tidak ditemukan.</p>
+
   return (
-    <div className="w-80">
+    <div className="md:w-80 w-full">
       <button onClick={() => navigate(-1)} className="text-black text-base font-medium flex items-center mb-4">
         <FaArrowLeft className="mr-2" /> Detail pekerjaan
       </button>

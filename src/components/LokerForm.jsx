@@ -63,7 +63,7 @@ const LokerForm = ({ job, user }) => {
   }
 
   return (
-    <div className="w-2/3 bg-white p-4 rounded-lg mt-10 shadow">
+    <div className="md:w-2/3 w-full bg-white p-4 rounded-lg md:mt-10 shadow">
       <h1 className="text-xl font-bold mb-4">Lamar Posisi Ini</h1>
       {success ? (
         <div className="bg-green-100 text-green-800 p-4 rounded mb-6">Lamaran berhasil dikirim!</div>

@@ -37,11 +37,11 @@ const Loker = () => {
           )}
         </div>
       </div>
-      <div className="flex my-5 ">
-        <div className="w-[27%]">
+      <div className="flex flex-col md:flex-row my-5 gap-4 mx-auto">
+        <div className="md:w-[27%] w-full">
           <FilterLoker />
         </div>
-        <div className="w-[73%]">
+        <div className="md:w-[73%] w-full">
           <DaftarLoker />
         </div>
       </div>

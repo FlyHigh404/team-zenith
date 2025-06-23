@@ -21,10 +21,15 @@ const LokerApply = () => {
   if (!job) return <p>Loker tidak ditemukan.</p>
 
   return (
-    <div className="flex gap-10 px-10 py-8 bg-[#F5F5F5] min-h-screen">
-      <LokerInfo job={job} />
-      <LokerForm job={job} user={user} />
+    <div className="flex flex-col md:flex-row gap-6 md:gap-10 px-4 md:px-10 py-8 bg-[#F5F5F5] min-h-screen">
+      <div className="md:w-1/3 w-full">
+        <LokerInfo job={job} />
+      </div>
+      <div className="md:w-2/3 w-full">
+        <LokerForm job={job} user={user} />
+      </div>
     </div>
+
   )
 }
 
