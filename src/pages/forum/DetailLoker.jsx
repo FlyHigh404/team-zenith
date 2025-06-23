@@ -31,9 +31,9 @@ const DetailLoker = () => {
   // Kualifikasi jadi list
   const kualifikasiList = job.kualifikasi
     ? job.kualifikasi
-        .split('\n')
-        .map((q) => q.replace(/^- /, '').trim())
-        .filter(Boolean)
+      .split('\n')
+      .map((q) => q.replace(/^- /, '').trim())
+      .filter(Boolean)
     : []
 
   // Detail teknis, jika ada
@@ -45,14 +45,15 @@ const DetailLoker = () => {
   }
 
   return (
-    <div className="flex gap-10 px-10 py-8 bg-[#F5F5F5] min-h-screen">
+    <div className="flex flex-col md:flex-row gap-10 px-4 md:px-10 py-8 bg-[#F5F5F5] min-h-screen">
       {/* KIRI – Sidebar */}
       <LokerInfo job={job} />
 
       {/* KANAN – Konten Utama */}
-      <div className="w-2/3 bg-white p-4 rounded-lg mt-10 shadow">
-        <h1 className="text-2xl font-bold mb-8">{job.judul}</h1>
-        <div className="mb-8 text-gray-600 text-sm flex flex-wrap gap-6">
+      <div className="md:w-2/3 w-full bg-white p-4 rounded-lg md:mt-10 shadow">
+        <h1 className="text-2xl font-bold mb-6">{job.judul}</h1>
+
+        <div className="mb-6 text-gray-600 text-sm flex flex-wrap gap-x-6 gap-y-2">
           <span>
             <b>Perusahaan:</b> {job.perusahaan?.nama}
           </span>
@@ -84,10 +85,19 @@ const DetailLoker = () => {
         )}
 
         <h2 className="text-lg font-semibold mb-1">Kualifikasi</h2>
-        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-6">{kualifikasiList.length > 0 ? kualifikasiList.map((item, idx) => <li key={idx}>{item}</li>) : <li>Tidak ada kualifikasi khusus.</li>}</ul>
+        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-6">
+          {kualifikasiList.length > 0 ? (
+            kualifikasiList.map((item, idx) => <li key={idx}>{item}</li>)
+          ) : (
+            <li>Tidak ada kualifikasi khusus.</li>
+          )}
+        </ul>
 
         <Link to={`/loker/apply/${job.id}`}>
-          <button className={`px-6 py-2 rounded-xl text-sm text-white ${isAdmin ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`} disabled={isAdmin}>
+          <button
+            className={`px-6 py-2 rounded-xl text-sm text-white ${isAdmin ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
+            disabled={isAdmin}
+          >
             Lamar Pekerjaan
           </button>
         </Link>
