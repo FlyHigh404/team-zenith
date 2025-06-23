@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
 import badgeAdmin from '../../assets/img/badgeAdmin.png'
+import ModalNotifikasi from './ModalNotifikasi'
 
 function Navbar() {
   const { logoutUser } = useAuth()
@@ -32,6 +33,7 @@ function Navbar() {
   }
 
   const userData = getUserData()
+  const [showModal, setShowModal] = useState(false)
 
   return (
     <nav
@@ -73,8 +75,16 @@ function Navbar() {
               <FaMoon className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>
             <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
-              <FaBell className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
+              <FaBell
+                onClick={() => setShowModal(!showModal)}
+                className="text-[#575757] hover:text-blue-500 cursor-pointer text-md"
+              />
             </div>
+            {showModal && (
+              <div className="absolute right-0 top-12 z-50 bg-white rounded-xl shadow-lg p-4 w-[350px]">
+                <ModalNotifikasi />
+              </div>
+            )}
           </div>
 
           {/* Profil + Dropdown */}

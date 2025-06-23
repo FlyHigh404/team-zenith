@@ -33,6 +33,7 @@ import SimpanPostingan from './pages/user/SimpanPostingan'
 import SimpanPekerjaan from './pages/user/SimpanPekerjaan'
 import SimpanSertifikasi from './pages/user/SimpanSertifikasi'
 import SemuaLamaran from './pages/lamaran/SemuaLamaran'
+import Koneksi from './pages/Koneksi'
 
 import NotFound from './pages/NotFound'
 
@@ -132,6 +133,7 @@ function App() {
               <Route path="/profil-admin" element={<ProfilAdmin />} />
               <Route path="/loker/:id" element={<DetailLoker />} />
               <Route path="/lamaran" element={<SemuaLamaran />} />
+              <Route path="/koneksi" element={<Koneksi />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
