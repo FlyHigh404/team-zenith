@@ -13,7 +13,7 @@ const Tersimpan = () => {
   ]
 
   return (
-    <div className="w-72 bg-white rounded-xl shadow px-6 py-4 space-y-3 ml-10">
+    <div className="w-full md:w-72 bg-white rounded-xl shadow px-6 py-4 space-y-3 md:ml-10">
       {links.map((link) => (
         <div>
           <Link key={link.path} to={link.path}>

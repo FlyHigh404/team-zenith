@@ -12,11 +12,11 @@ const SimpanSertifikasi = () => {
           </a>
         </div>
       </div>
-      <div className="flex my-5 ">
-        <div className="w-[30%]">
+      <div className="flex flex-col md:flex-row my-5 gap-4 px-4 md:px-10">
+        <div className="w-full md:w-[30%]">
           <Tersimpan />
         </div>
-        <div className="w-[70%]">
+        <div className="w-full md:w-[70%]">
           <Sertifikasi />{' '}
         </div>
       </div>
