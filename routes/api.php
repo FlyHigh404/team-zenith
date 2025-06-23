@@ -98,8 +98,8 @@ Route::middleware('auth:api')->group(function () {
     // Lowongan kerja routes
     Route::prefix('job-listings')->group(function () {
         Route::get('/', [Controllers\LokerController::class, 'index']);
+        Route::get('/my-applications', [Controllers\LokerController::class, 'myApplications']); // <- pindah ke atas
         Route::get('/{id}', [Controllers\LokerController::class, 'show']);
-        Route::get('/my-applications', [Controllers\LokerController::class, 'myApplications']);
         Route::post('/{id}/apply', [Controllers\LokerController::class, 'apply']);
     });
 
