@@ -22,7 +22,7 @@ const Pekerjaan = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md lg:mx-10 md:mx-14 mx-5">
+    <div className="bg-white rounded-xl shadow-md lg:mx-10 md:mx-14">
       <div className="px-6 md:px-10 py-4 w-full space-y-3">
         <h1 className="font-semibold">Pekerjaan yang Disimpan</h1>
 

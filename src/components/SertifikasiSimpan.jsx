@@ -17,7 +17,7 @@ const SertifikasiSimpan = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md lg:mx-10 md:mx-14 mx-5">
+    <div className="bg-white rounded-xl shadow-md lg:mx-10 md:mx-14">
       <div className="px-6 md:px-10 py-4 w-full space-y-3">
         <h1 className="font-semibold">Sertifikasi yang Disimpan</h1>
 
@@ -40,7 +40,7 @@ const SertifikasiSimpan = () => {
                   </button>
                 </div>
 
-                <div className="flex gap-10 text-base text-gray-700">
+                <div className="flex flex-col md:flex-row md:gap-10 gap-4 mt-2 text-base text-gray-700">
                   {' '}
                   {/* justify-between */}
                   <div className="flex items-center gap-1">
