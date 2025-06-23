@@ -107,15 +107,15 @@ function Navbar() {
                       <span>Dashboard</span>
                     </NavLink>
                   )}
-                  <NavLink to="#" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                  <NavLink to="/list-loker" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                     <FaBagShopping />
                     <span>Pekerjaan</span>
                   </NavLink>
-                  <NavLink to="#" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                  <NavLink to="/list-sertifikasi" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                     <FaCertificate />
                     <span>Sertifikasi</span>
                   </NavLink>
-                  <NavLink to="#" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
+                  <NavLink to="/simpan-postingan" className="md:hidden flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100 text-black">
                     <FaBookmark />
                     <span>Tersimpan</span>
                   </NavLink>
