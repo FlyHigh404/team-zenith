@@ -59,11 +59,11 @@ const Sertifikasi = () => {
           )}
         </div>
       </div>
-      <div className="flex my-5 ">
-        <div className="w-[27%]">
+      <div className="flex flex-col md:flex-row my-5 gap-4">
+        <div className="md:w-[27%] w-full">
           <FilterSertifikasi filter={filter} onChange={handleFilterChange} onClear={handleClearFilter} />
         </div>
-        <div className="w-full">
+        <div className="md:w-full w-full">
           <DaftarSertifikasi filter={filter} />
         </div>
       </div>

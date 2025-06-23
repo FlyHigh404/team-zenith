@@ -14,7 +14,8 @@ const Search = ({ tipe }) => {
     <div className='bg-[#86CEEB] px-6 py-5 text-white'>
       <div className='lg:mx-14 md:mx-14 mx-5'>
         <h1 className='text-3xl font-medium'>{judul}</h1>
-        <div className="grid grid-cols-[3fr_2fr_1fr] gap-4 mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr_1fr] gap-4 mt-5">
+          {/* Kolom 1 */}
           <div className="relative">
             <input
               type="text"
@@ -22,6 +23,8 @@ const Search = ({ tipe }) => {
               className="pr-12 pl-4 py-3 rounded-full text-sm font-medium text-[#86CEEB] w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white placeholder:text-[#868686]"
             />
           </div>
+
+          {/* Kolom 2 */}
           <div className="relative">
             <input
               type="text"
@@ -29,8 +32,10 @@ const Search = ({ tipe }) => {
               className="pr-12 pl-4 py-3 rounded-full text-sm font-medium text-[#86CEEB] w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white placeholder:text-[#868686]"
             />
           </div>
+
+          {/* Tombol */}
           <div>
-            <button className="btn btn-outline-white bg-transparent px-auto w-full rounded-full text-white">
+            <button className="btn btn-outline-white bg-transparent px-auto w-full rounded-full text-white py-3">
               Cari
             </button>
           </div>

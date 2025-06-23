@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { getUserData } from '../../utils/token'
 import badgeAdmin from '../../assets/img/badgeAdmin.png'
+import ModalNotifikasi from './ModalNotifikasi'
 
 function NavbarBiru() {
   const { logoutUser } = useAuth()
@@ -33,6 +34,7 @@ function NavbarBiru() {
   }
 
   const userData = getUserData()
+  const [showModal, setShowModal] = useState(false)
 
   return (
     <nav
@@ -70,12 +72,20 @@ function NavbarBiru() {
                 <FaHome className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
               </a>
             </div>
-            <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
+            <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
               <FaMoon className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>
-            <div className="p-2.5 bg-[#F5F5F5] rounded-xl">
-              <FaBell className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
+            <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
+              <FaBell
+                onClick={() => setShowModal(!showModal)}
+                className="text-[#575757] hover:text-blue-500 cursor-pointer text-md"
+              />
             </div>
+            {showModal && (
+              <div className="absolute right-0 top-12 z-50 bg-white rounded-xl shadow-lg p-4 w-[350px]">
+                <ModalNotifikasi />
+              </div>
+            )}
           </div>
 
           {/* Profil + Dropdown */}
@@ -125,6 +135,14 @@ function NavbarBiru() {
                     <span>Pengaturan</span>
                   </NavLink>
                 </ul>
+                <a href="#" className="md:hidden border-t-2 border-gray-300 px-5 py-2.5 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl" tabIndex={0}>
+                  <FaMoon />
+                  <span className="ml-2">Mode</span>
+                </a>
+                <a href="#" className="md:hidden px-5 py-2.5 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-xl" tabIndex={0}>
+                  <FaBell />
+                  <span className="ml-2">Notification</span>
+                </a>
                 <div className="border-t-2 border-gray-300 px-5 py-3 flex items-center gap-2 hover:bg-gray-100 cursor-pointer rounded-b-xl" onClick={handleLogout} tabIndex={0} role="button">
                   <FaSignOutAlt />
                   <span className="ml-2">Keluar</span>
