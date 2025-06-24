@@ -8,7 +8,7 @@ const SemuaLamaran = () => {
   const [tab, setTab] = useState('pekerjaan')
   const [dataLoker, setDataPekerjaan] = useState([])
   const [dataSertifikasi, setDataSertifikasi] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +29,7 @@ const SemuaLamaran = () => {
   }, [])
 
   const tabList = ['pekerjaan', 'sertifikasi']
-  const currentData = tab === 'Pekerjaan' ? dataLoker : dataSertifikasi
+  // const currentData = tab === 'Pekerjaan' ? dataLoker : dataSertifikasi
 
   return (
     <div className="bg-[#F5F5F5] min-h-screen">
