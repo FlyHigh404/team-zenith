@@ -34,3 +34,5 @@ export const deleteSertifikasi = async (id) => {
         headers: { Authorization: `Bearer ${getToken()}` },
     })
 }
+
+//getpelamar
