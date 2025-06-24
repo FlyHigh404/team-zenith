@@ -80,7 +80,7 @@ const ModalTambahJob = ({ fetchJob }) => {
 
   return (
     <dialog id="tambahJobModal" className="modal">
-      <div className="modal-box w-full max-w-lg rounded-xl shadow-lg p-6">
+      <div className="modal-box w-full h-135 max-w-lg rounded-xl shadow-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-lg">Tambah Job Baru</h3>
           <button className="btn btn-sm btn-circle btn-ghost text-xl" onClick={() => document.getElementById('tambahJobModal').close()}>

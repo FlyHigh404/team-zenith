@@ -151,15 +151,15 @@ const ListPekerjaan = () => {
             <div className="p-2">
               <img src={item.perusahaan?.logo ? `${import.meta.env.VITE_BASE_URL}/storage/${item.perusahaan.logo}` : img} alt="" className="w-24 h-24 object-contain rounded bg-white" />
             </div>
-            <div className="flex flex-col w-[200px]">
+            <div className="flex flex-col w-[180px]">
               <p className="font-medium text-base truncate">{item.judul}</p>
               <p className="text-sm text-sky-400">{parseJenisIndustri(item.jenisIndustri)[0] || '-'}</p>
             </div>
-            <div className="flex flex-col w-[200px]">
+            <div className="flex flex-col w-[100px]">
               <p className="font-medium text-base">{item.perusahaan?.nama || '-'}</p>
               <p className="text-sm text-sky-400">Perusahaan</p>
             </div>
-            <div className="flex flex-col w-[150px]">
+            <div className="flex flex-col w-[200px]">
               <p className="font-medium text-base">{parseJenisIndustri(item.jenisIndustri).join(', ') || '-'}</p>
               <p className="text-sm text-sky-400">Industri</p>
             </div>
@@ -171,7 +171,7 @@ const ListPekerjaan = () => {
               <p className="text-sm text-sky-400">Lokasi</p>
             </div>
             <div className="p-2">
-              <button className="btn btn-outline outline-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white rounded-full px-10" onClick={() => openDetailModal(item)}>
+              <button className="btn btn-outline outline-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white rounded-full px-10 whitespace-nowrap" onClick={() => openDetailModal(item)}>
                 Lihat Detail
               </button>
             </div>
