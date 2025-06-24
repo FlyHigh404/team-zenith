@@ -10,6 +10,8 @@ const ListSertifikasi = () => {
   const [editForm, setEditForm] = useState({})
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(true)
+  const [editGambarPreview, setEditGambarPreview] = useState(null)
+
   const navigate = useNavigate()
 
   const fetchData = async () => {
@@ -61,22 +63,39 @@ const ListSertifikasi = () => {
       kuota: item.kuota || '',
       catatan: item.catatan || '',
       gambar: null,
-      detail: item.detail || ''
+      detail: item.detail || '',
     })
     document.getElementById('editModal').showModal()
   }
 
+  const handleEditGambarChange = (e) => {
+    const file = e.target.files[0]
+    setEditForm((prev) => ({ ...prev, gambar: file }))
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => setEditGambarPreview(reader.result)
+      reader.readAsDataURL(file)
+    } else {
+      setEditGambarPreview(null)
+    }
+  }
+
   const handleEditSubmit = async (e) => {
     e.preventDefault()
-    const formatJam = (jam) => (jam.includes(':') ? (jam.split(':').length === 2 ? jam + ':00' : jam) : jam + ':00:00')
+    const formatJam = (jam) => {
+      if (!jam) return ''
+      return jam.split(':').slice(0, 2).join(':')
+    }
 
     try {
       const formData = new FormData()
+      if (editForm.gambar) formData.append('gambar', editForm.gambar)
       for (const key in editForm) {
-        if (key === 'gambar' && editForm[key]) {
-          formData.append('gambar', editForm[key])
+        if (key === 'gambar') continue
+        if (key === 'jamMulai' || key === 'jamSelesai') {
+          formData.append(key, formatJam(editForm[key]))
         } else {
-          formData.append(key, key.includes('jam') ? formatJam(editForm[key]) : editForm[key])
+          formData.append(key, editForm[key])
         }
       }
 
@@ -134,14 +153,10 @@ const ListSertifikasi = () => {
       </div>
 
       <div className="mt-5 space-y-4">
-        {list.length === 0 && <div className="text-center text-gray-400">Belum ada sertifikasi.</div>}
+        {list.length === 0 && <div className="text-center text-gray-400 min-h-screen">Belum ada sertifikasi.</div>}
         {list.map((item) => (
           <div key={item.id} className="flex items-center justify-between bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
-            <img
-              src={item.gambar ? `${import.meta.env.VITE_BASE_URL}/storage/${item.gambar}` : img}
-              alt=""
-              className="w-24 h-24 object-contain rounded bg-white"
-            />
+            <img src={item.gambar ? `${import.meta.env.VITE_BASE_URL}/storage/${item.gambar}` : img} alt="" className="w-24 h-24 object-contain rounded bg-white" />
             <div className="flex flex-col w-[200px] mr-8">
               <p className="font-medium text-base truncate">{item.judul}</p>
               <p className="text-sm text-sky-400 truncate">{item.jenisSertifikat}</p>
@@ -181,7 +196,9 @@ const ListSertifikasi = () => {
                   <img src={img} className="w-16 h-16 object-contain" />
                   <div>
                     <p className="font-semibold text-xl">{selected.judul}</p>
-                    <p className="text-sm text-gray-500">{selected.bidang} • {selected.jenisSertifikat}</p>
+                    <p className="text-sm text-gray-500">
+                      {selected.bidang} • {selected.jenisSertifikat}
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-4 text-gray-400">
@@ -226,10 +243,13 @@ const ListSertifikasi = () => {
                 </div>
               )}
               <div className="modal-action flex justify-between mt-6">
-                <button className="btn text-gray-500" onClick={() => {
-                  openEditModal(selected)
-                  document.getElementById('detailModal').close()
-                }}>
+                <button
+                  className="btn text-gray-500"
+                  onClick={() => {
+                    openEditModal(selected)
+                    document.getElementById('detailModal').close()
+                  }}
+                >
                   Edit
                 </button>
                 <button className="btn text-sky-500" onClick={() => navigate('/pelamar-sertifikasi')}>
@@ -248,26 +268,34 @@ const ListSertifikasi = () => {
             <>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-lg">Edit Sertifikasi</h3>
-                <button className="btn btn-sm btn-circle btn-ghost text-xl" onClick={() => document.getElementById('editModal').close()}>✕</button>
+                <button className="btn btn-sm btn-circle btn-ghost text-xl" onClick={() => document.getElementById('editModal').close()}>
+                  ✕
+                </button>
               </div>
               <form onSubmit={handleEditSubmit}>
                 <div className="space-y-3">
                   {['judul', 'bidang', 'jenisSertifikat', 'tanggalMulai', 'jamMulai', 'tanggalSelesai', 'jamSelesai', 'lokasi', 'metode', 'deskripsi'].map((field, i) => (
                     <div key={i}>
                       <label className="block text-sm font-medium mb-1 capitalize">{field}</label>
-                      {(field === 'tanggalMulai' || field === 'tanggalSelesai') ? (
+                      {field === 'tanggalMulai' || field === 'tanggalSelesai' ? (
                         <input type="date" name={field} className="input input-bordered w-full" value={editForm?.[field] || ''} onChange={(e) => setEditForm({ ...editForm, [field]: e.target.value })} />
-                      ) : (field === 'jamMulai' || field === 'jamSelesai') ? (
+                      ) : field === 'jamMulai' || field === 'jamSelesai' ? (
                         <input type="time" name={field} className="input input-bordered w-full" value={editForm?.[field] || ''} onChange={(e) => setEditForm({ ...editForm, [field]: e.target.value })} />
                       ) : (
                         <input type="text" name={field} className="input input-bordered w-full" value={editForm?.[field] || ''} onChange={(e) => setEditForm({ ...editForm, [field]: e.target.value })} />
                       )}
                     </div>
                   ))}
+                  <input type="file" name="gambar" accept="image/*" className="file-input file-input-bordered w-full" onChange={handleEditGambarChange} />
+                  {editGambarPreview && <img src={editGambarPreview} alt="Preview" className="w-16 h-16 rounded mt-2" />}
                 </div>
                 <div className="modal-action flex justify-between mt-6">
-                  <button type="button" className="btn bg-red-500 text-white rounded-full px-10" onClick={handleDelete}>Hapus</button>
-                  <button type="submit" className="btn bg-sky-400 text-white rounded-full px-10">Simpan Perubahan</button>
+                  <button type="button" className="btn bg-red-500 text-white rounded-full px-10" onClick={handleDelete}>
+                    Hapus
+                  </button>
+                  <button type="submit" className="btn bg-sky-400 text-white rounded-full px-10">
+                    Simpan Perubahan
+                  </button>
                 </div>
               </form>
             </>
@@ -280,31 +308,37 @@ const ListSertifikasi = () => {
         <div className="modal-box w-full h-135 max-w-lg rounded-xl shadow-lg p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-lg">Tambah Sertifikasi</h3>
-            <button className="btn btn-sm btn-circle btn-ghost text-xl" onClick={() => document.getElementById('tambahModal').close()}>✕</button>
+            <button className="btn btn-sm btn-circle btn-ghost text-xl" onClick={() => document.getElementById('tambahModal').close()}>
+              ✕
+            </button>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="space-y-3">
-              {['judul', 'bidang', 'jenisSertifikat', 'tanggalMulai', 'jamMulai', 'tanggalSelesai', 'jamSelesai', 'lokasi', 'metode', 'deskripsi', 'sertifikatDidapat', 'syaratPeserta', 'fasilitas', 'kuota', 'catatan', 'detail'].map((field, i) => (
-                <div key={i}>
-                  <label className="block text-sm font-medium mb-1 capitalize">{field}</label>
-                  {(field.includes('tanggal')) ? (
-                    <input type="date" name={field} className="input input-bordered w-full" onChange={handleChange} />
-                  ) : (field.includes('jam')) ? (
-                    <input type="time" name={field} className="input input-bordered w-full" onChange={handleChange} />
-                  ) : (field === 'kuota') ? (
-                    <input type="number" name={field} className="input input-bordered w-full" onChange={handleChange} />
-                  ) : (
-                    <input type="text" name={field} className="input input-bordered w-full" onChange={handleChange} />
-                  )}
-                </div>
-              ))}
+              {['judul', 'bidang', 'jenisSertifikat', 'tanggalMulai', 'jamMulai', 'tanggalSelesai', 'jamSelesai', 'lokasi', 'metode', 'deskripsi', 'sertifikatDidapat', 'syaratPeserta', 'fasilitas', 'kuota', 'catatan', 'detail'].map(
+                (field, i) => (
+                  <div key={i}>
+                    <label className="block text-sm font-medium mb-1 capitalize">{field}</label>
+                    {field.includes('tanggal') ? (
+                      <input type="date" name={field} className="input input-bordered w-full" onChange={handleChange} />
+                    ) : field.includes('jam') ? (
+                      <input type="time" name={field} className="input input-bordered w-full" onChange={handleChange} />
+                    ) : field === 'kuota' ? (
+                      <input type="number" name={field} className="input input-bordered w-full" onChange={handleChange} />
+                    ) : (
+                      <input type="text" name={field} className="input input-bordered w-full" onChange={handleChange} />
+                    )}
+                  </div>
+                )
+              )}
               <div>
                 <label className="block text-sm font-medium mb-1">Gambar Sertifikasi</label>
-                <input type="file" name="gambar" accept="image/*" className="file-input file-input-bordered w-full" onChange={e => setFormData({ ...formData, gambar: e.target.files[0] })} />
+                <input type="file" name="gambar" accept="image/*" className="file-input file-input-bordered w-full" onChange={(e) => setFormData({ ...formData, gambar: e.target.files[0] })} />
               </div>
             </div>
             <div className="modal-action mt-6 flex justify-end">
-              <button type="submit" className="btn bg-sky-400 text-white rounded-full px-10">Simpan</button>
+              <button type="submit" className="btn bg-sky-400 text-white rounded-full px-10">
+                Simpan
+              </button>
             </div>
           </form>
         </div>
