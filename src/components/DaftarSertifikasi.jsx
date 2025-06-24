@@ -65,7 +65,7 @@ const DaftarSertifikasi = ({ filter }) => {
           <p className="text-sm text-gray-600 mb-2">{data.bidang} - {data.keahlian}</p>
         </div>
       </div>
-      <div className="flex justify-between my-2 text-xs">
+      <div className="grid grid-cols-2 space-y-2 justify-between my-2 text-xs">
         <div className="flex items-center"><FaCalendar className="text-gray-400 mr-1" />{data.tanggal}</div>
         <div className="flex items-center"><FaClock className="text-gray-400 mr-1" />{data.waktu}</div>
         <div className="flex items-center"><FaLocationDot className="text-gray-400 mr-1" />{data.lokasi}</div>
@@ -137,7 +137,7 @@ const DaftarSertifikasi = ({ filter }) => {
                 </div>
               </div>
 
-              <div className="flex justify-between my-2">
+              <div className="grid grid-cols-2 space-y-2 justify-between my-2">
                 <div className="flex"><FaCalendar className="text-gray-400 text-xs mt-1" /><p className="ml-1 text-black text-xs pt-0.5">{item.tanggal}</p></div>
                 <div className="flex"><FaClock className="text-gray-400 text-xs mt-1" /><p className="ml-1 text-black text-xs pt-0.5">{item.waktu}</p></div>
                 <div className="flex"><FaLocationDot className="text-gray-400 text-xs mt-1" /><p className="ml-1 text-black text-xs pt-0.5">{item.lokasi}</p></div>
