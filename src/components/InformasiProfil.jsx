@@ -39,37 +39,28 @@ const InformasiProfil = () => {
   const [profilPic, setProfilPic] = useState(null);
   
   const handleUploadPhoto = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-          const imageURL = URL.createObjectURL(file);
-          setProfilPic(imageURL);
-      }
-  };
+    const file = e.target.files[0];
+    if (file) {
+      const imageURL = URL.createObjectURL(file);
+      console.log('Foto berhasil di-upload:', imageURL);
+      setProfilPic(imageURL);
+    }
+};
 
-  const removePhoto = () => {
-      setProfilPic(null)
-  }
 
   return (
     <div className="flex flex-col border-gray-300 border rounded-2xl bg-white font-sans">
       <div className="relative">
         <div className="bg-blue-300 h-44 rounded-t-2xl"></div>
-
-          <button onClick={openModalEditProfilPic} className="absolute pl-4 -bottom-12">
-                        
-            <div className="w-28 h-28 bg-blue-700 rounded-full border-4 border-white cursor-pointer"></div>
-        
-            {profilPic ? (
-                <img 
-                    src={profilPic || defaultProfilePic} 
-                    alt="Profil" 
-                    className="w-28 h-28 rounded-full border-4 border-white cursor-pointer" 
-                />
-            ) : null}
-        </button>
-
+          <button onClick={openModalEditProfilPic} className="absolute pl-4 -bottom-12 cursor-pointer">
+            <img 
+              src={profilPic || defaultProfilePic} 
+              alt="Profil" 
+              className="w-28 h-28 object-cover rounded-full border-4 border-white" 
+            />
+          </button>
         <dialog id="modalEditProfilPic" className="modal">
-          <div className="modal-box">
+          <div className="modal-box bg-gray-100">
               <form method="dialog">
                   <div className="flex flex-row ">
                       <h3 className="font-semibold">Edit Profil</h3>
@@ -78,39 +69,37 @@ const InformasiProfil = () => {
               </form>
               <hr className='my-3 text-gray-200' />
               
-              <div className="flex rounded-full my-12 justify-self-center">
-                  {profilPic ? (
-                      <img 
-                          src={profilPic || defaultProfilePic} 
-                          alt="Profil" 
-                          className="w-40 h-40 object-cover" 
-                      />
-                  ) : null}
+              <div className="flex rounded-full py-12 justify-self-center">
+                  <img 
+                    src={profilPic || defaultProfilePic} 
+                    alt="Profil" 
+                    className="w-40 h-40 object-cover rounded-full" 
+                  />
               </div>
               
               <hr className='my-3 text-gray-200' />
               <div className="flex flex-row flex-wrap justify-between">
                   <div className="flex flex-row gap-3">
-                      <div className="flex px-2 h-8 items-center gap-2 rounded-md cursor-pointer hover:bg-gray-100">
-                          <label htmlFor="uploadGambar" className="flex items-center gap-2 cursor-pointer">
+                      <div className="flex px-2 h-8 items-center gap-2 rounded-md cursor-pointer hover:bg-gray-200">
+                          <label htmlFor="uploadProfilePic" className="flex items-center gap-2 cursor-pointer">
                               <FaCamera />
                               <p className="text-sm">Ambil Foto</p>
                           </label>
                           <input
-                              id="uploadGambar"
+                              id="uploadProfilePic"
                               type="file"
                               accept="image/*"
                               className="hidden"
                               onChange={handleUploadPhoto}
                           />
                       </div>
-                      <div className="flex px-2 h-8 items-center gap-2 rounded-md cursor-pointer hover:bg-gray-100">
-                          <label htmlFor="uploadGambar" className="flex items-center gap-2 cursor-pointer">
+                      <div className="flex px-2 h-8 items-center gap-2 rounded-md cursor-pointer hover:bg-gray-200">
+                          <label htmlFor="uploadProfilePic" className="flex items-center gap-2 cursor-pointer">
                               <FaImages />
                               <p className="text-sm">Upload Foto</p>
                           </label>
                           <input
-                              id="uploadGambar"
+                              id="uploadProfilePic"
                               type="file"
                               accept="image/*"
                               className="hidden"
@@ -119,12 +108,15 @@ const InformasiProfil = () => {
                       </div>
                   </div>
       
-                  <a href="#hapus">
-                      <button className="flex flex-row gap-2 items-center p-2 bg-white dark:bg-[#659BB0] rounded-md hover:bg-[#FFE5E5] cursor-pointer">
-                          <FaTrash className="text-red-600"/>
-                          <p className="text-sm text-red-600">Hapus</p>
-                      </button>
-                  </a>
+                  <button
+                    onClick={() => setProfilPic(null)}
+                    className="flex flex-row gap-2 items-center p-2 rounded-md hover:bg-[#FFE5E5] cursor-pointer"
+                  >
+                    <FaTrash className="text-red-600" />
+                    <p className="text-sm text-red-600">Hapus</p>
+                  </button>
+
+                  
               </div>
           </div>
         </dialog>
