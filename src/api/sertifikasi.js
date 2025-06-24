@@ -35,4 +35,9 @@ export const deleteSertifikasi = async (id) => {
     })
 }
 
-//getpelamar
+export const getPelamarSertifikasi = async (id) => {
+    const response = await axios.get(`${API_URL}/admin/certification-lists/${id}/applicants`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+    })
+    return response
+}
