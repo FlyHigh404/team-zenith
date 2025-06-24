@@ -66,15 +66,22 @@ class AdminLokerController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'nama' => 'required|string|max:100',
-                'deskripsi' => 'required|string',
-                'alamat' => 'required|string',
-                'kota' => 'required|string|max:50',
+                'perusahaan_id' => 'required|exists:perusahaan,id',
+                'judul' => 'required|string|max:100',
+                'desc' => 'required|string',
+                'durasi_bulan' => 'required|integer|min:1',
+                'pengalaman' => 'required|integer|min:0',
+                'lokasi' => 'required|string|max:100',
                 'provinsi' => 'required|string|max:50',
-                'notelp' => 'nullable|string|max:25',
-                'email' => 'nullable|email|max:100',
-                'jumlahPegawai' => 'required|integer|min:1',
-                'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'kota' => 'required|string|max:50',
+                'jenisIndustri' => 'required|array',
+                'jenisIndustri.*' => 'string',
+                'gaji' => 'required|integer|min:0',
+                'tanggalMulai' => 'required|date|after_or_equal:today',
+                'tanggalSelesai' => 'required|date|after_or_equal:tanggalMulai',
+                'kualifikasi' => 'required|string',
+                'detail' => 'nullable|array',
+                'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             ]);
 
             if ($validator->fails()) {
@@ -85,35 +92,81 @@ class AdminLokerController extends Controller
                 ], 422);
             }
 
-            $data = $validator->validated();
-            $data['user_id'] = Auth::id();
-            $data['createdAt'] = now();
+            // Verifikasi perusahaan ada
+            $perusahaan = Perusahaan::find($request->perusahaan_id);
 
-            // Handle upload logo
-            if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $fileName = time() . '_company_logo.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/company', $fileName);
-                // Simpan path RELATIF dari storage/public
-                $data['logo'] = 'company/' . $fileName;
+            if (!$perusahaan) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Perusahaan tidak ditemukan'
+                ], 404);
             }
 
-            $company = Perusahaan::create($data);
+            $data = $validator->validated();
+            $data['createdAt'] = now();
+
+            // Encode JSON fields
+            if (isset($data['jenisIndustri']) && is_array($data['jenisIndustri'])) {
+                $data['jenisIndustri'] = json_encode($data['jenisIndustri']);
+            }
+
+            if (isset($data['detail']) && is_array($data['detail'])) {
+                $data['detail'] = json_encode($data['detail']);
+            }
+
+            // Handle upload gambar
+            $fileName = null;
+            if ($request->hasFile('gambar')) {
+                try {
+                    $file = $request->file('gambar');
+                    $fileName = time() . '_loker.' . $file->getClientOriginalExtension();
+                    $file->storeAs('public/loker', $fileName);
+                    $data['gambar'] = $fileName;
+                } catch (\Exception $e) {
+                    \Log::error('Failed to upload job listing image: ' . $e->getMessage());
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengunggah gambar',
+                        'error' => 'File upload failed'
+                    ], 500);
+                }
+            }
+
+            $loker = Loker::create($data);
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Perusahaan berhasil dibuat',
-                'data' => $company
+                'message' => 'Lowongan berhasil dibuat',
+                'data' => $loker
             ], 201);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error when creating job listing: ' . $e->getMessage());
+
+            // Clean up uploaded image if exists
+            if (isset($fileName)) {
+                Storage::delete('public/loker/' . $fileName);
+            }
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal membuat perusahaan',
-                'error' => $e->getMessage()
+                'message' => 'Terjadi kesalahan pada database',
+                'error' => config('app.debug') ? $e->getMessage() : 'Database error'
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Error when creating job listing: ' . $e->getMessage());
+
+            // Clean up uploaded image if exists
+            if (isset($fileName)) {
+                Storage::delete('public/loker/' . $fileName);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal membuat lowongan',
+                'error' => config('app.debug') ? $e->getMessage() : 'Server error'
             ], 500);
         }
     }
-
 
     /**
      * Display the specified job listing

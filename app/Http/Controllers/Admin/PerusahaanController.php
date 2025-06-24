@@ -64,7 +64,7 @@ class PerusahaanController extends Controller
             }
 
             $data = $validator->validated();
-            $data['user_id'] = Auth::id(); // Keep track of which admin created it
+            $data['user_id'] = Auth::id();
             $data['createdAt'] = now();
 
             // Handle upload logo
@@ -72,7 +72,8 @@ class PerusahaanController extends Controller
                 $file = $request->file('logo');
                 $fileName = time() . '_company_logo.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/company', $fileName);
-                $data['logo'] = $fileName;
+                // Simpan path RELATIF dari storage/public
+                $data['logo'] = 'company/' . $fileName;
             }
 
             $company = Perusahaan::create($data);
@@ -90,6 +91,7 @@ class PerusahaanController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Display the specified company
