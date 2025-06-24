@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaArrowLeft, FaStar, FaUsers, FaClock, FaLocationDot, FaToolbox, FaSackDollar } from 'react-icons/fa6'
 import { fetchLokerById } from '../api/forum'
-import imgDefault from '../assets/img/sertifikasi.png' // placeholder jika tidak ada logo
+import imgDefault from '../assets/img/sertifikasi.png'
 
 const LokerInfo = () => {
   const { id } = useParams()
@@ -26,7 +26,7 @@ const LokerInfo = () => {
         <FaArrowLeft className="mr-2" /> Detail pekerjaan
       </button>
       <div className="bg-white rounded-xl shadow-md">
-        <div className="bg-[#86CEEB]  py-4 px-6 rounded-lg mb-4">
+        <div className="bg-sky-400 py-4 px-6 rounded-lg mb-4">
           <div className="flex gap-3">
             <img src={job.perusahaan?.logo ? `${import.meta.env.VITE_BASE_URL}/storage/${job.perusahaan.logo}` : imgDefault} className="w-12 h-12 object-contain rounded-full bg-white" alt="Logo Perusahaan" />
             <div className="text-white">
@@ -35,7 +35,7 @@ const LokerInfo = () => {
             </div>
           </div>
           <div className="flex justify-between my-3">
-            <button className="btn btn-white px-auto w-33 rounded-full text-blue-600">Ikuti</button>
+            <button className="btn btn-white px-auto w-33 rounded-full text-sky-400">Ikuti</button>
             <button className="btn btn-outline-white bg-transparent px-auto w-33 rounded-full text-white">Kirim Email</button>
           </div>
         </div>
