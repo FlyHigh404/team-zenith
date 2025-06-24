@@ -116,7 +116,7 @@ const LokerForm = ({ job, user }) => {
             <label className="block mb-1 font-medium">Unggah CV / Resume</label>
             <div {...getRootProps()} className="border-2 border-dashed border-blue-300 bg-blue-50 p-8 text-center rounded-md cursor-pointer">
               <input {...getInputProps()} />
-              <p className="text-sm text-gray-600">PDF, JPG, PNG – max 30 MB</p>
+              <p className="text-sm text-gray-600">PDF – max 30 MB</p>
               <p className="text-sm mt-1">
                 Drag & drop atau <span className="text-blue-500 font-medium">browse file</span>
               </p>
