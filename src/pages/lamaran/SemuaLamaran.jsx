@@ -65,36 +65,74 @@ const SemuaLamaran = () => {
               {tab === 'pekerjaan' && (
                 <>
                   <h2 className="text-lg font-semibold mt-4">Lamaran Pekerjaan</h2>
-                  {dataLoker.map((item) => (
-                    <Lamaran
-                      key={item.id}
-                      posisi={item.loker?.judul}
-                      perusahaan={item.loker?.perusahaan?.nama}
-                      apply={`Dikirim ${new Date(item.created_at).toLocaleDateString('id-ID')}`}
-                      status={item.status.toLowerCase()}
-                      logo={item.loker?.perusahaan?.logo || logoPerusahaan}
-                    />
-                  ))}
+                  {[...dataLoker]
+                    .sort((a, b) => {
+                      const getPriority = (status) => {
+                        switch (status.toLowerCase()) {
+                          case 'diterima':
+                            return 1
+                          case 'menunggu':
+                            return 2
+                          case 'dilamar':
+                            return 3
+                          case 'ditolak':
+                            return 4
+                          default:
+                            return 5
+                        }
+                      }
+                      return getPriority(a.status) - getPriority(b.status)
+                    })
+                    .map((item) => (
+                      <Lamaran
+                        key={item.id}
+                        posisi={item.loker?.judul}
+                        perusahaan={item.loker?.perusahaan?.nama}
+                        apply={`Dikirim ${new Date(item.created_at).toLocaleDateString('id-ID')}`}
+                        status={item.status.toLowerCase()}
+                        alasan={item.alasan}
+                        logo={item.loker?.perusahaan?.logo || logoPerusahaan}
+                      />
+                    ))}
                 </>
               )}
 
               {tab === 'sertifikasi' && (
                 <>
                   <h2 className="text-lg font-semibold mt-4">Lamaran Sertifikasi</h2>
-                  {dataSertifikasi.map((item) => (
-                    <Lamaran
-                      key={item.id}
-                      posisi={item.admin_certification?.judul}
-                      perusahaan={item.admin_certification?.bidang}
-                      apply={`Dikirim ${new Date(item.created_at).toLocaleDateString('id-ID')}`}
-                      status={item.status.toLowerCase()}
-                      logo={
-                        item.admin_certification?.gambar
-                          ? `${import.meta.env.VITE_BASE_URL}/storage/${item.admin_certification.gambar}`
-                          : logoPerusahaan
+                  {[...dataSertifikasi]
+                    .sort((a, b) => {
+                      const getPriority = (status) => {
+                        switch (status.toLowerCase()) {
+                          case 'diterima':
+                            return 1
+                          case 'menunggu':
+                            return 2
+                          case 'dilamar':
+                            return 3
+                          case 'ditolak':
+                            return 4
+                          default:
+                            return 5
+                        }
                       }
-                    />
-                  ))}
+                      return getPriority(a.status) - getPriority(b.status)
+                    })
+                    .map((item) => (
+                      <Lamaran
+                        key={item.id}
+                        posisi={item.admin_certification?.judul}
+                        perusahaan={item.admin_certification?.bidang}
+                        apply={`Dikirim ${new Date(item.created_at).toLocaleDateString('id-ID')}`}
+                        status={item.status.toLowerCase()}
+                        alasan={item.alasan}
+                        logo={
+                          item.admin_certification?.gambar
+                            ? `${import.meta.env.VITE_BASE_URL}/storage/${item.admin_certification.gambar}`
+                            : logoPerusahaan
+                        }
+                      />
+                    ))}
                 </>
               )}
             </div>
