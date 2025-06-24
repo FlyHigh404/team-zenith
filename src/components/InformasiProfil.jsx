@@ -150,9 +150,8 @@ const InformasiProfil = () => {
                       { label: "Nama Lengkap", type: "input" },
                       { label: "Provinsi", type: "select", options: ["Jawa Barat", "Jawa Tengah", "Jawa Timur"] },
                       { label: "Kota", type: "select", options: ["Bandung", "Semarang", "Surabaya"] },
-                      { label: "Bidang Pekerjaan", type: "select", options: ["Inspector", "Welder"] },
-                      { label: "Kelas", type: "select", options: ["1f, 2f, 2g, 5g"] },
-                      { label: "Keahlian", type: "select", options: ["Plate, Pipe, Fillet"] },
+                      { label: "Kelas", type: "select", options: ["1F", "2F", "3F", "4F", "1G", "2G", "3G", "4G", "1G pipa", "2G pipa", "5G", "6G", "SMAW", "GMAW", "FCAW", "GTAW"] },
+                      { label: "Keahlian", type: "select", options: ["Plate", "Pipe", "Fillet"] },
                   ].map((field, i) => (
                       <React.Fragment key={i}>
                           <label className="font-medium text-sm">{field.label}</label>
