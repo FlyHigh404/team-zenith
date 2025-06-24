@@ -11,6 +11,8 @@ const getTitle = (path) => {
       return 'Kelola Pekerjaan'
     case '/sertifikasi-admin':
       return 'Kelola Sertifikasi'
+    case '/mitra-admin':
+      return 'Mitra Perusahaan'
     case '/pelamar-sertifikasi':
       return 'Daftar Pelamar Sertifikasi'
     case '/pekerjaan-admin/pelamar':

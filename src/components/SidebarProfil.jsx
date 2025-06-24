@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { FaBagShopping, FaCertificate, FaBookmark } from 'react-icons/fa6'
+import { FaBagShopping, FaCertificate, FaBookmark, FaBookOpen } from 'react-icons/fa6'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { getUserData } from '../utils/token'
 import { FaUserCircle } from 'react-icons/fa'
@@ -44,6 +44,12 @@ const SidebarProfil = () => {
           <NavLink to="/simpan-postingan" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
             <FaBookmark className="text-xl" />
             <span className="ml-3 text-sm">Tersimpan</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/lamaran" className="flex items-center p-2 rounded-lg group font-medium hover:bg-gray-100">
+            <FaBookOpen className="text-xl" />
+            <span className="ml-3 text-sm">Lamaran Saya</span>
           </NavLink>
         </li>
       </ul>

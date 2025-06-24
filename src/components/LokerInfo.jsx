@@ -62,7 +62,7 @@ const LokerInfo = () => {
           <FaClock className="mt-1" />
           <div>
             <p className="text-sky-400 font-semibold">Durasi</p>
-            <p>{job.durasi_kategori || `${job.durasi_bulan} bulan`}</p>
+            <p>{`${job.durasi_bulan} bulan`}</p>
           </div>
         </div>
         <div className="flex gap-4 text-[#424242]">

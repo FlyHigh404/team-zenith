@@ -7,6 +7,7 @@ import AdminLayout2 from './layout/AdminLayout2'
 import DashboardAdmin from './pages/admin/DashboardAdmin'
 import PekerjaanAdmin from './pages/admin/PekerjaanAdmin'
 import ProfilAdmin from './pages/admin/ProfilAdmin'
+import MitraAdmin from './pages/admin/MitraAdmin'
 import BerandaAdmin from './pages/admin/BerandaAdmin'
 import SertifikasiAdmin from './pages/admin/SertifikasiAdmin'
 import PelamarSertifikasi from './pages/admin/PelamarSertifikasi'
@@ -38,7 +39,6 @@ import Koneksi from './pages/Koneksi'
 import NotFound from './pages/NotFound'
 
 import { AuthProvider } from './auth/AuthProvider'
-
 
 function App() {
   return (
@@ -90,6 +90,7 @@ function App() {
               <Route path="/dashboard-admin" element={<DashboardAdmin />} />
               <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
               <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
+              <Route path="/mitra-admin" element={<MitraAdmin />} />
               <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
               <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
             </Route>
