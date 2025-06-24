@@ -12,6 +12,18 @@ const TabelSertifikasi = ({ pendaftar = [] }) => {
     }
     const [alasanInputs, setAlasanInputs] = useState({});
 
+    // Fungsi aksi
+    const handleReject = (id) => {
+        const alasan = alasanInputs[id] || '';
+        console.log(`❌ Ditolak: ID ${id} | Alasan: ${alasan}`);
+        // bisa pakai axios.post(`/api/sertifikasi/${id}/tolak`, { alasan })
+    };
+
+    const handleAccept = (id) => {
+        console.log(`✅ Diterima: ID ${id}`);
+        // bisa pakai axios.post(`/api/sertifikasi/${id}/terima`)
+    };
+
     return (
         <div className='bg-white mx-5 mt-5 p-5 rounded-xl'>
             <div className="flex items-center space-x-4">
