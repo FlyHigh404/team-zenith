@@ -31,9 +31,9 @@ const DetailLoker = () => {
   // Kualifikasi jadi list
   const kualifikasiList = job.kualifikasi
     ? job.kualifikasi
-      .split('\n')
-      .map((q) => q.replace(/^- /, '').trim())
-      .filter(Boolean)
+        .split('\n')
+        .map((q) => q.replace(/^- /, '').trim())
+        .filter(Boolean)
     : []
 
   // Detail teknis, jika ada
@@ -64,7 +64,7 @@ const DetailLoker = () => {
             <b>Gaji:</b> Rp {job.gaji?.toLocaleString('id-ID')}
           </span>
           <span>
-            <b>Durasi:</b> {job.durasi_kategori || `${job.durasi_bulan} bulan`}
+            <b>Durasi:</b> {job.durasi_kategori || `${job.durasi_bulan} bulan`} / {`${job.durasi_bulan} bulan`}
           </span>
         </div>
 
@@ -85,19 +85,10 @@ const DetailLoker = () => {
         )}
 
         <h2 className="text-lg font-semibold mb-1">Kualifikasi</h2>
-        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-6">
-          {kualifikasiList.length > 0 ? (
-            kualifikasiList.map((item, idx) => <li key={idx}>{item}</li>)
-          ) : (
-            <li>Tidak ada kualifikasi khusus.</li>
-          )}
-        </ul>
+        <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-6">{kualifikasiList.length > 0 ? kualifikasiList.map((item, idx) => <li key={idx}>{item}</li>) : <li>Tidak ada kualifikasi khusus.</li>}</ul>
 
         <Link to={`/loker/apply/${job.id}`}>
-          <button
-            className={`px-6 py-2 rounded-xl text-sm text-white ${isAdmin ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-            disabled={isAdmin}
-          >
+          <button className={`px-6 py-2 rounded-xl text-sm text-white ${isAdmin ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`} disabled={isAdmin}>
             Lamar Pekerjaan
           </button>
         </Link>

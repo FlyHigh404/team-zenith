@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { FaHouse, FaBagShopping, FaCertificate } from 'react-icons/fa6'
+import { FaHouse, FaBagShopping, FaCertificate, FaBuilding } from 'react-icons/fa6'
 // import logo from '../../assets/img/logo.png'
 
 const Sidebar = () => {
@@ -32,6 +32,12 @@ const Sidebar = () => {
             <NavLink to="sertifikasi-admin" className={navItemClass}>
               <FaCertificate className="text-xl" />
               <span className="ml-3 text-lg">Sertifikasi</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="mitra-admin" className={navItemClass}>
+              <FaBuilding className="text-xl" />
+              <span className="ml-3 text-lg">Mitra Perusahaan</span>
             </NavLink>
           </li>
         </ul>

@@ -25,7 +25,7 @@ const SemuaLamaran = () => {
       {/* Header / Navigasi Kembali */}
       <div className="px-10 py-3">
         <div className="bg-white w-full p-4 rounded-xl">
-          <a href="/beranda-user" className="text-black text-base font-medium flex items-center">
+          <a href="/beranda-admin" className="text-black text-base font-medium flex items-center">
             <FaArrowLeft className="mr-2 text-black" /> <span className="text-black">Beranda</span>
           </a>
         </div>
@@ -40,10 +40,7 @@ const SemuaLamaran = () => {
               <button
                 key={kategori}
                 onClick={() => setTab(kategori)}
-                className={`w-full text-left capitalize py-2 px-4 rounded-lg font-medium ${tab === kategori
-                  ? 'text-[#86CEEB] font-semibold bg-blue-50'
-                  : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                className={`w-full text-left capitalize py-2 px-4 rounded-lg font-medium ${tab === kategori ? 'text-[#86CEEB] font-semibold bg-blue-50' : 'text-gray-700 hover:bg-gray-100'}`}
               >
                 {kategori}
               </button>
@@ -52,24 +49,14 @@ const SemuaLamaran = () => {
 
           {/* Konten Lamaran */}
           <div className="w-[70%] space-y-4">
-            <div className='bg-white rounded-xl shadow-md px-4 py-2'>
+            <div className="bg-white rounded-xl shadow-md px-4 py-2">
               <h1 className="text-xl font-semibold mb-2">Riwayat Lamaran Saya</h1>
               {filteredLamaran.length === 0 ? (
                 <p className="text-gray-500 text-sm">Tidak ada lamaran pada kategori ini.</p>
               ) : (
-                filteredLamaran.map((item) => (
-                  <Lamaran
-                    logo={item.logo}
-                    key={item.id}
-                    posisi={item.posisi}
-                    perusahaan={item.perusahaan}
-                    apply={item.apply}
-                    status={item.status}
-                  />
-                ))
+                filteredLamaran.map((item) => <Lamaran logo={item.logo} key={item.id} posisi={item.posisi} perusahaan={item.perusahaan} apply={item.apply} status={item.status} />)
               )}
             </div>
-
           </div>
         </div>
       </div>
