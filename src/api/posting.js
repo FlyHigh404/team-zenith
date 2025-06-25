@@ -3,8 +3,8 @@ import { getToken } from '../utils/token'
 
 const API_URL = `${import.meta.env.VITE_BASE_URL}`
 
-export const fetchAllPostingan = async () => {
-  const response = await axios.get(`${API_URL}/postingan`, {
+export const fetchAllPostingan = async (page) => {
+  const response = await axios.get(`${API_URL}/postingan/?page=${page}`, {
     headers: { Authorization: `Bearer ${getToken()}` },
   })
   return response.data
