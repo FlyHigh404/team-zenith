@@ -91,7 +91,7 @@ function App() {
               <Route path="/pekerjaan-admin" element={<PekerjaanAdmin />} />
               <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
               <Route path="/mitra-admin" element={<MitraAdmin />} />
-              <Route path="/pelamar-sertifikasi" element={<PelamarSertifikasi />} />
+              <Route path="/pelamar-sertifikasi/:id" element={<PelamarSertifikasi />} />
               <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
             </Route>
 

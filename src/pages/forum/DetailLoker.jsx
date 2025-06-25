@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { fetchLokerById } from '../../api/forum'
 import { getUserData } from '../../utils/token'
@@ -88,7 +88,7 @@ const DetailLoker = () => {
         <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-6">{kualifikasiList.length > 0 ? kualifikasiList.map((item, idx) => <li key={idx}>{item}</li>) : <li>Tidak ada kualifikasi khusus.</li>}</ul>
 
         <Link to={`/loker/apply/${job.id}`}>
-          <button className={`px-6 py-2 rounded-xl text-sm text-white ${isAdmin ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`} disabled={isAdmin}>
+          <button className={`px-6 py-2 rounded-xl text-sm text-white ${isAdmin ? 'bg-gray-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600'}`} disabled={isAdmin}>
             Lamar Pekerjaan
           </button>
         </Link>

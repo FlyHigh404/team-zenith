@@ -1,35 +1,88 @@
-import React from 'react'
-import { FaEye } from "react-icons/fa6";
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { FaEye } from "react-icons/fa6"
+import { getPelamarSertifikasi } from '../api/sertifikasi'
+import { getToken } from '../utils/token'
 
+const TabelSertifikasi = ({ sertifikasiId }) => {
+    const [pendaftar, setPendaftar] = useState([])
+    const [alasanInputs, setAlasanInputs] = useState({})
 
-const TabelSertifikasi = () => {
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await getPelamarSertifikasi(sertifikasiId)
+                setPendaftar(res.pendaftar) // Pastikan sesuai struktur response kamu
+            } catch (err) {
+                console.error('Gagal fetch data pelamar:', err)
+            }
+        }
+
+        if (sertifikasiId) fetchData()
+    }, [sertifikasiId])
+
+    const hitungUmur = (tanggalLahir) => {
+        const birthDate = new Date(tanggalLahir);
+        const today = new Date();
+        let umur = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) umur--;
+        return umur;
+    };
+
+    const handleReject = async (id) => {
+        const alasan = alasanInputs[id] || '';
+        if (!alasan.trim()) {
+            alert('Harap isi alasan terlebih dahulu.');
+            return;
+        }
+        try {
+            await updateStatusPelamar(id, 'Ditolak', alasan);
+            setPendaftar((prev) =>
+                prev.map((p) =>
+                    p.id === id ? { ...p, status: 'Ditolak', alasan } : p
+                )
+            );
+            document.getElementById(`detail-modal-${id}`).checked = false; // Tutup modal (opsional)
+            alert(`Pelamar ID ${id} ditolak dengan alasan: ${alasan}`);
+        } catch (err) {
+            console.error('Gagal menolak pelamar:', err);
+        }
+    };
+
+    const handleAccept = async (id) => {
+        const alasan = alasanInputs[id]?.trim();
+        if (!alasan) {
+            alert('Harap isi alasan terlebih dahulu sebelum menerima pelamar.');
+            return;
+        }
+        try {
+            await updateStatusPelamar(id, 'Diterima', alasan);
+            setPendaftar((prev) =>
+                prev.map((p) =>
+                    p.id === id ? { ...p, status: 'Diterima', alasan } : p
+                )
+            );
+            document.getElementById(`detail-modal-${id}`).checked = false; // Tutup modal (opsional)
+            alert(`Pelamar ID ${id} diterima.`);
+        } catch (error) {
+            console.error('Gagal menerima pelamar:', error);
+        }
+    };
+
+    const updateStatusPelamar = async (id, status, alasan = '') => {
+        await axios.put(`${import.meta.env.VITE_BASE_URL}/admin/certification-lists/applicants/${id}`, {
+            status,
+            alasan
+        }, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        });
+    };
+
     return (
-        <div className='bg-white mx-5 mt-5 p-5 rounded-xl'>
-            <div className="flex items-center space-x-4">
-                <span className="text-black">Show</span>
-                <select className="px-3 py-2 rounded-md bg-gray-200 focus:outline-none">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-                <span className="text-black">entries</span>
-
-                <label className="flex items-center gap-2 border border-gray-400 rounded-xl px-3 py-2 w-full focus-within:border-sky-400 transition-all duration-200">
-                    <svg className="h-4 w-4 text-gray-400 peer-focus:border-sky-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.3-4.3"></path>
-                        </g>
-                    </svg>
-                    <input
-                        type="search"
-                        placeholder="Search"
-                        required
-                        className="w-full outline-none bg-transparent text-sm placeholder:text-gray-400"
-                    />
-                </label>
-            </div>
+        <div className='bg-white mx-5 mt-5 p-5 rounded-xl min-h-screen'>
             <div className="overflow-x-auto rounded-xl mt-4">
                 <table className="table text-sm">
                     <thead className="text-black">
@@ -43,54 +96,95 @@ const TabelSertifikasi = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {[
-                            { no: 1, tgl: "13/01/2022", nama: "Matt Dickerson", kota: "Surabaya", umur: 18 },
-                            { no: 2, tgl: "22/01/2022", nama: "Matt Dickerson", kota: "Jakarta", umur: 20 },
-                            { no: 3, tgl: "15/08/2022", nama: "Tride Byrd", kota: "Surabaya", umur: 30 },
-                            { no: 4, tgl: "06/09/2022", nama: "Brad Mason", kota: "Bogor", umur: 23 },
-                            { no: 5, tgl: "25/09/2022", nama: "Sanderson", kota: "Bandung", umur: 19 },
-                            { no: 6, tgl: "04/10/2022", nama: "Jan Rodhem", kota: "Semarang", umur: 20 },
-                            { no: 7, tgl: "17/10/2022", nama: "Miriam Kidd", kota: "Pamekasan", umur: 21 },
-                            { no: 8, tgl: "24/10/2022", nama: "Dominic", kota: "Denpasar", umur: 23 },
-                            { no: 9, tgl: "01/11/2022", nama: "Shanice", kota: "Tangerang", umur: 18 },
-                        ].map((row, i) => (
-                            <tr key={i} className="odd:bg-gray-100 even:bg-white">
-                                <td>{row.no.toString().padStart(2, "0")}</td>
-                                <td>{row.tgl}</td>
-                                <td>{row.nama}</td>
-                                <td>{row.kota}</td>
-                                <td>{row.umur}</td>
-                                <td className="text-center align-middle">
-                                    <label htmlFor="detail-modal" className="inline-flex justify-center items-center w-full h-full cursor-pointer">
-                                        <FaEye className="text-sky-500" />
-                                    </label>
+                        {pendaftar.length === 0 ? (
+                            <tr>
+                                <td colSpan={6} className="text-center text-gray-400 py-4">
+                                    Belum ada pelamar.
                                 </td>
-
-                                {/* Modal */}
-                                <input type="checkbox" id="detail-modal" className="modal-toggle" />
-                                <div className="modal">
-                                    <div className="modal-box">
-                                        <form method="dialog">
-                                            <div className='flex justify-between'>
-                                                <h3 className="font-bold text-lg">Detail Pelamar Sertifikat</h3>
-                                                <label htmlFor="detail-modal" className="btn btn-sm btn-circle btn-ghost absolute right-4 top-5 text-xl">✕</label>
-                                            </div>
-                                        </form>
-                                        <hr className='my-3 text-gray-200' />
-                                        <p className="py-4">Isi detail di sini sesuai data yang dipilih</p>
-                                        <div className="modal-action">
-                                            <label htmlFor="detail-modal" className="btn rounded-full px-8">Ditolak</label>
-                                            <label htmlFor="detail-modal" className="btn rounded-full px-8 bg-sky-300 hover:bg-sky-400 text-white">Diterima</label>
-                                        </div>
-                                    </div>
-                                </div>
                             </tr>
-                        ))}
+                        ) : (
+                            pendaftar.map((row, i) => (
+                                <tr key={row.id} className="odd:bg-gray-100 even:bg-white">
+                                    <td>{String(i + 1).padStart(2, '0')}</td>
+                                    <td>{new Date(row.created_at).toLocaleDateString('id-ID')}</td>
+                                    <td>{row.user?.nama || '-'}</td>
+                                    <td>{row.user?.kota || '-'}</td>
+                                    <td>{hitungUmur(row.user?.birthdate)}</td>
+                                    <td className="flex justify-center items-center h-full">
+                                        <label htmlFor={`detail-modal-${row.id}`} className="cursor-pointer">
+                                            <FaEye className="text-sky-500 text-lg" />
+                                        </label>
+
+                                        {/* Modal */}
+                                        <input type="checkbox" id={`detail-modal-${row.id}`} className="modal-toggle" />
+                                        <div className="modal" role="dialog">
+                                            <div className="modal-box">
+                                                {/* Header */}
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <h3 className="font-bold text-lg">Detail Pelamar</h3>
+                                                    <label
+                                                        htmlFor={`detail-modal-${row.id}`}
+                                                        className="btn btn-sm btn-circle btn-ghost text-xl"
+                                                    >
+                                                        ✕
+                                                    </label>
+                                                </div>
+
+                                                <hr className="mb-4" />
+
+                                                {/* Detail Pelamar */}
+                                                <div className="space-y-2 text-sm text-gray-700">
+                                                    <p><strong>Nama:</strong> {row.user?.nama || '-'}</p>
+                                                    <p><strong>Kota:</strong> {row.user?.kota || '-'}</p>
+                                                    <p><strong>Status:</strong> {row.status}</p>
+                                                    <p><strong>Alasan:</strong></p>
+
+                                                    {/* Textarea jika masih menunggu */}
+                                                    {row.status === 'Menunggu' ? (
+                                                        <textarea
+                                                            className="textarea textarea-bordered w-full"
+                                                            placeholder="Tulis alasan penolakan di sini"
+                                                            value={alasanInputs[row.id] || ''}
+                                                            onChange={(e) =>
+                                                                setAlasanInputs((prev) => ({
+                                                                    ...prev,
+                                                                    [row.id]: e.target.value
+                                                                }))
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <p className="text-gray-600 whitespace-pre-line">
+                                                            {row.alasan || '-'}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                {/* Action Button */}
+                                                <div className="modal-action mt-4 flex justify-end gap-2">
+                                                    <button
+                                                        className="btn px-6 bg-red-100 text-red-700 hover:bg-red-200 rounded-full disabled:opacity-50"
+                                                        disabled={row.status !== 'Menunggu'}
+                                                        onClick={() => handleReject(row.id)}
+                                                    >
+                                                        Tolak
+                                                    </button>
+                                                    <button
+                                                        className="btn px-6 bg-sky-400 text-white hover:bg-sky-500 rounded-full disabled:opacity-50"
+                                                        disabled={row.status !== 'Menunggu'}
+                                                        onClick={() => handleAccept(row.id)}
+                                                    >
+                                                        Terima
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
-
             </div>
-
         </div>
     )
 }
