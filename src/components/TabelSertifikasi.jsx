@@ -83,6 +83,32 @@ const TabelSertifikasi = ({ sertifikasiId }) => {
 
     return (
         <div className='bg-white mx-5 mt-5 p-5 rounded-xl min-h-screen'>
+            <div className="flex items-center space-x-4">
+                <span className="text-black">Show</span>
+                <select className="px-3 py-2 rounded-md bg-gray-200 focus:outline-none">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span className="text-black">entries</span>
+
+                <label className="flex items-center gap-2 border border-gray-400 rounded-xl px-3 py-2 w-full focus-within:border-sky-400 transition-all duration-200">
+                    <svg className="h-4 w-4 text-gray-400 peer-focus:border-sky-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </g>
+                    </svg>
+                    <input
+                        type="search"
+                        placeholder="Search"
+                        required
+                        className="w-full outline-none bg-transparent text-sm placeholder:text-gray-400"
+                    />
+                </label>
+            </div>
+
             <div className="overflow-x-auto rounded-xl mt-4">
                 <table className="table text-sm">
                     <thead className="text-black">

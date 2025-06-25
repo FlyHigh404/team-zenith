@@ -255,7 +255,7 @@ const ListPekerjaan = () => {
                 >
                   Edit
                 </button>
-                <button className="text-sm text-[#86CEEB] font-medium hover:underline" onClick={() => navigate('/pelamar-pekerjaan')}>
+                <button className="text-sm text-[#86CEEB] font-medium hover:underline" onClick={() => navigate(`/pelamar-pekerjaan/${selectedJob.id}`)}>
                   Daftar Pelamar
                 </button>
               </div>
