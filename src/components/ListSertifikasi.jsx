@@ -277,7 +277,7 @@ const ListSertifikasi = () => {
                 >
                   Edit
                 </button>
-                <button className="btn text-sky-500" onClick={() => navigate('/pelamar-sertifikasi')}>
+                <button className="btn text-sky-500" onClick={() => navigate(`/pelamar-sertifikasi/${selected.id}`)}>
                   Daftar Pelamar
                 </button>
               </div>
