@@ -3,34 +3,32 @@ import MateriSertifikasi from '../../components/MateriSertifikasi'
 import TabelSertifikasi from '../../components/TabelSertifikasi'
 import axios from 'axios'
 import { getToken } from '../../utils/token'
+import { useParams } from 'react-router-dom'
 
 const PelamarSertifikasi = () => {
+    const { id } = useParams()
     const [detail, setDetail] = useState(null)
-    const [pendaftar, setPendaftar] = useState([])
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchDetail = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/certification-lists/1/applicants`, {
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/certification-lists/${id}`, {
                     headers: { Authorization: `Bearer ${getToken()}` },
                 })
-                setDetail(res.data.data.sertifikasi)
-                setPendaftar(res.data.data.pendaftar)
+                setDetail(res.data.data)
             } catch (err) {
-                console.error('❌ Gagal memuat data pelamar:', err)
+                console.error('❌ Gagal memuat detail sertifikasi:', err)
             }
         }
 
-        fetchData()
-    }, [])
+        fetchDetail()
+    }, [id])
 
     return (
         <div className='bg-[#F5F5F5]'>
-            <div className='p-4 sm:ml-64 '>
-                <div>
-                    <MateriSertifikasi detail={detail} />
-                    <TabelSertifikasi pendaftar={pendaftar} />
-                </div>
+            <div className='p-4 sm:ml-64'>
+                <MateriSertifikasi detail={detail} />
+                <TabelSertifikasi sertifikasiId={id} />
             </div>
         </div>
     )
