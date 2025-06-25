@@ -18,14 +18,15 @@ const Postingan = () => {
   const sudahPernahLoad = useRef(false)
 
   const fetchData = async (currentPage = 1, append = false) => {
-    if (!append) if (!sudahPernahLoad.current) setLoading(true)
+    if (!append && !sudahPernahLoad.current) setLoading(true)
     try {
-      const res = await fetchAllPostingan(currentPage)
-      const data = res.data?.data || res.data || []
-      setHasMore(!!res.data?.next_page_url)
+      const res = await fetchAllPostingan(currentPage) // res = response.data
+      const data = res.data || []
+      setHasMore(!!res.next_page_url)
 
       setPostData((prev) => (append ? [...prev, ...data] : isRefreshing.current && prev.length > data.length ? prev : data))
 
+      // Fetch user data for new user_ids
       const userIds = [...new Set(data.map((post) => post.user_id))]
       const unknownIds = userIds.filter((id) => !userMap[id])
       if (unknownIds.length > 0) {
@@ -48,21 +49,23 @@ const Postingan = () => {
     }
   }
 
+  // Initial load & background refresh
   useEffect(() => {
     fetchData(1, false)
     setPage(1)
     const interval = setInterval(() => {
       isRefreshing.current = true
       fetchData(1, false)
-    }, 5000)
+    }, 10000)
     return () => clearInterval(interval)
     // eslint-disable-next-line
   }, [])
 
-  const fetchMoreData = () => {
+  // Fetch next page saat scroll bawah
+  const fetchMoreData = async () => {
     const nextPage = page + 1
+    await fetchData(nextPage, true)
     setPage(nextPage)
-    fetchData(nextPage, true)
   }
 
   const toggleDropDown = () => {
