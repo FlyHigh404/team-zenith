@@ -92,7 +92,7 @@ function App() {
               <Route path="/sertifikasi-admin" element={<SertifikasiAdmin />} />
               <Route path="/mitra-admin" element={<MitraAdmin />} />
               <Route path="/pelamar-sertifikasi/:id" element={<PelamarSertifikasi />} />
-              <Route path="/pelamar-pekerjaan" element={<PelamarPekerjaan />} />
+              <Route path="/pelamar-pekerjaan/:id" element={<PelamarPekerjaan />} />
             </Route>
 
             {/* Halaman Cari Pekerjaan dan Sertifikasi */}

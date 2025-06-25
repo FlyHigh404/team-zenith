@@ -40,3 +40,15 @@ export const deleteJob = async (id) => {
   })
   return response
 }
+
+export const getPelamarJobs = async (id) => {
+  const res = await axios.get(`${API_URL}/admin/job-listings/${id}/applicants`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  });
+
+  return {
+    pendaftar: res.data?.data || [] // Pastikan ini bentuk array
+  };
+}
