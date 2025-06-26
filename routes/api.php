@@ -19,8 +19,9 @@ Route::middleware('auth:api')->group(function () {
     // Profile routes
     Route::prefix('profile')->group(function () {
         Route::get('/', [Controllers\ProfileController::class, 'show']);
-        Route::put('/', [Controllers\ProfileController::class, 'update']);
+        Route::post('/', [Controllers\ProfileController::class, 'update']);
         Route::put('/change-password', [Controllers\ProfileController::class, 'updatePassword']);
+        Route::delete('/delete-photo', [Controllers\ProfileController::class, 'deletePhoto']);
     });
 
     // Get Active User routes
