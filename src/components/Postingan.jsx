@@ -3,14 +3,13 @@ import { FaHeart, FaRegHeart, FaRegComment, FaRegPaperPlane, FaEye, FaEllipsisVe
 import { FaUserCircle } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
-import { fetchAllPostingan } from '../api/posting'
+import { fetchAllPostingan, deletePostingan, likePostingan, unlikePostingan, updatePostingan } from '../api/posting'
 import { fetchUserById } from '../api/user'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getUserData } from '../utils/token'
-import { updatePostingan } from '../api/posting'
 
 const Postingan = () => {
-  const [dropDownOpen, setDropDownOpen] = useState(false)
+  const [dropDownOpen, setDropDownOpen] = useState(null)
   const [postData, setPostData] = useState([])
   const [userMap, setUserMap] = useState({})
   const [loading, setLoading] = useState(true)
@@ -24,6 +23,7 @@ const Postingan = () => {
   const [editForm, setEditForm] = useState({ description: '', attachment_image: null })
   const [editPreview, setEditPreview] = useState(null)
 
+  // --- Fetch Data
   const fetchData = async (currentPage = 1, append = false) => {
     if (!append && !sudahPernahLoad.current) setLoading(true)
     try {
@@ -55,7 +55,7 @@ const Postingan = () => {
     }
   }
 
-  // Initial load & background refresh
+  // --- Initial load & background refresh
   useEffect(() => {
     fetchData(1, false)
     setPage(1)
@@ -75,10 +75,6 @@ const Postingan = () => {
 
   const toggleDropDown = (id) => {
     setDropDownOpen((prev) => (prev === id ? null : id))
-  }
-
-  const toogleConnect = (id) => {
-    setPostData((prev) => prev.map((post) => (post.id === id ? { ...post, isLiked: !post.isLiked } : post)))
   }
 
   const openEditModal = (post) => {
@@ -119,6 +115,33 @@ const Postingan = () => {
     }
   }
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Yakin ingin menghapus postingan ini?')) return
+    try {
+      await deletePostingan(id)
+      fetchData(1, false)
+      setDropDownOpen(null)
+    } catch (error) {
+      alert('Gagal menghapus postingan!')
+      console.error(error)
+    }
+  }
+
+  const handleLikeToggle = async (post) => {
+    try {
+      if (post.likes.some((like) => like.user_id === userLogin?.id)) {
+        await unlikePostingan(post.id)
+        setPostData((prev) => prev.map((p) => (p.id === post.id ? { ...p, likes: p.likes.filter((l) => l.user_id !== userLogin.id) } : p)))
+      } else {
+        await likePostingan(post.id)
+        setPostData((prev) => prev.map((p) => (p.id === post.id ? { ...p, likes: [...p.likes, { user_id: userLogin.id }] } : p)))
+      }
+    } catch (error) {
+      alert('Gagal mengubah like!')
+      console.error(error)
+    }
+  }
+
   if (loading && page === 1) return <div className="p-10 text-center min-h-screen">Memuat postingan...</div>
 
   return (
@@ -126,6 +149,8 @@ const Postingan = () => {
       <InfiniteScroll dataLength={postData.length} next={fetchMoreData} hasMore={hasMore} loader={<h4 className="text-center py-3">Memuat...</h4>} endMessage={<p className="text-center text-gray-400 py-3">Tidak ada postingan lagi.</p>}>
         {postData.map((post) => {
           const user = userMap[post.user_id]?.data || userMap[post.user_id]
+          const isLiked = post.likes.some((like) => like.user_id === userLogin?.id)
+          const likeCount = post.likes.length
           return (
             <div key={post.id} className="flex flex-col gap-0 bg-white rounded-2xl font-sans my-2">
               <div className="flex flex-col gap-3 border border-gray-300 rounded-t-xl p-4">
@@ -140,7 +165,6 @@ const Postingan = () => {
                       <p className="text-sm">@{user ? user.username : '-'}</p>
                     </div>
                   </div>
-
                   <div className="flex flex-row gap-4 items-start">
                     <p className="text-sm text-gray-500">
                       {new Date(post.created_at)
@@ -153,6 +177,7 @@ const Postingan = () => {
                           hour12: false,
                         })
                         .replace(':', '.')}
+                      <span> {post.created_at !== post.updated_at ? '(Edited)' : ''}</span>
                     </p>
                     {userLogin && userLogin.id === post.user_id && (
                       <div className="relative">
@@ -173,12 +198,11 @@ const Postingan = () => {
                                 <FaPenToSquare />
                                 <span>Edit</span>
                               </NavLink>
-
                               <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
                                 <FaShareNodes />
                                 <span>Bagikan</span>
                               </NavLink>
-                              <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
+                              <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm" onClick={() => handleDelete(post.id)}>
                                 <FaTrash />
                                 <span>Hapus</span>
                               </NavLink>
@@ -195,16 +219,16 @@ const Postingan = () => {
                   <div className="text-sm" style={{ whiteSpace: 'pre-line' }}>
                     {post.description}
                   </div>
-
                   {post.attachment_image && <img src={`${import.meta.env.VITE_BASE_URL}/storage/${post.attachment_image}`} className="max-w-3xl w-full rounded-lg h-60 object-cover" alt="attachment" />}
                 </div>
               </div>
 
               <div className="flex flex-row flex-wrap justify-between border border-gray-300 border-t-0 rounded-b-xl px-4 py-2">
                 <div className="flex flex-row gap-2">
-                  <button type="button" onClick={() => toogleConnect(post.id)} className="flex flex-row gap-1.5 items-center p-2 bg-white dark:bg-[#659BB0] rounded-md hover:bg-gray-100">
-                    {post.isLiked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
-                    <p className="text-sm">Menyukai</p>
+                  <button type="button" onClick={() => handleLikeToggle(post)} className="flex flex-row gap-1.5 items-center p-2 bg-white dark:bg-[#659BB0] rounded-md hover:bg-gray-100">
+                    {isLiked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+                    <p className="text-sm">{isLiked ? 'Disukai' : 'Menyukai'}</p>
+                    <span className="text-xs ml-1 text-gray-600">{likeCount}</span>
                   </button>
                   <a href="#komentar-postingan">
                     <button className="flex flex-row gap-1.5 items-center p-2 bg-white dark:bg-[#659BB0] rounded-md hover:bg-gray-100">
@@ -230,8 +254,9 @@ const Postingan = () => {
           )
         })}
       </InfiniteScroll>
+      {/* Modal Edit */}
       {editModalOpen && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center">
+        <div className="fixed z-50 inset-0 flex items-center justify-center bg-black/30">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md relative border-2 border-sky-500">
             <button className="absolute top-3 right-4 text-2xl" onClick={() => setEditModalOpen(false)}>
               ✕
@@ -247,7 +272,6 @@ const Postingan = () => {
                   <FaImages />
                   <p className="hidden md:block">Gambar (opsional)</p>
                 </label>
-                {/* <label className="block text-sm font-medium mb-1">Gambar (opsional)</label> */}
                 <input type="file" name="attachment_image" accept="image/*" onChange={handleEditChange} />
                 {editPreview && <img src={editPreview} alt="Preview" className="w-28 h-28 object-cover mt-2 rounded" />}
               </div>

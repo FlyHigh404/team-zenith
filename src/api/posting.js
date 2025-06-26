@@ -29,3 +29,24 @@ export const updatePostingan = async (id, body) => {
   })
   return response.data
 }
+
+export const deletePostingan = async (id) => {
+  const response = await axios.delete(`${API_URL}/postingan/${id}`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  })
+  return response.data
+}
+
+export const likePostingan = async (id) => {
+  const response = await axios.post(`${API_URL}/postingan/${id}/like`, null, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  })
+  return response.data
+}
+
+export const unlikePostingan = async (id) => {
+  const response = await axios.delete(`${API_URL}/postingan/${id}/unlike`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  })
+  return response.data
+}
