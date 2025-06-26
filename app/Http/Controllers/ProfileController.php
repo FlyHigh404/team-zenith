@@ -75,16 +75,14 @@ class ProfileController extends Controller
 
             // Handle foto profil jika ada
             if ($request->hasFile('fotoProfil')) {
-                // Hapus foto lama jika ada
                 if ($user->fotoProfil) {
-                    Storage::delete('public/profiles/' . $user->fotoProfil);
+                    Storage::disk('public')->delete('profiles/' . $user->fotoProfil);
                 }
-
-                // Upload foto baru
+            
                 $file = $request->file('fotoProfil');
                 $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/profiles', $fileName);
-
+                Storage::disk('public')->putFileAs('profiles', $file, $fileName);
+            
                 $updateData['fotoProfil'] = $fileName;
             }
 
