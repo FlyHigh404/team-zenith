@@ -162,4 +162,36 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+
+        public function deletePhoto()
+    {
+        try {
+            $user = Auth::user();
+
+            if (!$user->fotoProfil) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Foto profil tidak ditemukan'
+                ], 404);
+            }
+
+            // Hapus file dari storage
+            Storage::delete('public/profiles/' . $user->fotoProfil);
+
+            // Set kolom fotoProfil menjadi null
+            $user->fotoProfil = null;
+            $user->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Foto profil berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menghapus foto profil',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
