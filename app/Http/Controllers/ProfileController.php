@@ -74,15 +74,17 @@ class ProfileController extends Controller
             });
 
             // Handle foto profil jika ada
-            if ($request->hasFile('fotoProfil')) {
+            if ($request->hasFile('fotoProfil')) {Add commentMore actions
+                // Hapus foto lama jika ada
                 if ($user->fotoProfil) {
-                    Storage::disk('public')->delete('profiles/' . $user->fotoProfil);
+                    Storage::delete('public/profiles/' . $user->fotoProfil);
                 }
-            
+
+                // Upload foto baru
                 $file = $request->file('fotoProfil');
                 $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
-                Storage::disk('public')->putFileAs('profiles', $file, $fileName);
-            
+                $file->storeAs('public/profiles', $fileName);
+
                 $updateData['fotoProfil'] = $fileName;
             }
 
