@@ -84,7 +84,7 @@ class ProfileController extends Controller
                 $file = $request->file('fotoProfil');
                 $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
                 $file->storeAs('profiles', $fileName, 'public');
-                $updateData['fotoProfil'] = 'profiles/' . $fileName;            
+                $updateData['fotoProfil'] = $fileName;      
                 }
 
         // Tambahkan pekerjaan
