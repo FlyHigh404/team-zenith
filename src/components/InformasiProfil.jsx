@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { FaUser, FaPenToSquare, FaCamera, FaImages, FaTrash, FaBagShopping } from 'react-icons/fa6'
+import { useEffect, useState, useRef } from 'react'
+import { FaUser, FaPenToSquare, FaCamera, FaImages, FaTrash, FaBagShopping, FaCaretDown  } from 'react-icons/fa6'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { getUserData } from '../utils/token'
 import { listKoneksi } from '../api/beranda'
@@ -18,10 +18,11 @@ const InformasiProfil = () => {
   const [formProvinsi, setFormProvinsi] = useState("")
   const [formKota, setFormKota] = useState("")
   const [formKelas, setFormKelas] = useState([])
-  const [formKeahlian, setFormKeahlian] = useState("")
+  const [formKeahlian, setFormKeahlian] = useState([])
   const [formPekerjaan, setFormPekerjaan] = useState("")
   const [formDeskripsi, setFormDeskripsi] = useState("")
 
+  const dropdownRef = useRef(null)
   const [showDropdown, setShowDropdown] = useState(false)
 
   useEffect(() => {
@@ -57,14 +58,29 @@ const InformasiProfil = () => {
     return <p>Loading...</p>
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
   const openModalEditProfilPic = () => {
       document.getElementById("modalEditProfilPic").showModal()
   }
 
   const getFotoProfil = () => {
     if (profilPic) return profilPic
-    if (dataProfil?.fotoProfil)
-      return `${import.meta.env.VITE_BASE_URL}/storage/${dataProfil.fotoProfil}`
+    // if (dataProfil?.fotoProfil)
+    //   return `${import.meta.env.VITE_BASE_URL}/storage/${dataProfil.fotoProfil}`
+    if (dataProfil?.fotoProfil) 
+      return `http://34.132.16.206/storage/profiles/${dataProfil.fotoProfil}`
     return defaultProfilePic
   }
 
@@ -111,18 +127,13 @@ const InformasiProfil = () => {
     return `${day}/${month}/${year}`
   }
 
-  const handleChangeKeahlian = (e) => {
-    const selected = Array.from(e.target.selectedOptions, option => option.value)
-    setFormKeahlian(selected)
-  }
-
   const openModalProfil = () => {
     setFormNama(dataProfil.nama || "")
     setFormTanggalLahir(formatTanggalInput(dataProfil.birthdate) || "")
     setFormProvinsi(dataProfil.provinsi || "")
     setFormKota(dataProfil.kota || "")
     setFormKelas(dataProfil.levelProfesional || "")
-    setFormKeahlian(dataProfil.keahlian || "")
+    setFormKeahlian(dataProfil.keahlian || [])
     setFormPekerjaan(dataProfil.pekerjaan || "")
     setFormDeskripsi(dataProfil.desc || "")
     document.getElementById('modalProfil').showModal()
@@ -163,7 +174,7 @@ const InformasiProfil = () => {
   return (
     <div className="flex flex-col border-gray-300 border rounded-2xl bg-white font-sans">
       <div className="relative">
-        <div className="bg-blue-300 h-44 rounded-t-2xl"></div>
+        <div className="bg-blue-400 h-44 rounded-t-2xl"></div>
           <button onClick={openModalEditProfilPic} className="absolute pl-4 -bottom-12 cursor-pointer">
             <img 
               src={getFotoProfil()} 
@@ -250,7 +261,7 @@ const InformasiProfil = () => {
             </button>
 
             <dialog id="modalProfil" className="modal">
-              <div className="modal-box">
+              <div className="modal-box h-135">
                 <form method="dialog">
                   <div className="flex flex-row ">
                     <h3 className="font-semibold">Edit Profil</h3>
@@ -324,44 +335,43 @@ const InformasiProfil = () => {
 
                   <div>
                     <label className="font-medium text-sm">Keahlian</label>
-                    {/* <select
-                      multiple
-                      value={formKeahlian}
-                      onChange={handleChangeKeahlian}
-                      className="select select-bordered w-full mt-1.5 rounded-lg"
-                    >
-                      <option disabled value="">Pilih keahlian</option>
-                      <option>Plate</option>
-                      <option>Pipe</option>
-                      <option>Fillet</option>
-                    </select> */}
-                    <div className="relative">
+                    <div className="relative" ref={dropdownRef}>
                       <button
+                        type="button"
                         onClick={() => setShowDropdown(!showDropdown)}
-                        className="w-full input input-bordered text-left rounded-lg"
+                        className="w-full input input-bordered rounded-lg text-left flex justify-between items-center mt-1.5"
                       >
-                        {formKeahlian.length > 0 ? formKeahlian.join(', ') : 'Pilih keahlian'}
+                        <span>{formKeahlian.length > 0 ? formKeahlian.join(', ') : 'Pilih keahlian'}</span>
+                        <p className="italic text-xs text-gray-400">Pilih 1 atau lebih</p>
                       </button>
+
                       {showDropdown && (
-                        <ul className="absolute z-10 bg-white border rounded mt-1 w-full max-h-48 overflow-y-auto">
-                          {["Plate", "Pipe", "Fillet"].map((item) => (
-                            <li key={item} className="p-2 hover:bg-gray-100 cursor-pointer">
-                              <label className="flex gap-2">
-                                <input
-                                  type="checkbox"
-                                  checked={formKeahlian.includes(item)}
-                                  onChange={() => {
-                                    setFormKeahlian((prev) =>
-                                      prev.includes(item)
-                                        ? prev.filter((val) => val !== item)
-                                        : [...prev, item]
-                                    )
-                                  }}
-                                />
-                                {item}
-                              </label>
-                            </li>
-                          ))}
+                        <ul className="absolute z-10 bg-white border-1 border-[#9A9A9A] rounded-lg w-full overflow-y-auto shadow-2xl ring ring-gray-400 text-md max-h-40">
+                          {["Plate", "Pipe", "Fillet"].map((item) => {
+                            const formattedItem = item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+                            const isSelected = formKeahlian.map(val => val.toLowerCase()).includes(formattedItem.toLowerCase())
+
+                            return (
+                              <li
+                                key={item}
+                                className={`px-4 py-0.5 cursor-pointer ${
+                                  isSelected ? 'bg-blue-200' : 'hover:bg-[#1967D2] hover:text-white'
+                                }`}
+                                onClick={() => {
+                                  setFormKeahlian((prev) => {
+                                    const normalized = prev.map(i => i.toLowerCase())
+                                    if (normalized.includes(formattedItem.toLowerCase())) {
+                                      return prev.filter(i => i.toLowerCase() !== formattedItem.toLowerCase())
+                                    } else {
+                                      return [...prev, formattedItem]
+                                    }
+                                  })
+                                }}
+                              >
+                                {formattedItem}
+                              </li>
+                            )
+                          })}
                         </ul>
                       )}
                     </div>
