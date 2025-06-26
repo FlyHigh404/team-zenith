@@ -6,6 +6,7 @@ import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { fetchAllPostingan } from '../api/posting'
 import { fetchUserById } from '../api/user'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { getUserData } from '../utils/token'
 
 const Postingan = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false)
@@ -16,17 +17,17 @@ const Postingan = () => {
   const [hasMore, setHasMore] = useState(true)
   const isRefreshing = useRef(false)
   const sudahPernahLoad = useRef(false)
+  const userLogin = getUserData()
 
   const fetchData = async (currentPage = 1, append = false) => {
     if (!append && !sudahPernahLoad.current) setLoading(true)
     try {
-      const res = await fetchAllPostingan(currentPage) // res = response.data
+      const res = await fetchAllPostingan(currentPage)
       const data = res.data || []
       setHasMore(!!res.next_page_url)
 
       setPostData((prev) => (append ? [...prev, ...data] : isRefreshing.current && prev.length > data.length ? prev : data))
 
-      // Fetch user data for new user_ids
       const userIds = [...new Set(data.map((post) => post.user_id))]
       const unknownIds = userIds.filter((id) => !userMap[id])
       if (unknownIds.length > 0) {
@@ -61,15 +62,14 @@ const Postingan = () => {
     // eslint-disable-next-line
   }, [])
 
-  // Fetch next page saat scroll bawah
   const fetchMoreData = async () => {
     const nextPage = page + 1
     await fetchData(nextPage, true)
     setPage(nextPage)
   }
 
-  const toggleDropDown = () => {
-    setDropDownOpen(!dropDownOpen)
+  const toggleDropDown = (id) => {
+    setDropDownOpen((prev) => (prev === id ? null : id))
   }
 
   const toogleConnect = (id) => {
@@ -99,35 +99,40 @@ const Postingan = () => {
 
                 <div className="flex flex-row gap-4 items-start">
                   <p className="text-sm text-gray-500">{post.created_at ? new Date(post.created_at).toLocaleString('id-ID') : '-'}</p>
-                  <div className="relative">
-                    <div onClick={toggleDropDown} className="flex cursor-pointer select-none mt-1">
-                      <FaEllipsisVertical />
-                    </div>
-                    {dropDownOpen && (
-                      <div className="absolute right-0 mt-2 w-38 bg-white rounded-xl shadow-xl border-gray-500">
-                        <ul className="p-2">
-                          <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
-                            <FaPenToSquare />
-                            <span>Edit</span>
-                          </NavLink>
-                          <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
-                            <FaShareNodes />
-                            <span>Bagikan</span>
-                          </NavLink>
-                          <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
-                            <FaTrash />
-                            <span>Hapus</span>
-                          </NavLink>
-                        </ul>
+                  {userLogin && userLogin.id === post.user_id && (
+                    <div className="relative">
+                      <div onClick={() => toggleDropDown(post.id)} className="flex cursor-pointer select-none mt-1">
+                        <FaEllipsisVertical />
                       </div>
-                    )}
-                  </div>
+                      {dropDownOpen === post.id && (
+                        <div className="absolute right-0 mt-2 w-38 bg-white rounded-xl shadow-xl border-gray-500">
+                          <ul className="p-2">
+                            <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
+                              <FaPenToSquare />
+                              <span>Edit</span>
+                            </NavLink>
+                            <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
+                              <FaShareNodes />
+                              <span>Bagikan</span>
+                            </NavLink>
+                            <NavLink to="#" className="flex hover:bg-gray-100 p-3 items-center gap-2 rounded-lg text-sm">
+                              <FaTrash />
+                              <span>Hapus</span>
+                            </NavLink>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* isi postingan */}
               <div className="flex flex-col gap-2">
-                <p className="text-sm">{post.description}</p>
+                <div className="text-sm" style={{ whiteSpace: 'pre-line' }}>
+                  {post.description}
+                </div>
+
                 {post.attachment_image && <img src={`${import.meta.env.VITE_BASE_URL}/storage/${post.attachment_image}`} className="max-w-3xl w-full rounded-lg h-60 object-cover" alt="attachment" />}
               </div>
             </div>
