@@ -52,7 +52,7 @@ const Navbar = ({ title }) => {
         {/* Profil + Dropdown */}
         <div className="relative">
           <div onClick={toggleDropdown} className="flex items-center gap-2 cursor-pointer select-none">
-            <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
+            <div>{userData.fotoProfil ? <img src={`http://34.132.16.206/storage/profiles/${userData.fotoProfil}`} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
             <span className="text-base font-semibold text-black">{userData.nama}</span>
             {dropdownOpen ? <FaAngleUp /> : <FaAngleDown />}
           </div>
@@ -60,7 +60,7 @@ const Navbar = ({ title }) => {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border-gray-500">
               <div className="p-4 border-b-2 border-gray-300 flex">
-                <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
+                <div>{userData.fotoProfil ? <img src={`http://34.132.16.206/storage/profiles/${userData.fotoProfil}`} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
                 <div className="ml-3">
                   <div className="text-black flex items-center gap-1 font-semibold">
                     <span>{userData.nama}</span> <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>

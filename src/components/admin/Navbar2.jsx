@@ -75,10 +75,7 @@ function Navbar() {
               <FaMoon className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>
             <div className="p-2.5 bg-[#F5F5F5] rounded-xl hidden md:block">
-              <FaBell
-                onClick={() => setShowModal(!showModal)}
-                className="text-[#575757] hover:text-blue-500 cursor-pointer text-md"
-              />
+              <FaBell onClick={() => setShowModal(!showModal)} className="text-[#575757] hover:text-blue-500 cursor-pointer text-md" />
             </div>
             {showModal && (
               <div className="absolute right-0 top-12 z-50 bg-white rounded-xl shadow-lg p-4 w-[350px]">
@@ -98,7 +95,9 @@ function Navbar() {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border-gray-500">
                 <div className="p-4 border-b-2 border-gray-300 flex">
-                  <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
+                  <div>
+                    <FaUserCircle className="text-4xl text-blue-600" />
+                  </div>
                   <div className="ml-3">
                     <div className="text-black flex items-center gap-1 font-semibold">
                       <span>{userData.nama}</span> <span>{userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}</span>
