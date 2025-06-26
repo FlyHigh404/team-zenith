@@ -19,3 +19,13 @@ export const createPostingan = async (body) => {
   })
   return response.data
 }
+
+export const updatePostingan = async (id, body) => {
+  const response = await axios.post(`${API_URL}/postingan/${id}`, body, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return response.data
+}

@@ -1,9 +1,9 @@
-import React from 'react'
 import LokerAktif from '../../components/LokerAktif'
 import PenggunaAktif from '../../components/PenggunaAktif'
 import Postingan from '../../components/Postingan'
 import SidebarProfil from '../../components/SidebarProfil'
 import TambahPostingan from '../../components/TambahPostingan'
+import ScrollToTopButton from '../../components/ScrollToTopButton'
 
 const BerandaAdmin = () => {
   return (
@@ -19,6 +19,7 @@ const BerandaAdmin = () => {
         <LokerAktif />
         <PenggunaAktif />
       </div>
+      <ScrollToTopButton />
     </div>
   )
 }

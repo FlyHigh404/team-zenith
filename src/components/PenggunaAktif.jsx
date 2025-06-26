@@ -4,6 +4,7 @@ import { activeUserList, ajukanKoneksi, listKoneksi } from '../api/beranda'
 import { FaRegSquarePlus, FaRegSquareCheck } from 'react-icons/fa6'
 import { FaUserCircle } from 'react-icons/fa'
 import { getUserData } from '../utils/token'
+import badgeAdmin from '../assets/img/badgeAdmin.png'
 
 const PenggunaAktif = () => {
   const [allUser, setAllUser] = useState([])
@@ -84,7 +85,10 @@ const PenggunaAktif = () => {
               <NavLink to="#profil-user" className="flex flex-row gap-3 items-start">
                 {user.fotoProfil ? <img src={user.fotoProfil} alt="Foto Profil" className="w-8 h-8 rounded-full shrink-0 object-cover" /> : <FaUserCircle className="w-8 h-8 text-blue-600 shrink-0" />}
                 <div className="overflow-hidden">
-                  <p className="font-semibold text-sm">{user.nama}</p>
+                  <div className="flex">
+                    <p className="font-semibold text-sm">{user.nama}</p>
+                    {user && user.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" />}
+                  </div>
                   <p className="text-xs line-clamp-2">
                     {user.pekerjaan && user.pekerjaan.length > 0 ? user.pekerjaan.join(', ') : '-'}
                     <br />
