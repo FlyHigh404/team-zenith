@@ -83,7 +83,11 @@ const PenggunaAktif = () => {
           return (
             <div key={user.id} className="flex flex-row items-center justify-between gap-4 w-full">
               <NavLink to="#profil-user" className="flex flex-row gap-3 items-start">
-                {user.fotoProfil ? <img src={user.fotoProfil} alt="Foto Profil" className="w-8 h-8 rounded-full shrink-0 object-cover" /> : <FaUserCircle className="w-8 h-8 text-blue-600 shrink-0" />}
+                {user.fotoProfil ? (
+                  <img src={`http://34.132.16.206/storage/profiles/${user.fotoProfil}`} alt="Foto Profil" className="w-8 h-8 rounded-full shrink-0 object-cover" />
+                ) : (
+                  <FaUserCircle className="w-8 h-8 text-blue-600 shrink-0" />
+                )}
                 <div className="overflow-hidden">
                   <div className="flex">
                     <p className="font-semibold text-sm">{user.nama}</p>

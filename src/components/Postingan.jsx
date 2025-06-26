@@ -156,7 +156,11 @@ const Postingan = () => {
               <div className="flex flex-col gap-3 border border-gray-300 rounded-t-xl p-4">
                 <div className="flex flex-row justify-between">
                   <div className="flex flex-row gap-3 items-center">
-                    {user && user.fotoProfil ? <img src={user.fotoProfil} alt="Foto Profil" className="w-12 h-12 rounded-full shrink-0 object-cover" /> : <FaUserCircle className="text-4xl text-blue-600" />}
+                    {user && user.fotoProfil ? (
+                      <img src={`http://34.132.16.206/storage/profiles/${user.fotoProfil}`} alt="Foto Profil" className="w-12 h-12 rounded-full shrink-0 object-cover" />
+                    ) : (
+                      <FaUserCircle className="text-4xl text-blue-600" />
+                    )}
                     <div className="flex flex-col">
                       <div className="flex flex-row gap-1 items-center">
                         <p className="font-semibold text-base">{user ? user.nama : 'User Tidak Diketahui'}</p>
@@ -219,7 +223,7 @@ const Postingan = () => {
                   <div className="text-sm" style={{ whiteSpace: 'pre-line' }}>
                     {post.description}
                   </div>
-                  {post.attachment_image && <img src={`${import.meta.env.VITE_BASE_URL}/storage/${post.attachment_image}`} className="max-w-3xl w-full rounded-lg h-60 object-cover" alt="attachment" />}
+                  {post.attachment_image && <img src={`http://34.132.16.206/storage/${post.attachment_image}`} className="max-w-3xl w-full rounded-lg h-60 object-cover" alt="attachment" />}
                 </div>
               </div>
 

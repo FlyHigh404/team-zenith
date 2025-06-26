@@ -14,7 +14,7 @@ const SidebarProfil = () => {
     <div className="flex flex-col border-gray-300 w-full border rounded-2xl bg-white p-4 gap-4 font-sans">
       <div className="flex flex-row gap-3 items-center">
         {userData.fotoProfil ? (
-          <img src={userData.fotoProfil} alt="Foto Profil" className="w-12 h-12 rounded-full shrink-0 object-cover" />
+          <img src={`http://34.132.16.206/storage/profiles/${userData.fotoProfil}`} alt="Foto Profil" className="w-12 h-12 rounded-full shrink-0 object-cover" />
         ) : (
           <div>{userData.fotoProfil ? <img src={userData.fotoProfil} alt="" className="w-12 h-12 rounded-full" /> : <FaUserCircle className="text-4xl text-blue-600" />}</div>
         )}
