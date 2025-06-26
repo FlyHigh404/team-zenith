@@ -223,7 +223,7 @@ const Postingan = () => {
                   <div className="text-sm" style={{ whiteSpace: 'pre-line' }}>
                     {post.description}
                   </div>
-                  {post.attachment_image && <img src={`http://34.132.16.206/storage/${post.attachment_image}`} className="max-w-3xl w-full rounded-lg h-60 object-cover" alt="attachment" />}
+                  {post.attachment_image && <img src={`http://34.132.16.206/storage/${post.attachment_image}`} className="max-w-3xl w-full rounded-lg h-128 object-cover" alt="attachment" />}
                 </div>
               </div>
 
