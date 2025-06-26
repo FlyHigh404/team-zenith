@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { FaTrash, FaImages, FaFileLines, FaLink } from 'react-icons/fa6'
 import { FaUserCircle } from 'react-icons/fa'
 import { createPostingan } from '../api/posting'
+import { getUserData } from '../utils/token'
 
 const TambahPostingan = ({ onSuccess }) => {
   const textareaRef = useRef(null)
@@ -13,6 +14,8 @@ const TambahPostingan = ({ onSuccess }) => {
   const [docFile, setDocFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const userData = getUserData()
 
   const handleInput = () => {
     const textarea = textareaRef.current
@@ -81,7 +84,8 @@ const TambahPostingan = ({ onSuccess }) => {
   return (
     <form className="bg-white p-4 rounded-t-2xl border border-gray-300 font-sans" onSubmit={handleSubmit}>
       <div className="flex flex-row gap-3">
-        <FaUserCircle className="text-4xl text-blue-600" />
+        {userData.fotoProfil ? <img src={`http://34.132.16.206/storage/profiles/${userData.fotoProfil}`} alt="Foto Profil" className="w-12 h-12 rounded-full shrink-0 object-cover" /> : <FaUserCircle className="text-4xl text-blue-600" />}
+
         <textarea ref={textareaRef} value={description} onChange={(e) => setDescription(e.target.value)} onInput={handleInput} placeholder="Apa yang sedang kamu pikirkan?" className="w-full outline-none resize-none text-sm max-h-[300px]" />
       </div>
 
