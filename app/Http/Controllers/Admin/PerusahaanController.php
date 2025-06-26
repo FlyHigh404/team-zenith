@@ -73,7 +73,8 @@ class PerusahaanController extends Controller
                 $fileName = time() . '_company_logo.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/company', $fileName);
                 // Simpan path RELATIF dari storage/public
-                $data['logo'] = 'company/' . $fileName;
+                $file->storeAs('company', $fileName, 'public');
+                $data['logo'] = 'company/' . $fileName;          
             }
 
             $company = Perusahaan::create($data);
@@ -152,13 +153,14 @@ class PerusahaanController extends Controller
 
             // Handle upload logo
             if ($request->hasFile('logo')) {
-                if ($company->logo) {
-                    Storage::delete('public/company/' . $company->logo);
+                if ($company->logo && Storage::disk('public')->exists($company->logo)) {
+                    Storage::disk('public')->delete($company->logo);
                 }
+
                 $file = $request->file('logo');
                 $fileName = time() . '_company_logo.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/company', $fileName);
-                $data['logo'] = $fileName;
+                $file->storeAs('company', $fileName, 'public');
+                $data['logo'] = 'company/' . $fileName;
             }
 
             $company->update($data);
@@ -188,10 +190,10 @@ class PerusahaanController extends Controller
             $company = Perusahaan::findOrFail($id);
 
             // Hapus logo jika ada
-            if ($company->logo) {
-                Storage::delete('public/company/' . $company->logo);
+            if ($company->logo && Storage::disk('public')->exists($company->logo)) {
+                Storage::disk('public')->delete($company->logo);
             }
-
+            
             $company->delete();
 
             return response()->json([
