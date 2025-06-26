@@ -22,12 +22,12 @@ class PostinganController extends Controller
 
         $data['user_id'] = Auth::id();
 
-        if ($request->hasFile('attachment_file')) {
-            $data['attachment_file'] = $request->file('attachment_file')->store('attachments');
-        }
-        if ($request->hasFile('attachment_image')) {
-            $data['attachment_image'] = $request->file('attachment_image')->store('images');
-        }
+    if ($request->hasFile('attachment_file')) {
+        $data['attachment_file'] = $request->file('attachment_file')->store('attachments', 'public');
+    }
+    if ($request->hasFile('attachment_image')) {
+        $data['attachment_image'] = $request->file('attachment_image')->store('images', 'public');
+    }
 
         $post = Postingan::create($data);
         return response()->json($post, 201);
@@ -50,22 +50,19 @@ class PostinganController extends Controller
             'attachment_image' => 'nullable|image',
         ]);
 
-        // Update file jika ada
-        if ($request->hasFile('attachment_file')) {
-            // Hapus file lama jika ada
-            if ($post->attachment_file && \Storage::exists($post->attachment_file)) {
-                \Storage::delete($post->attachment_file);
-            }
-            $data['attachment_file'] = $request->file('attachment_file')->store('attachments');
+    if ($request->hasFile('attachment_file')) {
+        if ($post->attachment_file && \Storage::disk('public')->exists($post->attachment_file)) {
+            \Storage::disk('public')->delete($post->attachment_file);
         }
+        $data['attachment_file'] = $request->file('attachment_file')->store('attachments', 'public');
+    }
 
-        if ($request->hasFile('attachment_image')) {
-            // Hapus image lama jika ada
-            if ($post->attachment_image && \Storage::exists($post->attachment_image)) {
-                \Storage::delete($post->attachment_image);
-            }
-            $data['attachment_image'] = $request->file('attachment_image')->store('images');
+    if ($request->hasFile('attachment_image')) {
+        if ($post->attachment_image && \Storage::disk('public')->exists($post->attachment_image)) {
+            \Storage::disk('public')->delete($post->attachment_image);
         }
+        $data['attachment_image'] = $request->file('attachment_image')->store('images', 'public');
+    }
 
         $post->update($data);
 

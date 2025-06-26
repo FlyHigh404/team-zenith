@@ -74,7 +74,7 @@ class ProfileController extends Controller
             });
 
             // Handle foto profil jika ada
-            if ($request->hasFile('fotoProfil')) {Add commentMore actions
+            if ($request->hasFile('fotoProfil')) {
                 // Hapus foto lama jika ada
                 if ($user->fotoProfil) {
                     Storage::delete('public/profiles/' . $user->fotoProfil);
@@ -88,7 +88,7 @@ class ProfileController extends Controller
                 $updateData['fotoProfil'] = $fileName;
             }
 
-                    // Tambahkan pekerjaan
+        // Tambahkan pekerjaan
         if ($request->filled('pekerjaan')) {
             $user->pekerjaan = $request->pekerjaan;
         }
