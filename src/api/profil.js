@@ -11,9 +11,6 @@ export const getProfil = async () => {
   return response.data
 }
 
-//Upload foto profil
-
-
 //Update profil
 export const updateProfil = async (formData) => {
   const response = await axios.post(`${API_URL}/profile?_method=put`, formData, {
@@ -27,7 +24,7 @@ export const updateProfil = async (formData) => {
 
 //Hapus foto profil
 export const deleteFotoProfil = async () => {
-  const response = await axios.delete(`${API_URL}/profile/photo`, {
+  const response = await axios.delete(`${API_URL}/profile/delete-photo`, {
         headers: { Authorization: `Bearer ${getToken()}` },
   })
     return response.data

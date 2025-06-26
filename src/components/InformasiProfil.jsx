@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FaUser, FaPenToSquare, FaCamera, FaImages, FaTrash } from 'react-icons/fa6'
+import { FaUser, FaPenToSquare, FaCamera, FaImages, FaTrash, FaBagShopping } from 'react-icons/fa6'
 import badgeAdmin from '../assets/img/badgeAdmin.png'
 import { getUserData } from '../utils/token'
 import { listKoneksi } from '../api/beranda'
@@ -10,18 +10,19 @@ const InformasiProfil = () => {
   const userData = getUserData()
   const myUserId = userData?.id
   const [totalKoneksi, setTotalKoneksi] = useState(0)
-  const [profilPic, setProfilPic] = useState(null) //
-  const [dataProfil, setDataProfil] = useState(null) //
-  const [ubahProfil, setUbahProfil] = useState(null) 
-  const [hapusFotoProfil, setHapusFotoProfil] = useState(null)
+  const [profilPic, setProfilPic] = useState(null)
+  const [dataProfil, setDataProfil] = useState(null)
 
   const [formNama, setFormNama] = useState("")
   const [formTanggalLahir, setFormTanggalLahir] = useState("")
   const [formProvinsi, setFormProvinsi] = useState("")
   const [formKota, setFormKota] = useState("")
-  const [formKelas, setFormKelas] = useState("")
+  const [formKelas, setFormKelas] = useState([])
   const [formKeahlian, setFormKeahlian] = useState("")
+  const [formPekerjaan, setFormPekerjaan] = useState("")
   const [formDeskripsi, setFormDeskripsi] = useState("")
+
+  const [showDropdown, setShowDropdown] = useState(false)
 
   useEffect(() => {
     const fetchDataUser = async () => {
@@ -59,90 +60,99 @@ const InformasiProfil = () => {
   const openModalEditProfilPic = () => {
       document.getElementById("modalEditProfilPic").showModal()
   }
-  
-  // const handleUploadPhoto = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const imageURL = URL.createObjectURL(file);
-  //     console.log('Foto berhasil di-upload:', imageURL);
-  //     setProfilPic(imageURL);
-  //   }
-  // };
+
+  const getFotoProfil = () => {
+    if (profilPic) return profilPic
+    if (dataProfil?.fotoProfil)
+      return `${import.meta.env.VITE_BASE_URL}/storage/${dataProfil.fotoProfil}`
+    return defaultProfilePic
+  }
 
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0]
     if (!file) return
 
     const formData = new FormData()
-    formData.append('fotoProfil', file) // Sesuaikan key-nya dengan yang backend kamu pakai
+    formData.append('fotoProfil', file)
 
     try {
-      const response = await updateProfil(formData)
-      setProfilPic(URL.createObjectURL(file))
-      setDataProfil(response.data)
-      console.log('Foto profil berhasil diupdate:', response)
+      await updateProfil(formData)
+      const updatedUser = await getProfil()
+      setDataProfil(updatedUser.data)
+      setProfilPic(null)
+
+      console.log('Foto profil berhasil diupdate!')
     } catch (error) {
       console.error('Gagal upload foto profil:', error)
     }
   }
-
+  
   const handleDeletePhoto = async () => {
     try {
-      const response = await deleteFotoProfil()
+      await deleteFotoProfil()
+      const updatedUser = await getProfil()
+      setDataProfil(updatedUser.data)
       setProfilPic(null)
-      const updatedUser = { ...getUserData(), foto_profil: null }
-      setHapusFotoProfil(updatedUser)
-      console.log('Foto profil berhasil dihapus:', response)
+
+      console.log('Foto profil berhasil dihapus!')
     } catch (error) {
-      console.error('Gagal hapus foto profil:', error)
+      console.error('Gagal hapus foto profil:', error.response?.data || error.message)
     }
   }
 
-  const openModalProfil = () => {
-    setFormNama(dataProfil?.nama || "")
-    setFormProvinsi(dataProfil?.provinsi || "")
-    setFormKota(dataProfil?.kota || "")
-    setFormKelas(dataProfil?.kelas || "")
-    setFormKeahlian(dataProfil?.keahlian || "")
-    setFormTanggalLahir(dataProfil?.tanggal_lahir || "")
-    setFormDeskripsi(dataProfil?.deskripsi || "")
-    console.log("Data dari API pas klik Edit Profil:", dataProfil)
-    document.getElementById('modalProfil').showModal()
+  const formatTanggalInput = (tanggal) => {
+    if (!tanggal) return ""
+    return new Date(tanggal).toISOString().split("T")[0]
   }
 
-  // useEffect(() => {
-  //   if (dataProfil) {
-  //     setFormNama(dataProfil.nama || "")
-  //     setFormProvinsi(dataProfil.provinsi || "")
-  //     setFormKota(dataProfil.kota || "")
-  //     setFormKelas(dataProfil.kelas || "")
-  //     setFormKeahlian(dataProfil.keahlian || "")
-  //     setFormTanggalLahir(dataProfil.tanggal_lahir || "")
-  //     setFormDeskripsi(dataProfil.deskripsi || "")
-  //   }
-  // }, [dataProfil])
+  const formatTanggalAPI = (tanggal) => {
+    if (!tanggal) return ""
+    const [year, month, day] = tanggal.split("-")
+    return `${day}/${month}/${year}`
+  }
 
-  // const openModalProfil = () => {
-  //   console.log("Data dari API pas klik Edit Profil:", dataProfil)
-  //   document.getElementById('modalProfil').showModal()
-  // }
+  const handleChangeKeahlian = (e) => {
+    const selected = Array.from(e.target.selectedOptions, option => option.value)
+    setFormKeahlian(selected)
+  }
+
+  const openModalProfil = () => {
+    setFormNama(dataProfil.nama || "")
+    setFormTanggalLahir(formatTanggalInput(dataProfil.birthdate) || "")
+    setFormProvinsi(dataProfil.provinsi || "")
+    setFormKota(dataProfil.kota || "")
+    setFormKelas(dataProfil.levelProfesional || "")
+    setFormKeahlian(dataProfil.keahlian || "")
+    setFormPekerjaan(dataProfil.pekerjaan || "")
+    setFormDeskripsi(dataProfil.desc || "")
+    document.getElementById('modalProfil').showModal()
+  }
 
   const handleSimpanProfil = async () => {
     try {
       const formData = new FormData()
-      formData.append("nama", formNama)
-      formData.append("provinsi", formProvinsi)
-      formData.append("kota", formKota)
-      formData.append("kelas", formKelas)
-      formData.append("keahlian", formKeahlian)
-      formData.append("tanggal_lahir", formTanggalLahir)
-      formData.append("deskripsi", formDeskripsi)
+
+      if (formNama !== dataProfil.nama) formData.append("nama", formNama)
+      if (formProvinsi !== dataProfil.provinsi) formData.append("provinsi", formProvinsi)
+      if (formKota !== dataProfil.kota) formData.append("kota", formKota)
+      if (formKelas !== dataProfil.levelProfesional) formData.append("levelProfesional", formKelas)
+      // if (formKeahlian !== dataProfil.keahlian) formData.append("keahlian[]", formKeahlian) 
+      if (JSON.stringify(formKeahlian) !== JSON.stringify(dataProfil.keahlian)){formKeahlian.forEach((val) => formData.append("keahlian[]", val))}
+      if (formPekerjaan !== dataProfil.pekerjaan) formData.append("pekerjaan[]", formPekerjaan)
+      if (formTanggalLahir !== formatTanggalInput(dataProfil.birthdate)) formData.append("birthdate", formatTanggalAPI(formTanggalLahir))
+      if (formDeskripsi !== dataProfil.desc) formData.append("desc", formDeskripsi)
+
+      if (formData.entries().next().done) {
+        alert("Tidak ada perubahan data yang disimpan")
+        return
+      }
 
       await updateProfil(formData)
       const updatedUser = await getProfil()
-      setUbahProfil(updatedUser)
+      setDataProfil(updatedUser.data)
 
       alert("Profil berhasil diupdate!")
+      console.log(updatedUser)
       document.getElementById('modalProfil').close()
     } catch (error) {
       console.error(error)
@@ -156,9 +166,9 @@ const InformasiProfil = () => {
         <div className="bg-blue-300 h-44 rounded-t-2xl"></div>
           <button onClick={openModalEditProfilPic} className="absolute pl-4 -bottom-12 cursor-pointer">
             <img 
-              src={profilPic || userData.foto_profil || defaultProfilePic} 
-              alt="Profil" 
-              className="w-28 h-28 object-cover rounded-full border-4 border-white" 
+              src={getFotoProfil()} 
+              alt="foto profil" 
+              className="w-28 h-28 object-cover rounded-full border-4 border-white bg-white" 
             />
           </button>
           <dialog id="modalEditProfilPic" className="modal">
@@ -173,9 +183,9 @@ const InformasiProfil = () => {
                 
                 <div className="flex rounded-full py-12 justify-self-center">
                     <img 
-                      src={profilPic || userData.foto_profil || defaultProfilePic} 
-                      alt="Profil" 
-                      className="w-40 h-40 object-cover rounded-full" 
+                      src={getFotoProfil()} 
+                      alt="foto profil" 
+                      className="w-40 h-40 object-cover rounded-full bg-white" 
                     />
                 </div>
                 
@@ -228,7 +238,7 @@ const InformasiProfil = () => {
             <h2 className="font-semibold text-xl">{userData.nama}</h2>
             {userData.role === 'admin' && <img src={badgeAdmin} alt="Badge Admin" className="w-6" />}
           </div>
-          <p className="mt-1">{userData.deskripsi ? userData.deskripsi : 'Belum ada deskripsi'}</p>
+          <p className="mt-1">{userData.desc ? userData.desc : 'Belum ada deskripsi'}</p>
           <p className="mt-1">
             {userData.kota}, {userData.provinsi}
           </p>
@@ -291,6 +301,7 @@ const InformasiProfil = () => {
                       className="select select-bordered w-full mt-1.5 rounded-lg"
                     >
                       <option disabled value="">Pilih kota</option>
+                      <option>Jakarta</option>
                       <option>Bandung</option>
                       <option>Semarang</option>
                       <option>Surabaya</option>
@@ -305,23 +316,67 @@ const InformasiProfil = () => {
                       className="select select-bordered w-full mt-1.5 rounded-lg"
                     >
                       <option disabled value="">Pilih kelas</option>
-                      {["1F", "2F", "3F", "4F", "1G", "2G", "3G", "4G", "1G pipa", "2G pipa", "5G", "6G", "SMAW", "GMAW", "FCAW", "GTAW"].map((val) => (
-                        <option key={val}>{val}</option>
+                      {["1F", "2F", "3F", "4F", "1G", "2G", "3G", "4G", "5G", "6G", "SMAW", "GMAW", "FCAW", "GTAW"].map((val) => (
+                        <option key={val} value={val}>{val}</option>
                       ))}
                     </select>
                   </div>
 
                   <div>
                     <label className="font-medium text-sm">Keahlian</label>
-                    <select
+                    {/* <select
+                      multiple
                       value={formKeahlian}
-                      onChange={(e) => setFormKeahlian(e.target.value)}
+                      onChange={handleChangeKeahlian}
                       className="select select-bordered w-full mt-1.5 rounded-lg"
                     >
                       <option disabled value="">Pilih keahlian</option>
                       <option>Plate</option>
                       <option>Pipe</option>
                       <option>Fillet</option>
+                    </select> */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowDropdown(!showDropdown)}
+                        className="w-full input input-bordered text-left rounded-lg"
+                      >
+                        {formKeahlian.length > 0 ? formKeahlian.join(', ') : 'Pilih keahlian'}
+                      </button>
+                      {showDropdown && (
+                        <ul className="absolute z-10 bg-white border rounded mt-1 w-full max-h-48 overflow-y-auto">
+                          {["Plate", "Pipe", "Fillet"].map((item) => (
+                            <li key={item} className="p-2 hover:bg-gray-100 cursor-pointer">
+                              <label className="flex gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={formKeahlian.includes(item)}
+                                  onChange={() => {
+                                    setFormKeahlian((prev) =>
+                                      prev.includes(item)
+                                        ? prev.filter((val) => val !== item)
+                                        : [...prev, item]
+                                    )
+                                  }}
+                                />
+                                {item}
+                              </label>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="font-medium text-sm">Bidang Pekerjaan</label>
+                    <select
+                      value={formPekerjaan}
+                      onChange={(e) => setFormPekerjaan(e.target.value)}
+                      className="select select-bordered w-full mt-1.5 rounded-lg"
+                    >
+                      <option disabled value="">Pilih pekerjaan</option>
+                      <option>Inspector</option>
+                      <option>Welder</option>
                     </select>
                   </div>
 
@@ -346,12 +401,19 @@ const InformasiProfil = () => {
           </div>
         </div>
 
-        <div className="flex flex-col col-span-1 p-4">
+        <div className="flex flex-col col-span-1 p-4 gap-2">
           <div className="flex flex-row gap-1">
             <FaUser className="mt-1" />
             <div className="flex flex-col ml-2">
               <p className="font-semibold">Username</p>
               <p className="italic">@{userData.username}</p>
+            </div>
+          </div>
+          <div className="flex flex-row gap-1">
+            <FaBagShopping className="mt-1" />
+            <div className="flex flex-col ml-2">
+              <p className="font-semibold">Pekerjaan</p>
+              <p className="">{userData.pekerjaan}</p>
             </div>
           </div>
         </div>
