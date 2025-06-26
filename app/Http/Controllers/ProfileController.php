@@ -77,16 +77,15 @@ class ProfileController extends Controller
             if ($request->hasFile('fotoProfil')) {
                 // Hapus foto lama jika ada
                 if ($user->fotoProfil) {
-                    Storage::delete('public/profiles/' . $user->fotoProfil);
+                    Storage::disk('public')->delete($user->fotoProfil);
                 }
 
                 // Upload foto baru
                 $file = $request->file('fotoProfil');
                 $fileName = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/profiles', $fileName);
-
-                $updateData['fotoProfil'] = $fileName;
-            }
+                $file->storeAs('profiles', $fileName, 'public');
+                $updateData['fotoProfil'] = 'profiles/' . $fileName;            
+                }
 
         // Tambahkan pekerjaan
         if ($request->filled('pekerjaan')) {
@@ -176,8 +175,7 @@ class ProfileController extends Controller
             }
 
             // Hapus file dari storage
-            Storage::delete('public/profiles/' . $user->fotoProfil);
-
+                Storage::disk('public')->delete($user->fotoProfil);
             // Set kolom fotoProfil menjadi null
             $user->fotoProfil = null;
             $user->save();
